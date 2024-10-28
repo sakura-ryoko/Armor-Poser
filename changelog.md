@@ -1,1 +1,1 @@
-* Fix being unable to manually enter decimals (.) into the scale field
+* Initial update to 1.21.3
