@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -92,16 +93,17 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 					if (!tag.isEmpty()) {
 						nbt.merge(tag);
 					}
-					ArmorStand armorStand = (ArmorStand) EntityType.loadEntityRecursive(nbt, level, Function.identity());
-					if (armorStand != null) {
-						armorStand.setNoBasePlate(true);
-						armorStand.setShowArms(true);
-						armorStand.yBodyRot = 210.0F;
-						armorStand.setXRot(25.0F);
-						armorStand.yHeadRot = armorStand.getYRot();
-						armorStand.yHeadRotO = armorStand.getYRot();
-						this.cachedEntity = armorStand;
-					}
+					this.cachedEntity = (ArmorStand)EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
+						if (entity instanceof ArmorStand stand) {
+							stand.setNoBasePlate(true);
+							stand.setShowArms(true);
+							stand.yBodyRot = 210.0F;
+							stand.setXRot(25.0F);
+							stand.yHeadRot = stand.getYRot();
+							stand.yHeadRotO = stand.getYRot();
+						}
+						return entity;
+					});
 				} catch (Exception e) {
 					Reference.LOGGER.error("Unable to parse nbt pose {}", e.getMessage());
 				}
