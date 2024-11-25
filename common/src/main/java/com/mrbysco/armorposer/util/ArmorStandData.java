@@ -21,8 +21,8 @@ public class ArmorStandData {
 	public boolean getBooleanValue(int index) {
 		return switch (index) {
 			case 0 -> this.invisible;
-			case 1 -> this.noBasePlate;
-			case 2 -> this.noGravity;
+			case 1 -> !this.noBasePlate;
+			case 2 -> !this.noGravity;
 			case 3 -> this.showArms;
 			case 4 -> this.small;
 			case 5 -> this.nameVisible;

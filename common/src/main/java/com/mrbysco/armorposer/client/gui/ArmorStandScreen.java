@@ -63,7 +63,7 @@ public class ArmorStandScreen extends Screen {
 	private final ArmorStand entityArmorStand;
 	private final ArmorStandData armorStandData;
 
-	private final String[] buttonLabels = new String[]{"invisible", "no_base_plate", "no_gravity", "show_arms", "small", "name_visible", "rotation", "scale"};
+	private final String[] buttonLabels = new String[]{"invisible", "base_plate", "gravity", "show_arms", "small", "name_visible", "rotation", "scale"};
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
 	private final String version;
 
@@ -748,8 +748,8 @@ public class ArmorStandScreen extends Screen {
 	protected CompoundTag writeFieldsToNBT() {
 		CompoundTag compound = new CompoundTag();
 		compound.putBoolean("Invisible", this.toggleButtons[0].getValue());
-		compound.putBoolean("NoBasePlate", this.toggleButtons[1].getValue());
-		compound.putBoolean("NoGravity", this.toggleButtons[2].getValue());
+		compound.putBoolean("NoBasePlate", !this.toggleButtons[1].getValue());
+		compound.putBoolean("NoGravity", !this.toggleButtons[2].getValue());
 		compound.putBoolean("ShowArms", this.toggleButtons[3].getValue());
 		compound.putBoolean("Small", this.toggleButtons[4].getValue());
 		compound.putBoolean("CustomNameVisible", this.toggleButtons[5].getValue());
