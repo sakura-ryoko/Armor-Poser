@@ -5,6 +5,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.Locale;
+
 public class SizeField extends EditBox {
 
 	public final float scrollMultiplier = 0.1F;
@@ -42,7 +44,7 @@ public class SizeField extends EditBox {
 		if (value.isEmpty()) {
 			super.setValue("1.0");
 		} else {
-			super.setValue(String.format(("%.2f"), Float.parseFloat(value)));
+			super.setValue(String.format(Locale.ROOT, ("%.2f"), Float.parseFloat(value)));
 		}
 	}
 
