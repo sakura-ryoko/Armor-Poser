@@ -33,6 +33,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Locale;
+
 public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites MIRROR_POSE_SPRITES = new WidgetSprites(
 			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_pose"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_pose_highlighted")
@@ -641,7 +643,7 @@ public class ArmorStandScreen extends Screen {
 		if (allowScrolling && yScroll > 0) {
 			//Add 1 to the value
 			if (rotationTextField.canConsumeInput()) {
-				float nextValue = (rotationTextField.getFloat() + multiplier * rotationTextField.scrollMultiplier) % rotationTextField.modValue;
+				int nextValue = (int) (rotationTextField.getFloat() + (1 * multiplier));
 				rotationTextField.setValue(String.valueOf(nextValue));
 				rotationTextField.setCursorPosition(0);
 				rotationTextField.setHighlightPos(0);
@@ -670,7 +672,7 @@ public class ArmorStandScreen extends Screen {
 		} else if (allowScrolling && yScroll < 0) {
 			//Remove 1 to the value
 			if (rotationTextField.canConsumeInput()) {
-				float previousValue = (rotationTextField.getFloat() - multiplier * rotationTextField.scrollMultiplier) % rotationTextField.modValue;
+				int previousValue = (int) (rotationTextField.getFloat() - (1 * multiplier));
 				rotationTextField.setValue(String.valueOf(previousValue));
 				rotationTextField.setCursorPosition(0);
 				rotationTextField.setHighlightPos(0);
@@ -798,12 +800,12 @@ public class ArmorStandScreen extends Screen {
 		poseTag.put("RightArm", poseRightArmTag);
 
 
-		var offsetX = this.poseTextFields[18].getFloat();
-		var offsetY = this.poseTextFields[19].getFloat();
-		var offsetZ = this.poseTextFields[20].getFloat();
-		var offsetXDiff = offsetX - this.lastSendOffset.x;
-		var offsetYDiff = offsetY - this.lastSendOffset.y;
-		var offsetZDiff = offsetZ - this.lastSendOffset.z;
+		float offsetX = this.poseTextFields[18].getFloat();
+		float offsetY = this.poseTextFields[19].getFloat();
+		float offsetZ = this.poseTextFields[20].getFloat();
+		double offsetXDiff = offsetX - this.lastSendOffset.x;
+		double offsetYDiff = offsetY - this.lastSendOffset.y;
+		double offsetZDiff = offsetZ - this.lastSendOffset.z;
 		ListTag positionOffset = new ListTag();
 		positionOffset.add(DoubleTag.valueOf(offsetXDiff));
 		positionOffset.add(DoubleTag.valueOf(offsetYDiff));
