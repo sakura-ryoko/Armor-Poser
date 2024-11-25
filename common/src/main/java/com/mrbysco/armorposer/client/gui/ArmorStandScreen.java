@@ -638,7 +638,7 @@ public class ArmorStandScreen extends Screen {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double xScroll, double yScroll) {
 		var multiplier = Screen.hasShiftDown() ? 10.0f : 1.0f;
-		if (allowScrolling && (xScroll > 0 || yScroll > 0)) {
+		if (allowScrolling && yScroll > 0) {
 			//Add 1 to the value
 			if (rotationTextField.canConsumeInput()) {
 				float nextValue = (rotationTextField.getFloat() + multiplier * rotationTextField.scrollMultiplier) % rotationTextField.modValue;
@@ -667,7 +667,7 @@ public class ArmorStandScreen extends Screen {
 					return true;
 				}
 			}
-		} else if (allowScrolling && (xScroll < 0 || yScroll < 0)) {
+		} else if (allowScrolling && yScroll < 0) {
 			//Remove 1 to the value
 			if (rotationTextField.canConsumeInput()) {
 				float previousValue = (rotationTextField.getFloat() - multiplier * rotationTextField.scrollMultiplier) % rotationTextField.modValue;
