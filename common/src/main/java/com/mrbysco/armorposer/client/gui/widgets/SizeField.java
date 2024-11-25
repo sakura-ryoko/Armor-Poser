@@ -19,7 +19,11 @@ public class SizeField extends EditBox {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		boolean pressed = super.keyPressed(keyCode, scanCode, modifiers);
+		if (pressed) {
+			this.correctValue();
+		}
+		return pressed;
 	}
 
 	@Override
@@ -27,6 +31,10 @@ public class SizeField extends EditBox {
 		if (this.isNumeric(textToWrite))
 			super.insertText(textToWrite);
 
+		this.correctValue();
+	}
+
+	private void correctValue() {
 		float currentValue = getFloat();
 		if (currentValue > maxValue)
 			this.setValue(String.valueOf(maxValue));
