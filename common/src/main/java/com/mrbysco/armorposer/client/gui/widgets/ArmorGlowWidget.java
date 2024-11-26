@@ -1,11 +1,16 @@
 package com.mrbysco.armorposer.client.gui.widgets;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.armorposer.client.gui.ArmorGlowScreen;
+import com.mrbysco.armorposer.mixin.ArmorStandAccessor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -59,10 +64,16 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	public class ListEntry extends Entry<ListEntry> {
 		private final ArmorGlowScreen parent;
 		private final ArmorStand armorStand;
+		private final float scale;
+		private final boolean showPlate;
+		private final boolean locked;
 
 		ListEntry(ArmorStand armorStand, ArmorGlowScreen parent) {
 			this.armorStand = armorStand;
 			this.parent = parent;
+			this.scale = armorStand.getScale();
+			this.showPlate = armorStand.showBasePlate();
+			this.locked = ((ArmorStandAccessor)armorStand).armorposer$getDisabledSlots() != 0;
 		}
 
 		@Override
@@ -70,15 +81,20 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
 			Font font = this.parent.getScreenFont();
 			renderScrollingString(guiGraphics, font, getPositionComponent(), left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFF);
+			if (isMouseOver(mouseX, mouseY)) {
+				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
 
-			renderPose(guiGraphics, left + 16, top + 28, 15);
+				guiGraphics.renderTooltip(font, component, mouseX, mouseY);
+			}
+
+			renderPose(guiGraphics, left + 16, top + 28, (1.0f / scale) * 15);
 		}
 
 		public ArmorStand getArmorStand() {
 			return armorStand;
 		}
 
-		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, int size) {
+		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float size) {
 			if (armorStand != null) {
 				InventoryScreen.renderEntityInInventory(guiGraphics, xPos, yPos, size,
 						ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
@@ -98,7 +114,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		}
 
 		public Component getPositionComponent() {
-			return Component.literal(getArmorStand().blockPosition().toShortString());
+			MutableComponent component = Component.literal(getArmorStand().blockPosition().toShortString());
+			if (this.showPlate)
+				component = component.withStyle(ChatFormatting.UNDERLINE);
+			return component;
 		}
 
 		@Override

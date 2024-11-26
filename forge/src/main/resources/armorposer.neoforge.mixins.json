@@ -4,6 +4,7 @@
   "package": "com.mrbysco.armorposer.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ArmorStandAccessor"
   ],
   "client": [
     "MinecraftMixin"
