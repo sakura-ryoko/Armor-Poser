@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.math.Axis;
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.client.gui.widgets.NameBox;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
 import com.mrbysco.armorposer.client.gui.widgets.SizeField;
 import com.mrbysco.armorposer.client.gui.widgets.ToggleButton;
@@ -32,8 +33,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Locale;
 
 public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites MIRROR_POSE_SPRITES = new WidgetSprites(
@@ -67,6 +66,11 @@ public class ArmorStandScreen extends Screen {
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
 	private final String version;
 
+	private NameBox nameField;
+	private String oldName;
+	private String changedName;
+	private Button renameButton;
+
 	private NumberFieldBox rotationTextField;
 	private final ToggleButton[] toggleButtons = new ToggleButton[6];
 	protected final NumberFieldBox[] poseTextFields = new NumberFieldBox[3 * 7];
@@ -85,6 +89,7 @@ public class ArmorStandScreen extends Screen {
 	public ArmorStandScreen(ArmorStand entityArmorStand) {
 		super(Component.translatable("armorposer.gui.title"));
 		this.entityArmorStand = entityArmorStand;
+		this.oldName = entityArmorStand.hasCustomName() ? entityArmorStand.getName().getString() : this.getTitle().getString();
 
 		this.armorStandData = new ArmorStandData();
 		CompoundTag tag = entityArmorStand.saveWithoutId(new CompoundTag());
@@ -105,6 +110,32 @@ public class ArmorStandScreen extends Screen {
 	@Override
 	public void init() {
 		super.init();
+
+		this.nameField = new NameBox(this.font, this.width / 2 - this.font.width(this.oldName) / 2, 10, 100, 20, Component.translatable("armorposer.gui.label.name"));
+		this.nameField.setValue(this.oldName);
+		this.nameField.setTextColor(whiteColor);
+		this.nameField.setTextColorUneditable(whiteColor);
+		this.nameField.setBordered(false);
+		this.nameField.setMaxLength(50);
+		this.nameField.setTextShadow(true);
+		this.nameField.setFocused(false);
+		this.nameField.setResponder((text) -> {
+			this.changedName = text;
+			this.updateRenameButton();
+		});
+		this.addWidget(this.nameField);
+		this.addRenderableWidget(this.renameButton = Button.builder(Component.translatable("armorposer.gui.label.rename"), (button) -> {
+					if (this.hasLevels() && !this.oldName.equals(this.changedName)) {
+						this.entityArmorStand.setCustomName(Component.literal(this.changedName));
+						Services.PLATFORM.renameArmorStand(this.entityArmorStand, this.changedName);
+						this.oldName = this.changedName;
+						this.updateRenameButton();
+					}
+				})
+				.bounds(this.width / 2, 24, 40, 20)
+				.tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.rename"))).build());
+		this.renameButton.visible = false;
+		this.renameButton.active = false;
 
 		int offsetX = 110;
 		int offsetY = 20;
@@ -544,6 +575,13 @@ public class ArmorStandScreen extends Screen {
 		}).bounds(0, 0, 16, 16).build());
 	}
 
+	@Override
+	public void resize(Minecraft minecraft, int width, int height) {
+		String s = this.nameField.getValue();
+		this.init(minecraft, width, height);
+		this.nameField.setValue(s);
+	}
+
 	/**
 	 * Get the desired offset to get the armor stand in the correct position
 	 *
@@ -559,14 +597,38 @@ public class ArmorStandScreen extends Screen {
 		return desiredValue - value;
 	}
 
+	private boolean hasLevels() {
+		if (this.minecraft == null || this.minecraft.player == null) return false;
+		if (this.minecraft.player.getAbilities().instabuild) return true;
+		return this.minecraft.player.experienceLevel >= 1;
+	}
+
+	private void updateRenameButton() {
+		if (!this.oldName.equals(this.changedName)) {
+			this.renameButton.visible = true;
+			if (this.minecraft != null && this.minecraft.player != null) {
+				if (!this.hasLevels()) {
+					this.renameButton.active = false;
+					this.renameButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.rename.disabled").withStyle(ChatFormatting.RED)));
+				} else {
+					this.renameButton.active = true;
+				}
+			}
+		} else {
+			this.renameButton.visible = false;
+			this.renameButton.active = false;
+			this.renameButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.rename")));
+		}
+	}
+
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-		// Draw gui title
-		guiGraphics.drawString(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, whiteColor, true);
-
 		// Draw textboxes
+		// Name
+		this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
+
 		this.rotationTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
 		for (EditBox textField : this.poseTextFields)
 			textField.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -651,7 +713,7 @@ public class ArmorStandScreen extends Screen {
 				return true;
 			}
 			if (sizeField.canConsumeInput()) {
-				float nextValue = (float)(sizeField.getFloat() + (double)(multiplier * sizeField.scrollMultiplier));
+				float nextValue = (float) (sizeField.getFloat() + (double) (multiplier * sizeField.scrollMultiplier));
 				nextValue = Math.clamp(nextValue, sizeField.minValue, sizeField.maxValue);
 				sizeField.setValue(String.valueOf(nextValue));
 				sizeField.setCursorPosition(0);
@@ -680,7 +742,7 @@ public class ArmorStandScreen extends Screen {
 				return true;
 			}
 			if (sizeField.canConsumeInput()) {
-				float previousValue = (float)(sizeField.getFloat() - (double)(multiplier * sizeField.scrollMultiplier));
+				float previousValue = (float) (sizeField.getFloat() - (double) (multiplier * sizeField.scrollMultiplier));
 				previousValue = Math.clamp(previousValue, sizeField.minValue, sizeField.maxValue);
 				sizeField.setValue(String.valueOf(previousValue));
 				sizeField.setCursorPosition(0);
@@ -718,7 +780,10 @@ public class ArmorStandScreen extends Screen {
 				}
 			}
 		} else {
-			if (this.rotationTextField.keyPressed(keyCode, scanCode, modifiers)) {
+			if (this.nameField.keyPressed(keyCode, scanCode, modifiers)) {
+				this.textFieldUpdated();
+				return true;
+			} else if (this.rotationTextField.keyPressed(keyCode, scanCode, modifiers)) {
 				this.textFieldUpdated();
 				return true;
 			} else if (this.sizeField.keyPressed(keyCode, scanCode, modifiers)) {

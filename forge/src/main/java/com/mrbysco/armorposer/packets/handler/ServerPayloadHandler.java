@@ -1,5 +1,6 @@
 package com.mrbysco.armorposer.packets.handler;
 
+import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
 import net.minecraft.network.chat.Component;
@@ -45,6 +46,23 @@ public class ServerPayloadHandler {
 				.exceptionally(e -> {
 					// Handle exception
 					context.disconnect(Component.translatable("armorposer.networking.sync.failed", e.getMessage()));
+					return null;
+				});
+	}
+
+	public void handleRenameData(final ArmorStandRenamePayload renameData, final IPayloadContext context) {
+		// Do something with the pose, on the main thread
+		context.enqueueWork(() -> {
+					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
+						Entity entity = serverLevel.getEntity(renameData.data().entityUUID());
+						if (entity instanceof ArmorStand armorStandEntity) {
+							renameData.data().handleData(armorStandEntity, context.player());
+						}
+					}
+				})
+				.exceptionally(e -> {
+					// Handle exception
+					context.disconnect(Component.translatable("armorposer.networking.rename.failed", e.getMessage()));
 					return null;
 				});
 	}
