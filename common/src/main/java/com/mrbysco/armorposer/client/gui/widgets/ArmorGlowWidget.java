@@ -1,6 +1,5 @@
 package com.mrbysco.armorposer.client.gui.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.armorposer.client.gui.ArmorGlowScreen;
 import com.mrbysco.armorposer.mixin.ArmorStandAccessor;
 import net.minecraft.ChatFormatting;
@@ -10,7 +9,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -73,7 +71,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			this.parent = parent;
 			this.scale = armorStand.getScale();
 			this.showPlate = armorStand.showBasePlate();
-			this.locked = ((ArmorStandAccessor)armorStand).armorposer$getDisabledSlots() != 0;
+			this.locked = ((ArmorStandAccessor)armorStand).armorposer$getDisabledSlots() > 0;
 		}
 
 		@Override
@@ -117,6 +115,8 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			MutableComponent component = Component.literal(getArmorStand().blockPosition().toShortString());
 			if (this.showPlate)
 				component = component.withStyle(ChatFormatting.UNDERLINE);
+			if (this.locked)
+				component = component.append(" \uD83D\uDD12").withStyle(ChatFormatting.BOLD);
 			return component;
 		}
 
