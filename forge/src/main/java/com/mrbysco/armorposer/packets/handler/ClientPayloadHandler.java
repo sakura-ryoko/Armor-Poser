@@ -16,7 +16,7 @@ public class ClientPayloadHandler {
 
 	public void handleScreenData(final ArmorStandScreenPayload screenMessage, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					//Open Captcha Screen
+					//Open Armor Poser Screen
 					Minecraft mc = Minecraft.getInstance();
 					Entity entity = null;
 					if (mc.level != null) {
