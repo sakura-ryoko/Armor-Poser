@@ -92,6 +92,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			return armorStand;
 		}
 
+		public boolean isLocked() {
+			return locked;
+		}
+
 		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float size) {
 			if (armorStand != null) {
 				InventoryScreen.renderEntityInInventory(guiGraphics, xPos, yPos, size,

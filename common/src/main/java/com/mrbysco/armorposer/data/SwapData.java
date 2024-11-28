@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer.data;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -9,13 +10,17 @@ import net.minecraft.world.item.ItemStack;
 import java.util.UUID;
 
 public record SwapData(UUID entityUUID, Action action) {
-	public void write(FriendlyByteBuf buf) {
-		buf.writeUUID(entityUUID);
-		buf.writeEnum(action);
+	public static final StreamCodec<FriendlyByteBuf, SwapData> STREAM_CODEC = StreamCodec.of(
+			SwapData::write,
+			SwapData::new);
+
+	public SwapData(final FriendlyByteBuf packetBuffer) {
+		this(packetBuffer.readUUID(), packetBuffer.readEnum(Action.class));
 	}
 
-	public static SwapData read(final FriendlyByteBuf packetBuffer) {
-		return new SwapData(packetBuffer.readUUID(), packetBuffer.readEnum(Action.class));
+	private static void write(FriendlyByteBuf friendlyByteBuf, SwapData swapData) {
+		friendlyByteBuf.writeUUID(swapData.entityUUID);
+		friendlyByteBuf.writeEnum(swapData.action);
 	}
 
 	public void handleData(ArmorStand armorStand) {

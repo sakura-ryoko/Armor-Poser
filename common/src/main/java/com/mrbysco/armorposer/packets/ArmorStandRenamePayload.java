@@ -2,7 +2,6 @@ package com.mrbysco.armorposer.packets;
 
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.data.RenameData;
-import com.mrbysco.armorposer.data.SyncData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -15,11 +14,11 @@ public record ArmorStandRenamePayload(RenameData data) implements CustomPacketPa
 	public static final Type<ArmorStandRenamePayload> ID = new Type<>(Reference.RENAME_PACKET_ID);
 
 	public ArmorStandRenamePayload(final FriendlyByteBuf packetBuffer) {
-		this(RenameData.decode(packetBuffer));
+		this(RenameData.STREAM_CODEC.decode(packetBuffer));
 	}
 
 	public void write(FriendlyByteBuf buf) {
-		data.encode(buf);
+		RenameData.STREAM_CODEC.encode(buf, data());
 	}
 
 	@Override
