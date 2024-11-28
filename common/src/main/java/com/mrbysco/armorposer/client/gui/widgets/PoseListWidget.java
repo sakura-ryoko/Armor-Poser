@@ -18,8 +18,6 @@ import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import java.util.function.Function;
-
 public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry> {
 	private static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
 	private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);
