@@ -677,11 +677,11 @@ public class ArmorStandScreen extends Screen {
 		super.tick();
 
 		//Disable the Y position field when gravity is enabled (So you can't get it stuck in the ground)
-		boolean disabledGravity = this.toggleButtons[2].getValue();
+		boolean gravityEnabled = this.toggleButtons[2].getValue();
 		NumberFieldBox yPositionField = this.poseTextFields[19];
 
-		yPositionField.setEditable(disabledGravity);
-		if (disabledGravity) {
+		yPositionField.setEditable(!gravityEnabled);
+		if (!gravityEnabled) {
 			yPositionField.setTooltip(yPositionTooltip);
 		} else {
 			yPositionField.setFocused(false);
