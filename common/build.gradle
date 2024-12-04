@@ -2,21 +2,25 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+    id "net.neoforged.moddev" version "2.0.52-beta"
 }
 
 base {
     archivesName = "${mod_name}-common-${minecraft_version}"
 }
 
-minecraft {
-    version(minecraft_version)
-    if (file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
+neoForge {
+    neoFormVersion = "1.21.4-20241203.161809"
+
+    parchment {
+        minecraftVersion = "${parchment_minecraft_version}"
+        mappingsVersion = "${parchment_mapping_version}"
     }
 }
 
 dependencies {
+    compileOnly "net.fabricmc:sponge-mixin:${mixin_version}"
+    annotationProcessor("io.github.llamalad7:mixinextras-common:${mixinextras_version}")
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 }
