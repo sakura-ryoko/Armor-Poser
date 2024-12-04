@@ -31,7 +31,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
+	protected int scrollBarX() {
 		return this.getX() + this.listWidth - 6;
 	}
 

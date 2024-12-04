@@ -36,7 +36,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
+	protected int scrollBarX() {
 		return this.getX() + this.listWidth - 6;
 	}
 
