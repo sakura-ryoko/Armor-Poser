@@ -230,6 +230,8 @@ public class ArmorStandScreen extends Screen {
 				}
 				if (clipboardData != null) {
 					CompoundTag compound = TagParser.parseTag(clipboardData);
+					compound.putBoolean("NoBasePlate", !compound.getBoolean("NoBasePlate"));
+					compound.putBoolean("NoGravity", !compound.getBoolean("NoGravity"));
 					this.readFieldsFromNBT(compound);
 					this.textFieldUpdated();
 				}
