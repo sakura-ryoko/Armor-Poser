@@ -23,16 +23,17 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites MIRROR_POSE_SPRITES = new WidgetSprites(
@@ -93,8 +94,10 @@ public class ArmorStandScreen extends Screen {
 
 		this.armorStandData = new ArmorStandData();
 		CompoundTag tag = entityArmorStand.saveWithoutId(new CompoundTag());
-		if (!tag.contains("Pose") || tag.getCompound("Pose").isEmpty()) {
-			tag.put("Pose", ArmorUtil.writeAllPoses(entityArmorStand));
+
+		if (tag.getCompoundOrEmpty("Pose").isEmpty()) {
+			CompoundTag poseTag = ArmorUtil.writeAllPoses(entityArmorStand);
+			tag.put("Pose", poseTag);
 		}
 		this.armorStandData.readFromNBT(tag);
 
@@ -229,9 +232,9 @@ public class ArmorStandScreen extends Screen {
 					clipboardData = this.minecraft.keyboardHandler.getClipboard();
 				}
 				if (clipboardData != null) {
-					CompoundTag compound = TagParser.parseTag(clipboardData);
-					compound.putBoolean("NoBasePlate", !compound.getBoolean("NoBasePlate"));
-					compound.putBoolean("NoGravity", !compound.getBoolean("NoGravity"));
+					CompoundTag compound = TagParser.parseCompoundFully(clipboardData);
+					compound.putBoolean("NoBasePlate", !compound.getBooleanOr("NoBasePlate", false));
+					compound.putBoolean("NoGravity", !compound.getBooleanOr("NoGravity", false));
 					this.readFieldsFromNBT(compound);
 					this.textFieldUpdated();
 				}
@@ -374,7 +377,7 @@ public class ArmorStandScreen extends Screen {
 					}
 				}
 
-				CompoundTag tag = TagParser.parseTag(Reference.alignedBlockPose);
+				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedBlockPose);
 				this.readFieldsFromNBT(tag);
 				this.toggleButtons[0].setValue(true); //Set invisible
 				this.toggleButtons[2].setValue(true); //Set no gravity
@@ -430,7 +433,7 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseTag(Reference.alignedUprightItemPose);
+					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedUprightItemPose); 
 					this.readFieldsFromNBT(tag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
@@ -480,7 +483,7 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseTag(Reference.alignedFlatItemPose);
+					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedFlatItemPose); 
 					this.readFieldsFromNBT(tag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
@@ -535,7 +538,7 @@ public class ArmorStandScreen extends Screen {
 					}
 				}
 
-				CompoundTag tag = TagParser.parseTag(Reference.alignedToolPose);
+				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedToolPose); 
 				this.readFieldsFromNBT(tag);
 				this.toggleButtons[0].setValue(true); //Set invisible
 				this.toggleButtons[2].setValue(true); //Set no gravity
@@ -824,48 +827,27 @@ public class ArmorStandScreen extends Screen {
 		compound.putInt("DisabledSlots", this.lockButton.isLocked() ? 4144959 : 0);
 		compound.putDouble("Scale", this.sizeField.getFloat());
 
-		ListTag rotationTag = new ListTag();
-		rotationTag.add(FloatTag.valueOf(this.rotationTextField.getFloat()));
-		compound.put("Rotation", rotationTag);
+		compound.store("Rotation", Vec2.CODEC, new Vec2(this.rotationTextField.getFloat(), 0.0F)); //Yrot and XRot
 
 		CompoundTag poseTag = new CompoundTag();
 
-		ListTag poseHeadTag = new ListTag();
-		poseHeadTag.add(FloatTag.valueOf(this.poseTextFields[0].getFloat()));
-		poseHeadTag.add(FloatTag.valueOf(this.poseTextFields[1].getFloat()));
-		poseHeadTag.add(FloatTag.valueOf(this.poseTextFields[2].getFloat()));
-		poseTag.put("Head", poseHeadTag);
+		poseTag.store("Head", Rotations.CODEC, new Rotations(
+				this.poseTextFields[0].getFloat(), this.poseTextFields[1].getFloat(), this.poseTextFields[2].getFloat()));
 
-		ListTag poseBodyTag = new ListTag();
-		poseBodyTag.add(FloatTag.valueOf(this.poseTextFields[3].getFloat()));
-		poseBodyTag.add(FloatTag.valueOf(this.poseTextFields[4].getFloat()));
-		poseBodyTag.add(FloatTag.valueOf(this.poseTextFields[5].getFloat()));
-		poseTag.put("Body", poseBodyTag);
+		poseTag.store("Body", Rotations.CODEC, new Rotations(
+				this.poseTextFields[3].getFloat(), this.poseTextFields[4].getFloat(), this.poseTextFields[5].getFloat()));
 
-		ListTag poseLeftLegTag = new ListTag();
-		poseLeftLegTag.add(FloatTag.valueOf(this.poseTextFields[6].getFloat()));
-		poseLeftLegTag.add(FloatTag.valueOf(this.poseTextFields[7].getFloat()));
-		poseLeftLegTag.add(FloatTag.valueOf(this.poseTextFields[8].getFloat()));
-		poseTag.put("LeftLeg", poseLeftLegTag);
+		poseTag.store("LeftLeg", Rotations.CODEC, new Rotations(
+				this.poseTextFields[6].getFloat(), this.poseTextFields[7].getFloat(), this.poseTextFields[8].getFloat()));
 
-		ListTag poseRightLegTag = new ListTag();
-		poseRightLegTag.add(FloatTag.valueOf(this.poseTextFields[9].getFloat()));
-		poseRightLegTag.add(FloatTag.valueOf(this.poseTextFields[10].getFloat()));
-		poseRightLegTag.add(FloatTag.valueOf(this.poseTextFields[11].getFloat()));
-		poseTag.put("RightLeg", poseRightLegTag);
+		poseTag.store("RightLeg", Rotations.CODEC, new Rotations(
+				this.poseTextFields[9].getFloat(), this.poseTextFields[10].getFloat(), this.poseTextFields[11].getFloat()));
 
-		ListTag poseLeftArmTag = new ListTag();
-		poseLeftArmTag.add(FloatTag.valueOf(this.poseTextFields[12].getFloat()));
-		poseLeftArmTag.add(FloatTag.valueOf(this.poseTextFields[13].getFloat()));
-		poseLeftArmTag.add(FloatTag.valueOf(this.poseTextFields[14].getFloat()));
-		poseTag.put("LeftArm", poseLeftArmTag);
+		poseTag.store("LeftArm", Rotations.CODEC, new Rotations(
+				this.poseTextFields[12].getFloat(), this.poseTextFields[13].getFloat(), this.poseTextFields[14].getFloat()));
 
-		ListTag poseRightArmTag = new ListTag();
-		poseRightArmTag.add(FloatTag.valueOf(this.poseTextFields[15].getFloat()));
-		poseRightArmTag.add(FloatTag.valueOf(this.poseTextFields[16].getFloat()));
-		poseRightArmTag.add(FloatTag.valueOf(this.poseTextFields[17].getFloat()));
-		poseTag.put("RightArm", poseRightArmTag);
-
+		poseTag.store("RightArm", Rotations.CODEC, new Rotations(
+				this.poseTextFields[15].getFloat(), this.poseTextFields[16].getFloat(), this.poseTextFields[17].getFloat()));
 
 		float offsetX = this.poseTextFields[18].getFloat();
 		float offsetY = this.poseTextFields[19].getFloat();
@@ -873,11 +855,7 @@ public class ArmorStandScreen extends Screen {
 		double offsetXDiff = offsetX - this.lastSendOffset.x;
 		double offsetYDiff = offsetY - this.lastSendOffset.y;
 		double offsetZDiff = offsetZ - this.lastSendOffset.z;
-		ListTag positionOffset = new ListTag();
-		positionOffset.add(DoubleTag.valueOf(offsetXDiff));
-		positionOffset.add(DoubleTag.valueOf(offsetYDiff));
-		positionOffset.add(DoubleTag.valueOf(offsetZDiff));
-		compound.put("Move", positionOffset);
+		compound.store("Move", Vec3.CODEC, new Vec3(offsetXDiff, offsetYDiff, offsetZDiff));
 		this.lastSendOffset = new Vec3(offsetX, offsetY, offsetZ);
 
 		compound.put("Pose", poseTag);
@@ -890,68 +868,69 @@ public class ArmorStandScreen extends Screen {
 		this.armorStandData.readFromNBT(armorStandTag);
 
 		// Set toggle buttons
-		this.toggleButtons[0].setValue(compound.getBoolean("Invisible"));
-		this.toggleButtons[1].setValue(compound.getBoolean("NoBasePlate"));
-		this.toggleButtons[2].setValue(compound.getBoolean("NoGravity"));
-		this.toggleButtons[3].setValue(compound.getBoolean("ShowArms"));
-		this.toggleButtons[4].setValue(compound.getBoolean("Small"));
-		this.toggleButtons[5].setValue(compound.getBoolean("CustomNameVisible"));
+		this.toggleButtons[0].setValue(compound.getBooleanOr("Invisible", false));
+		this.toggleButtons[1].setValue(compound.getBooleanOr("NoBasePlate", false));
+		this.toggleButtons[2].setValue(compound.getBooleanOr("NoGravity", false));
+		this.toggleButtons[3].setValue(compound.getBooleanOr("ShowArms", false));
+		this.toggleButtons[4].setValue(compound.getBooleanOr("Small", false));
+		this.toggleButtons[5].setValue(compound.getBooleanOr("CustomNameVisible", false));
 
 		// Set lock button
-		this.lockButton.setLocked(compound.getBoolean("Invulnerable"));
+		this.lockButton.setLocked(compound.getBooleanOr("Invulnerable", false));
 
 		// Set size field
-		this.sizeField.setValue(String.valueOf(compound.getDouble("Scale")));
+		this.sizeField.setValue(String.valueOf(compound.getDoubleOr("Scale", 1.0F)));
 
 		// Set rotation text field
-		ListTag rotationTag = compound.getList("Rotation", 5); // 5 is the type for float
-		if (!rotationTag.isEmpty()) {
-			this.rotationTextField.setValue(String.valueOf(rotationTag.getFloat(0)));
+		Optional<Vec2> rotation = compound.read("Rotation", Vec2.CODEC);
+		if (rotation.isPresent()) {
+			this.rotationTextField.setValue(String.valueOf(rotation.get().x));
 		}
 
 		// Set pose text fields
-		CompoundTag poseTag = compound.getCompound("Pose");
+		CompoundTag poseTag = compound.getCompoundOrEmpty("Pose");
 
-		ListTag poseHeadTag = poseTag.getList("Head", 5);
-		this.poseTextFields[0].setValue(String.valueOf(poseHeadTag.getFloat(0)));
-		this.poseTextFields[1].setValue(String.valueOf(poseHeadTag.getFloat(1)));
-		this.poseTextFields[2].setValue(String.valueOf(poseHeadTag.getFloat(2)));
+		Rotations poseHeadTag = poseTag.read("Head", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[0].setValue(String.valueOf(poseHeadTag.x()));
+		this.poseTextFields[1].setValue(String.valueOf(poseHeadTag.y()));
+		this.poseTextFields[2].setValue(String.valueOf(poseHeadTag.z()));
 
-		ListTag poseBodyTag = poseTag.getList("Body", 5);
-		this.poseTextFields[3].setValue(String.valueOf(poseBodyTag.getFloat(0)));
-		this.poseTextFields[4].setValue(String.valueOf(poseBodyTag.getFloat(1)));
-		this.poseTextFields[5].setValue(String.valueOf(poseBodyTag.getFloat(2)));
+		Rotations poseBodyTag = poseTag.read("Body", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[3].setValue(String.valueOf(poseBodyTag.x()));
+		this.poseTextFields[4].setValue(String.valueOf(poseBodyTag.y()));
+		this.poseTextFields[5].setValue(String.valueOf(poseBodyTag.z()));
 
-		ListTag poseLeftLegTag = poseTag.getList("LeftLeg", 5);
-		this.poseTextFields[6].setValue(String.valueOf(poseLeftLegTag.getFloat(0)));
-		this.poseTextFields[7].setValue(String.valueOf(poseLeftLegTag.getFloat(1)));
-		this.poseTextFields[8].setValue(String.valueOf(poseLeftLegTag.getFloat(2)));
+		Rotations poseLeftLegTag = poseTag.read("LeftLeg", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[6].setValue(String.valueOf(poseLeftLegTag.x()));
+		this.poseTextFields[7].setValue(String.valueOf(poseLeftLegTag.y()));
+		this.poseTextFields[8].setValue(String.valueOf(poseLeftLegTag.z()));
 
-		ListTag poseRightLegTag = poseTag.getList("RightLeg", 5);
-		this.poseTextFields[9].setValue(String.valueOf(poseRightLegTag.getFloat(0)));
-		this.poseTextFields[10].setValue(String.valueOf(poseRightLegTag.getFloat(1)));
-		this.poseTextFields[11].setValue(String.valueOf(poseRightLegTag.getFloat(2)));
+		Rotations poseRightLegTag = poseTag.read("RightLeg", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[9].setValue(String.valueOf(poseRightLegTag.x()));
+		this.poseTextFields[10].setValue(String.valueOf(poseRightLegTag.y()));
+		this.poseTextFields[11].setValue(String.valueOf(poseRightLegTag.z()));
 
-		ListTag poseLeftArmTag = poseTag.getList("LeftArm", 5);
-		this.poseTextFields[12].setValue(String.valueOf(poseLeftArmTag.getFloat(0)));
-		this.poseTextFields[13].setValue(String.valueOf(poseLeftArmTag.getFloat(1)));
-		this.poseTextFields[14].setValue(String.valueOf(poseLeftArmTag.getFloat(2)));
+		Rotations poseLeftArmTag = poseTag.read("LeftArm", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[12].setValue(String.valueOf(poseLeftArmTag.x()));
+		this.poseTextFields[13].setValue(String.valueOf(poseLeftArmTag.y()));
+		this.poseTextFields[14].setValue(String.valueOf(poseLeftArmTag.z()));
 
-		ListTag poseRightArmTag = poseTag.getList("RightArm", 5);
-		this.poseTextFields[15].setValue(String.valueOf(poseRightArmTag.getFloat(0)));
-		this.poseTextFields[16].setValue(String.valueOf(poseRightArmTag.getFloat(1)));
-		this.poseTextFields[17].setValue(String.valueOf(poseRightArmTag.getFloat(2)));
+		Rotations poseRightArmTag = poseTag.read("RightArm", Rotations.CODEC).orElse(new Rotations(0f, 0f, 0f)); // 5 is the type for float
+		this.poseTextFields[15].setValue(String.valueOf(poseRightArmTag.x()));
+		this.poseTextFields[16].setValue(String.valueOf(poseRightArmTag.y()));
+		this.poseTextFields[17].setValue(String.valueOf(poseRightArmTag.z()));
 
 		// Set position offsets
-		ListTag positionOffset = compound.getList("Move", 6); // 6 is the type for double
-		if (!positionOffset.isEmpty()) {
-			this.poseTextFields[18].setValue(String.valueOf(positionOffset.getDouble(0) + this.lastSendOffset.x));
-			this.poseTextFields[19].setValue(String.valueOf(positionOffset.getDouble(1) + this.lastSendOffset.y));
-			this.poseTextFields[20].setValue(String.valueOf(positionOffset.getDouble(2) + this.lastSendOffset.z));
+		Optional<Vec3> optionalOffset = compound.read("Move", Vec3.CODEC);
+		if (optionalOffset.isPresent()) {
+			Vec3 offset = optionalOffset.get();
+			this.poseTextFields[18].setValue(String.valueOf(offset.x() + this.lastSendOffset.x));
+			this.poseTextFields[19].setValue(String.valueOf(offset.y() + this.lastSendOffset.y));
+			this.poseTextFields[20].setValue(String.valueOf(offset.z() + this.lastSendOffset.z));
 			this.lastSendOffset = new Vec3(
-					positionOffset.getDouble(0) + this.lastSendOffset.x,
-					positionOffset.getDouble(1) + this.lastSendOffset.y,
-					positionOffset.getDouble(2) + this.lastSendOffset.z
+					offset.x() + this.lastSendOffset.x,
+					offset.y() + this.lastSendOffset.y,
+					offset.z() + this.lastSendOffset.z
 			);
 		}
 	}

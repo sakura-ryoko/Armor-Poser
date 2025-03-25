@@ -84,7 +84,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 			Level level = mc.hasSingleplayerServer() && mc.getSingleplayerServer() != null ? mc.getSingleplayerServer().getAllLevels().iterator().next() : mc.level;
 			if (level != null) {
 				try {
-					CompoundTag tag = TagParser.parseTag(entry.pose().data());
+					CompoundTag tag = TagParser.parseCompoundFully(entry.pose().data()); 
 
 					CompoundTag nbt = new CompoundTag();
 					nbt.putString("id", "minecraft:armor_stand");
