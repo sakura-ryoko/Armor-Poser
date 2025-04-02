@@ -1,1 +1,1 @@
-* Initial update to 1.21.5
+* Fix lock state showing incorrectly (Thank you Sekwah for the PR)
