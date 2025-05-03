@@ -36,7 +36,6 @@ neoForge {
 
     runs {
         configureEach {
-            gameDirectory = project.file('../run')
             systemProperty 'forge.logging.console.level', 'debug'
             systemProperty 'fml.earlyprogresswindow', 'false'
 
