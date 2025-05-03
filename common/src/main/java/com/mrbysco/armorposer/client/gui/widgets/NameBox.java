@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class NameBox extends AbstractWidget {
 	}
 
 	public NameBox(Font font, int x, int y, int width, int height, Component message) {
-		this(font, x, y, width, height, (NameBox)null, message);
+		this(font, x, y, width, height, (NameBox) null, message);
 	}
 
 	public NameBox(Font font, int x, int y, int width, int height, @Nullable NameBox editBox, Component message) {
@@ -78,7 +79,7 @@ public class NameBox extends AbstractWidget {
 
 	}
 
-	public void setResponder(Consumer<String> responder) {
+	public void setResponder(@Nullable Consumer<String> responder) {
 		this.responder = responder;
 	}
 
@@ -86,9 +87,11 @@ public class NameBox extends AbstractWidget {
 		this.formatter = textFormatter;
 	}
 
+	@NotNull
+	@Override
 	protected MutableComponent createNarrationMessage() {
 		Component component = this.getMessage();
-		return Component.translatable("gui.narrate.editBox", new Object[]{component, this.value});
+		return Component.translatable("gui.narrate.editBox", component, this.value);
 	}
 
 	public void setValue(String text) {
@@ -209,23 +212,23 @@ public class NameBox extends AbstractWidget {
 		boolean flag = numWords < 0;
 		int j = Math.abs(numWords);
 
-		for(int k = 0; k < j; ++k) {
+		for (int k = 0; k < j; ++k) {
 			if (!flag) {
 				int l = this.value.length();
 				i = this.value.indexOf(32, i);
 				if (i == -1) {
 					i = l;
 				} else {
-					while(skipConsecutiveSpaces && i < l && this.value.charAt(i) == ' ') {
+					while (skipConsecutiveSpaces && i < l && this.value.charAt(i) == ' ') {
 						++i;
 					}
 				}
 			} else {
-				while(skipConsecutiveSpaces && i > 0 && this.value.charAt(i - 1) == ' ') {
+				while (skipConsecutiveSpaces && i > 0 && this.value.charAt(i - 1) == ' ') {
 					--i;
 				}
 
-				while(i > 0 && this.value.charAt(i - 1) != ' ') {
+				while (i > 0 && this.value.charAt(i - 1) != ' ') {
 					--i;
 				}
 			}
@@ -386,7 +389,7 @@ public class NameBox extends AbstractWidget {
 			int i1 = Mth.clamp(this.highlightPos - this.displayPos, 0, s.length());
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, i) : s;
-				l = guiGraphics.drawString(this.font, (FormattedCharSequence)this.formatter.apply(s1, this.displayPos), j, k, usedColor, this.textShadow);
+				l = guiGraphics.drawString(this.font, (FormattedCharSequence) this.formatter.apply(s1, this.displayPos), j, k, usedColor, this.textShadow);
 			}
 
 			boolean flag2 = this.cursorPos < this.value.length() || this.value.length() >= this.getMaxLength();
@@ -399,7 +402,7 @@ public class NameBox extends AbstractWidget {
 			}
 
 			if (!s.isEmpty() && flag && i < s.length()) {
-				guiGraphics.drawString(this.font, (FormattedCharSequence)this.formatter.apply(s.substring(i), this.cursorPos), l, k, usedColor, this.textShadow);
+				guiGraphics.drawString(this.font, (FormattedCharSequence) this.formatter.apply(s.substring(i), this.cursorPos), l, k, usedColor, this.textShadow);
 			}
 
 			if (this.hint != null && s.isEmpty() && !this.isFocused()) {
