@@ -1,8 +1,6 @@
 package com.mrbysco.armorposer.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Axis;
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.widgets.NameBox;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
@@ -29,9 +27,12 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3x2fStack;
 
 import java.util.Optional;
 
@@ -85,7 +86,7 @@ public class ArmorStandScreen extends Screen {
 	private final Tooltip yPositionTooltip = Tooltip.create(Component.translatable("armorposer.gui.tooltip.y_position"));
 	private final Tooltip yPositionTooltipDisabled = Tooltip.create(Component.translatable("armorposer.gui.tooltip.y_position.disabled").withStyle(ChatFormatting.RED));
 
-	private final int whiteColor = 16777215;
+	private final int whiteColor = -1;
 
 	public ArmorStandScreen(ArmorStand entityArmorStand) {
 		super(Component.translatable("armorposer.gui.title"));
@@ -93,7 +94,9 @@ public class ArmorStandScreen extends Screen {
 		this.oldName = entityArmorStand.hasCustomName() ? entityArmorStand.getName().getString() : this.getTitle().getString();
 
 		this.armorStandData = new ArmorStandData();
-		CompoundTag tag = entityArmorStand.saveWithoutId(new CompoundTag());
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entityArmorStand.registryAccess());
+		entityArmorStand.saveWithoutId(output);
+		CompoundTag tag = output.buildResult();
 
 		if (tag.getCompoundOrEmpty("Pose").isEmpty()) {
 			CompoundTag poseTag = ArmorUtil.writeAllPoses(entityArmorStand);
@@ -433,7 +436,7 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedUprightItemPose); 
+					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedUprightItemPose);
 					this.readFieldsFromNBT(tag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
@@ -483,7 +486,7 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedFlatItemPose); 
+					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedFlatItemPose);
 					this.readFieldsFromNBT(tag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
@@ -538,7 +541,7 @@ public class ArmorStandScreen extends Screen {
 					}
 				}
 
-				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedToolPose); 
+				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedToolPose);
 				this.readFieldsFromNBT(tag);
 				this.toggleButtons[0].setValue(true); //Set invisible
 				this.toggleButtons[2].setValue(true); //Set no gravity
@@ -663,12 +666,12 @@ public class ArmorStandScreen extends Screen {
 			guiGraphics.drawString(this.font, translatedLabel, x, y, whiteColor, true);
 		}
 
-		PoseStack poseStack = guiGraphics.pose();
+		Matrix3x2fStack pose = guiGraphics.pose();
 		if (Services.PLATFORM.allowScrolling()) {
-			poseStack.pushPose();
-			poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
-			guiGraphics.drawString(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, 11184810, true);
-			poseStack.popPose();
+			pose.pushMatrix();
+			pose.rotate(1.5708F);
+			guiGraphics.drawString(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, -11184810, true);
+			pose.popMatrix();
 		}
 	}
 

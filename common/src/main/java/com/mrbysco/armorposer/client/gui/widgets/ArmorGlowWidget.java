@@ -55,7 +55,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		guiGraphics.fillGradient(getX(), 0, getX() + this.listWidth, parent.height, -1945104368, -1676668912);
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, 16777215);
+		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, -1);
 	}
 
 	public class ListEntry extends Entry<ListEntry> {
@@ -77,11 +77,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
 		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
 			Font font = this.parent.getScreenFont();
-			renderScrollingString(guiGraphics, font, getPositionComponent(), left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFF);
+			renderScrollingString(guiGraphics, font, getPositionComponent(), left + 36, top + 10, left + width - 18, top + 20, -1);
 			if (isMouseOver(mouseX, mouseY)) {
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
-
-				guiGraphics.renderTooltip(font, component, mouseX, mouseY);
+				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
 			}
 
 			renderPose(guiGraphics, left + 16, top + 28, (1.0f / scale) * 15);
@@ -95,16 +94,21 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			return locked;
 		}
 
-		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float size) {
+		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
 			if (armorStand != null) {
-				InventoryScreen.renderEntityInInventory(guiGraphics, xPos, yPos, size,
-						ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
+				int startX = xPos - 20;
+				int startY = yPos - 30;
+				int endX = xPos + 20;
+				int endY = yPos + 30;
+				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
+						20.0F, ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
 			}
 		}
 
 		@Override
-		public void renderBack(GuiGraphics guiGraphics, int mouseX, int mouseY, int $$3, int $$4, int $$5, int $$6, int $$7, boolean $$8, float $$9) {
-			super.renderBack(guiGraphics, mouseX, mouseY, $$3, $$4, $$5, $$6, $$7, $$8, $$9);
+		public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
+		                       int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+			super.renderBack(guiGraphics, index, top, left, width, height, index, mouseY, isMouseOver, partialTick);
 		}
 
 		@Override

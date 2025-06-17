@@ -6,10 +6,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -28,8 +31,12 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 	);
 
 	public void handleData(ArmorStand armorStand, Player player) {
-		CompoundTag entityTag = armorStand.saveWithoutId(new CompoundTag());
-		CompoundTag entityTagCopy = entityTag.copy();
+		// Create a new TagValueOutput to save the armor stand's data
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, armorStand.registryAccess());
+		// Save the armor stand's current state without an ID
+		armorStand.saveWithoutId(output);
+		// Build the result compound tag from the output
+		CompoundTag outputCompound = output.buildResult();
 
 		if (!tag.isEmpty()) {
 			List<String> keysToRemove = tag.keySet().stream()
@@ -37,8 +44,8 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 					.toList();
 			keysToRemove.forEach(tag::remove);
 
-			entityTagCopy.merge(tag);
-			armorStand.load(entityTagCopy);
+			outputCompound.merge(tag);
+			armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
 			armorStand.setUUID(entityUUID);
 
 			Vec3 offset = tag.read("Move", Vec3.CODEC).orElse(Vec3.ZERO);

@@ -114,12 +114,12 @@ public class ArmorPosesScreen extends Screen {
 		int fullButtonHeight = PADDING + 20 + PADDING;
 		this.poseListWidget[0] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.default"), false, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
 		this.poseListWidget[0].setX(0);
-		this.poseListWidget[0].setY(10);
+		this.poseListWidget[0].setY(16);
 		this.poseListWidget[0].setHeight(this.height);
 
 		this.poseListWidget[1] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.user"), true, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
 		this.poseListWidget[1].setX(width - listWidth);
-		this.poseListWidget[1].setY(10);
+		this.poseListWidget[1].setY(16);
 		this.poseListWidget[1].setHeight(this.height);
 
 		addWidget(search);
@@ -214,7 +214,7 @@ public class ArmorPosesScreen extends Screen {
 
 		Component text = Component.translatable("armorposer.gui.poses.search");
 		guiGraphics.drawCenteredString(getScreenFont(), text, this.width / 2 + PADDING,
-				search.getY() - getScreenFont().lineHeight - 2, 0xFFFFFF);
+				search.getY() - getScreenFont().lineHeight - 2, -1);
 
 		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
@@ -222,7 +222,7 @@ public class ArmorPosesScreen extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_DELETE) {
-			if(selected != null && selected.userAdded()) {
+			if (selected != null && selected.userAdded()) {
 				this.minecraft.setScreen(new DeletePoseScreen(this.parentScreen, selected));
 			}
 		}

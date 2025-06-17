@@ -35,10 +35,10 @@ public class ArmorPoser implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(ArmorStandLockedPayload.ID, ArmorStandLockedPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(ArmorStandSyncPayload.ID, ArmorStandSyncPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandSyncPayload.ID, (payload, context) -> {
-			final ServerLevel serverLevel = context.player().serverLevel();
+			final ServerLevel serverLevel = context.player().level();
 
 			SyncData syncData = payload.data();
-			context.player().server.execute(() -> {
+			serverLevel.getServer().execute(() -> {
 				Entity entity = serverLevel.getEntity(syncData.entityUUID());
 				if (entity instanceof ArmorStand armorStandEntity) {
 					syncData.handleData(armorStandEntity, context.player());
@@ -48,10 +48,10 @@ public class ArmorPoser implements ModInitializer {
 
 		PayloadTypeRegistry.playC2S().register(ArmorStandSwapPayload.ID, ArmorStandSwapPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandSwapPayload.ID, (payload, context) -> {
-			final ServerLevel serverLevel = context.player().serverLevel();
+			final ServerLevel serverLevel = context.player().level();
 
 			SwapData swapData = payload.data();
-			context.player().server.execute(() -> {
+			serverLevel.getServer().execute(() -> {
 				Entity entity = serverLevel.getEntity(swapData.entityUUID());
 				if (entity instanceof ArmorStand armorStandEntity) {
 					swapData.handleData(armorStandEntity);
@@ -60,10 +60,10 @@ public class ArmorPoser implements ModInitializer {
 		});
 		PayloadTypeRegistry.playC2S().register(ArmorStandRenamePayload.ID, ArmorStandRenamePayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandRenamePayload.ID, (payload, context) -> {
-			final ServerLevel serverLevel = context.player().serverLevel();
+			final ServerLevel serverLevel = context.player().level();
 
 			RenameData renameData = payload.data();
-			context.player().server.execute(() -> {
+			serverLevel.getServer().execute(() -> {
 				Entity entity = serverLevel.getEntity(renameData.entityUUID());
 				if (entity instanceof ArmorStand armorStandEntity) {
 					renameData.handleData(armorStandEntity, context.player());

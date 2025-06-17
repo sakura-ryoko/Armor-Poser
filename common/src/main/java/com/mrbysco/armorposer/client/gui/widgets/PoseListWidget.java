@@ -64,13 +64,13 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		guiGraphics.fillGradient(getX(), 0, getX() + this.listWidth, parent.height, -1945104368, -1676668912);
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, 16777215);
+		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, -1);
 	}
 
 	public class ListEntry extends Entry<ListEntry> {
 		private final PoseEntry poseEntry;
 		private final ArmorPosesScreen parent;
-		private LivingEntity cachedEntity;
+		private ArmorStand cachedEntity;
 
 		ListEntry(PoseEntry entry, ArmorPosesScreen parent) {
 			this.poseEntry = entry;
@@ -84,14 +84,14 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 			Level level = mc.hasSingleplayerServer() && mc.getSingleplayerServer() != null ? mc.getSingleplayerServer().getAllLevels().iterator().next() : mc.level;
 			if (level != null) {
 				try {
-					CompoundTag tag = TagParser.parseCompoundFully(entry.pose().data()); 
+					CompoundTag tag = TagParser.parseCompoundFully(entry.pose().data());
 
 					CompoundTag nbt = new CompoundTag();
 					nbt.putString("id", "minecraft:armor_stand");
 					if (!tag.isEmpty()) {
 						nbt.merge(tag);
 					}
-					this.cachedEntity = (ArmorStand)EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
+					this.cachedEntity = (ArmorStand) EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
 						if (entity instanceof ArmorStand stand) {
 							stand.setNoBasePlate(true);
 							stand.setShowArms(true);
@@ -112,21 +112,27 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
 		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
 			Font font = this.parent.getScreenFont();
-			renderScrollingString(guiGraphics, font, Component.literal(getName()), left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFF);
+			renderScrollingString(guiGraphics, font, Component.literal(getName()),
+					left + 36, top + 10, left + width - 18, top + 20, -1);
 
-			renderPose(guiGraphics, left + 16, top + 28, 15);
 		}
 
 		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, int size) {
 			if (cachedEntity != null) {
-				InventoryScreen.renderEntityInInventory(guiGraphics, xPos, yPos, size,
-						ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.cachedEntity);
+				int startX = xPos - 40;
+				int startY = yPos - 60;
+				int endX = xPos + 40;
+				int endY = yPos + 60;
+				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
+						20.0F, ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.cachedEntity);
 			}
 		}
 
 		@Override
-		public void renderBack(GuiGraphics guiGraphics, int mouseX, int mouseY, int $$3, int $$4, int $$5, int $$6, int $$7, boolean $$8, float $$9) {
-			super.renderBack(guiGraphics, mouseX, mouseY, $$3, $$4, $$5, $$6, $$7, $$8, $$9);
+		public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
+		                       int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+			super.renderBack(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick);
+			renderPose(guiGraphics, left + 16, top + 28, 15);
 		}
 
 		@Override

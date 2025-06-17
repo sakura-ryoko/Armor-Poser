@@ -13,7 +13,10 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -21,11 +24,19 @@ import java.util.List;
 public class FabricPlatformHelper implements IPlatformHelper {
 	@Override
 	public void updateEntity(ArmorStand armorStand, CompoundTag compound) {
-		CompoundTag CompoundNBT = armorStand.saveWithoutId(new CompoundTag()).copy();
-		CompoundNBT.merge(compound);
-		armorStand.load(CompoundNBT);
+		// Create a new TagValueOutput to save the armor stand's data
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, armorStand.registryAccess());
+		// Save the armor stand's current state without an ID
+		armorStand.saveWithoutId(output);
+		// Build the result compound tag from the output
+		CompoundTag outputCompound = output.buildResult();
+		// Merge the provided compound data into the output compound
+		outputCompound.merge(compound);
 
-		SyncData data = new SyncData(armorStand.getUUID(), compound);
+		// Load the armor stand with the updated compound data
+		armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
+
+		SyncData data = new SyncData(armorStand.getUUID(), outputCompound);
 		ClientPlayNetworking.send(new ArmorStandSyncPayload(data));
 	}
 

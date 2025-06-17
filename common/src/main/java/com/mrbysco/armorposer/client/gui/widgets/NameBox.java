@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -375,7 +375,7 @@ public class NameBox extends AbstractWidget {
 		if (this.isVisible()) {
 			if (this.isBordered()) {
 				ResourceLocation resourcelocation = SPRITES.get(this.isActive(), this.isFocused());
-				guiGraphics.blitSprite(RenderType::guiTextured, resourcelocation, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourcelocation, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 			}
 
 			int usedColor = this.isEditable ? this.textColor : this.textColorUneditable;
@@ -384,12 +384,14 @@ public class NameBox extends AbstractWidget {
 			boolean flag = i >= 0 && i <= s.length();
 			boolean flag1 = this.isFocused() && (Util.getMillis() - this.focusedTime) / 300L % 2L == 0L && flag;
 			int j = this.bordered ? this.getX() + 4 : this.getX();
-			int k = this.bordered ? this.getY() + (this.height - 8) / 2 : this.getY();
+			int textY = this.bordered ? this.getY() + (this.height - 8) / 2 : this.getY();
 			int l = j;
 			int i1 = Mth.clamp(this.highlightPos - this.displayPos, 0, s.length());
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, i) : s;
-				l = guiGraphics.drawString(this.font, (FormattedCharSequence) this.formatter.apply(s1, this.displayPos), j, k, usedColor, this.textShadow);
+				FormattedCharSequence formattedcharsequence = (FormattedCharSequence) this.formatter.apply(s1, this.displayPos);
+				guiGraphics.drawString(this.font, formattedcharsequence, j, j, textY, this.textShadow);
+				j += this.font.width(formattedcharsequence) + 1;
 			}
 
 			boolean flag2 = this.cursorPos < this.value.length() || this.value.length() >= this.getMaxLength();
@@ -402,24 +404,24 @@ public class NameBox extends AbstractWidget {
 			}
 
 			if (!s.isEmpty() && flag && i < s.length()) {
-				guiGraphics.drawString(this.font, (FormattedCharSequence) this.formatter.apply(s.substring(i), this.cursorPos), l, k, usedColor, this.textShadow);
+				guiGraphics.drawString(this.font, (FormattedCharSequence) this.formatter.apply(s.substring(i), this.cursorPos), l, textY, usedColor, this.textShadow);
 			}
 
 			if (this.hint != null && s.isEmpty() && !this.isFocused()) {
-				guiGraphics.drawString(this.font, this.hint, l, k, usedColor, this.textShadow);
+				guiGraphics.drawString(this.font, this.hint, l, textY, usedColor, this.textShadow);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					guiGraphics.fill(RenderType.guiOverlay(), j1, k - 1, j1 + 1, k + 1 + 9, -3092272);
+					guiGraphics.fill(j1, textY - 1, j1 + 1, textY + 1 + 9, -3092272);
 				} else {
-					guiGraphics.drawString(this.font, "_", j1, k, usedColor, this.textShadow);
+					guiGraphics.drawString(this.font, "_", j1, textY, usedColor, this.textShadow);
 				}
 			}
 
 			if (i1 != i) {
 				int k1 = j + this.font.width(s.substring(0, i1));
-				this.renderHighlight(guiGraphics, j1, k - 1, k1 - 1, k + 1 + 9);
+				this.renderHighlight(guiGraphics, j1, textY - 1, k1 - 1, textY + 1 + 9);
 			}
 		}
 
@@ -446,7 +448,7 @@ public class NameBox extends AbstractWidget {
 			minX = this.getX() + this.width;
 		}
 
-		guiGraphics.fill(RenderType.guiTextHighlight(), minX, minY, maxX, maxY, -16776961);
+		guiGraphics.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, minX, minY, maxX, maxY, -16776961);
 	}
 
 	public void setMaxLength(int length) {
