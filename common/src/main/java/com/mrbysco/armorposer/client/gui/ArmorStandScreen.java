@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -86,7 +87,7 @@ public class ArmorStandScreen extends Screen {
 	private final Tooltip yPositionTooltip = Tooltip.create(Component.translatable("armorposer.gui.tooltip.y_position"));
 	private final Tooltip yPositionTooltipDisabled = Tooltip.create(Component.translatable("armorposer.gui.tooltip.y_position.disabled").withStyle(ChatFormatting.RED));
 
-	private final int whiteColor = -1;
+	private final int whiteColor = ARGB.opaque(16777215);
 
 	public ArmorStandScreen(ArmorStand entityArmorStand) {
 		super(Component.translatable("armorposer.gui.title"));
@@ -94,15 +95,17 @@ public class ArmorStandScreen extends Screen {
 		this.oldName = entityArmorStand.hasCustomName() ? entityArmorStand.getName().getString() : this.getTitle().getString();
 
 		this.armorStandData = new ArmorStandData();
-		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entityArmorStand.registryAccess());
-		entityArmorStand.saveWithoutId(output);
-		CompoundTag tag = output.buildResult();
+		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
+			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, entityArmorStand.registryAccess());
+			entityArmorStand.saveWithoutId(output);
+			CompoundTag tag = output.buildResult();
 
-		if (tag.getCompoundOrEmpty("Pose").isEmpty()) {
-			CompoundTag poseTag = ArmorUtil.writeAllPoses(entityArmorStand);
-			tag.put("Pose", poseTag);
+			if (tag.getCompoundOrEmpty("Pose").isEmpty()) {
+				CompoundTag poseTag = ArmorUtil.writeAllPoses(entityArmorStand);
+				tag.put("Pose", poseTag);
+			}
+			this.armorStandData.readFromNBT(tag);
 		}
-		this.armorStandData.readFromNBT(tag);
 
 		this.allowScrolling = Services.PLATFORM.allowScrolling();
 		this.version = Services.PLATFORM.getModVersion();
@@ -670,7 +673,7 @@ public class ArmorStandScreen extends Screen {
 		if (Services.PLATFORM.allowScrolling()) {
 			pose.pushMatrix();
 			pose.rotate(1.5708F);
-			guiGraphics.drawString(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, -11184810, true);
+			guiGraphics.drawString(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);
 			pose.popMatrix();
 		}
 	}

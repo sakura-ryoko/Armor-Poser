@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
+import oshi.util.Constants;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -25,19 +26,22 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	@Override
 	public void updateEntity(ArmorStand armorStand, CompoundTag compound) {
 		// Create a new TagValueOutput to save the armor stand's data
-		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, armorStand.registryAccess());
-		// Save the armor stand's current state without an ID
-		armorStand.saveWithoutId(output);
-		// Build the result compound tag from the output
-		CompoundTag outputCompound = output.buildResult();
-		// Merge the provided compound data into the output compound
-		outputCompound.merge(compound);
+		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
+			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, armorStand.registryAccess());
 
-		// Load the armor stand with the updated compound data
-		armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
+			// Save the armor stand's current state without an ID
+			armorStand.saveWithoutId(output);
+			// Build the result compound tag from the output
+			CompoundTag outputCompound = output.buildResult();
+			// Merge the provided compound data into the output compound
+			outputCompound.merge(compound);
 
-		SyncData data = new SyncData(armorStand.getUUID(), outputCompound);
-		PacketDistributor.sendToServer(new ArmorStandSyncPayload(data));
+			// Load the armor stand with the updated compound data
+			armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
+
+			SyncData data = new SyncData(armorStand.getUUID(), outputCompound);
+			PacketDistributor.sendToServer(new ArmorStandSyncPayload(data));
+		}
 	}
 
 	@Override

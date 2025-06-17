@@ -32,37 +32,39 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 
 	public void handleData(ArmorStand armorStand, Player player) {
 		// Create a new TagValueOutput to save the armor stand's data
-		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, armorStand.registryAccess());
-		// Save the armor stand's current state without an ID
-		armorStand.saveWithoutId(output);
-		// Build the result compound tag from the output
-		CompoundTag outputCompound = output.buildResult();
+		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
+			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, armorStand.registryAccess());
+			// Save the armor stand's current state without an ID
+			armorStand.saveWithoutId(output);
+			// Build the result compound tag from the output
+			CompoundTag outputCompound = output.buildResult();
 
-		if (!tag.isEmpty()) {
-			List<String> keysToRemove = tag.keySet().stream()
-					.filter(key -> !allowedKeys.contains(key))
-					.toList();
-			keysToRemove.forEach(tag::remove);
+			if (!tag.isEmpty()) {
+				List<String> keysToRemove = tag.keySet().stream()
+						.filter(key -> !allowedKeys.contains(key))
+						.toList();
+				keysToRemove.forEach(tag::remove);
 
-			outputCompound.merge(tag);
-			armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
-			armorStand.setUUID(entityUUID);
+				outputCompound.merge(tag);
+				armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
+				armorStand.setUUID(entityUUID);
 
-			Vec3 offset = tag.read("Move", Vec3.CODEC).orElse(Vec3.ZERO);
-			double xOffset = offset.x();
-			double yOffset = offset.y();
-			double zOffset = offset.z();
-			if (xOffset != 0 || yOffset != 0 || zOffset != 0)
-				armorStand.setPosRaw(armorStand.getX() + xOffset,
-						armorStand.getY() + yOffset,
-						armorStand.getZ() + zOffset);
+				Vec3 offset = tag.read("Move", Vec3.CODEC).orElse(Vec3.ZERO);
+				double xOffset = offset.x();
+				double yOffset = offset.y();
+				double zOffset = offset.z();
+				if (xOffset != 0 || yOffset != 0 || zOffset != 0)
+					armorStand.setPosRaw(armorStand.getX() + xOffset,
+							armorStand.getY() + yOffset,
+							armorStand.getZ() + zOffset);
 
-			if (Reference.canResize(player)) {
-				double scale = tag.getDoubleOr("Scale", 0);
-				if (scale > 0) {
-					AttributeInstance attributeInstance = armorStand.getAttributes().getInstance(Attributes.SCALE);
-					if (attributeInstance != null) {
-						attributeInstance.setBaseValue(scale);
+				if (Reference.canResize(player)) {
+					double scale = tag.getDoubleOr("Scale", 0);
+					if (scale > 0) {
+						AttributeInstance attributeInstance = armorStand.getAttributes().getInstance(Attributes.SCALE);
+						if (attributeInstance != null) {
+							attributeInstance.setBaseValue(scale);
+						}
 					}
 				}
 			}
