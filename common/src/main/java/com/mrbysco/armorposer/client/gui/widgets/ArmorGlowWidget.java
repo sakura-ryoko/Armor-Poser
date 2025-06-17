@@ -96,10 +96,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
 			if (armorStand != null) {
-				int startX = xPos - 20;
-				int startY = yPos - 30;
-				int endX = xPos + 20;
-				int endY = yPos + 30;
+				int startX = xPos - 40;
+				int startY = yPos - 60;
+				int endX = xPos + 40;
+				int endY = yPos + 60;
 				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
 						20.0F, ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
 			}
