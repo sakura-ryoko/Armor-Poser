@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,7 +65,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		guiGraphics.fillGradient(getX(), 0, getX() + this.listWidth, parent.height, -1945104368, -1676668912);
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, -1);
+		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
 	}
 
 	public class ListEntry extends Entry<ListEntry> {
@@ -113,7 +114,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
 			Font font = this.parent.getScreenFont();
 			renderScrollingString(guiGraphics, font, Component.literal(getName()),
-					left + 36, top + 10, left + width - 18, top + 20, -1);
+					left + 36, top + 10, left + width - 18, top + 20, ARGB.opaque(16777215));
 
 		}
 

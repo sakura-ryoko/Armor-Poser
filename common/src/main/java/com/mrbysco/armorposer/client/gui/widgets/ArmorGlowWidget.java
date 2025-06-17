@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -55,7 +56,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		guiGraphics.fillGradient(getX(), 0, getX() + this.listWidth, parent.height, -1945104368, -1676668912);
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, -1);
+		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
 	}
 
 	public class ListEntry extends Entry<ListEntry> {
@@ -77,7 +78,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
 		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
 			Font font = this.parent.getScreenFont();
-			renderScrollingString(guiGraphics, font, getPositionComponent(), left + 36, top + 10, left + width - 18, top + 20, -1);
+			renderScrollingString(guiGraphics, font, getPositionComponent(), left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) {
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
 				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
