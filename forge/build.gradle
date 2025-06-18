@@ -35,12 +35,16 @@ neoForge {
     addModdingDependenciesTo(sourceSets["test"])
 
     runs {
-        configureEach {
+        configureEach { model ->
             systemProperty 'forge.logging.console.level', 'debug'
             systemProperty 'fml.earlyprogresswindow', 'false'
 
             //Limit ram usage for the dev environment to 4GB
             jvmArguments.add('-Xmx4G')
+
+            if (model.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+                jvmArguments.add("-XX:+AllowEnhancedClassRedefinition")
+            }
         }
 
         client {
