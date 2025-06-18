@@ -20,9 +20,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry> {
-	private static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
-	private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);
-
 	private final ArmorPosesScreen parent;
 	private final int listWidth;
 	private final Component title;
@@ -125,7 +122,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 				int endX = xPos + 40;
 				int endY = yPos + 60;
 				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
-						20.0F, ARMOR_STAND_TRANSLATION, ARMOR_STAND_ANGLE, (Quaternionf) null, this.cachedEntity);
+						20.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, this.cachedEntity);
 			}
 		}
 

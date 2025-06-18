@@ -7,6 +7,8 @@ import com.mrbysco.armorposer.util.PoseData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -25,6 +27,9 @@ public class Reference {
 	public static final ResourceLocation RENAME_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "rename_packet");
 	public static final ResourceLocation SCREEN_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "screen_packet");
 	public static final ResourceLocation LOCKED_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "locked_packet");
+
+	public static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
+	public static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);
 
 	public static final Map<String, String> defaultPoseMap = initializePoseMap();
 

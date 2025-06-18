@@ -1,17 +1,25 @@
 package com.mrbysco.armorposer.client.gui;
 
+import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.GlowHandler;
 import com.mrbysco.armorposer.client.gui.widgets.ArmorGlowWidget;
+import com.mrbysco.armorposer.client.gui.widgets.PoseListWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.Level;
+import org.joml.Quaternionf;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +30,7 @@ import java.util.stream.Collectors;
 public class ArmorGlowScreen extends Screen {
 	private static final int PADDING = 6;
 
-	private ArmorGlowWidget armorListWidget;
+	private ArmorGlowWidget[] armorListWidget = new ArmorGlowWidget[2];
 	private ArmorGlowWidget.ListEntry selected = null;
 	private final List<ArmorStand> armorStands;
 	private Button locateButton;
@@ -30,11 +38,24 @@ public class ArmorGlowScreen extends Screen {
 
 	public final ArmorStandScreen parentScreen;
 
+	private final ArmorStand exampleArmorStand;
+
 	public ArmorGlowScreen(ArmorStandScreen parent) {
 		super(Component.translatable("armorposer.gui.armor_list.list"));
 		this.parentScreen = parent;
 
 		this.minecraft = Minecraft.getInstance();
+		Level level = this.minecraft.level;
+		if (level != null) {
+			this.exampleArmorStand = new ArmorStand(level, 0, 0, 0);
+			this.exampleArmorStand.setShowArms(true);
+			this.exampleArmorStand.yBodyRot = 210.0F;
+			this.exampleArmorStand.setXRot(25.0F);
+			this.exampleArmorStand.yHeadRot = exampleArmorStand.getYRot();
+			this.exampleArmorStand.yHeadRotO = exampleArmorStand.getYRot();
+		} else {
+			this.exampleArmorStand = null;
+		}
 
 		//Add the armor stands to the list
 		if (minecraft.player == null)
@@ -80,30 +101,63 @@ public class ArmorGlowScreen extends Screen {
 			}
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING + buttonWidth + 2, y, buttonWidth, 20).build());
 
-		int fullButtonHeight = PADDING + 20 + PADDING;
-		this.armorListWidget = new ArmorGlowWidget(this, Component.translatable("armorposer.gui.armor_list.list"), listWidth, fullButtonHeight, 14 - getScreenFont().lineHeight);
-		this.armorListWidget.setX(0);
-		this.armorListWidget.setY(10);
-		this.armorListWidget.setHeight(this.height);
 
-		addWidget(armorListWidget);
+		int fullButtonHeight = PADDING + 20 + PADDING;
+		this.armorListWidget[0] = new ArmorGlowWidget(this, Component.translatable("armorposer.gui.armor_list.list"),
+				true, listWidth, fullButtonHeight, y - getScreenFont().lineHeight - PADDING);
+		this.armorListWidget[0].setX(0);
+		this.armorListWidget[0].setY(16);
+		this.armorListWidget[0].setHeight(this.height);
+
+		this.armorListWidget[1] = new ArmorGlowWidget(this, Component.translatable("armorposer.gui.armor_list.list2"),
+				false, listWidth, fullButtonHeight, y - getScreenFont().lineHeight - PADDING);
+		this.armorListWidget[1].setX(width - listWidth);
+		this.armorListWidget[1].setY(16);
+		this.armorListWidget[1].setHeight(this.height);
+
+		addWidget(armorListWidget[0]);
+		addWidget(armorListWidget[1]);
 
 		updateCache();
 	}
 
 	@Override
 	public void tick() {
-		armorListWidget.setSelected(selected);
+		if (armorListWidget[0].children().contains(selected)) {
+			armorListWidget[0].setSelected(selected);
+			armorListWidget[1].setSelected(null);
+		} else if (armorListWidget[1].children().contains(selected)) {
+			armorListWidget[0].setSelected(null);
+			armorListWidget[1].setSelected(selected);
+		}
 	}
 
-	public <T extends ObjectSelectionList.Entry<T>> void buildPositionList(Consumer<T> ListViewConsumer, Function<ArmorStand, T> newEntry) {
-		armorStands.forEach(stand -> ListViewConsumer.accept(newEntry.apply(stand)));
+	public <T extends ObjectSelectionList.Entry<T>> void buildPositionList(Consumer<T> ListViewConsumer, Function<ArmorStand, T> newEntry, boolean visible) {
+		List<ArmorStand> filteredArmorStands = this.armorStands.stream()
+				.filter(armorStand -> visible == !armorStand.isInvisible())
+				.toList();
+		filteredArmorStands.forEach(stand -> ListViewConsumer.accept(newEntry.apply(stand)));
 	}
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.armorListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.armorListWidget[0].render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.armorListWidget[1].render(guiGraphics, mouseX, mouseY, partialTicks);
+
+		ArmorStand selectedArmorStand = this.selected != null ? this.selected.getArmorStand() : this.exampleArmorStand;
+		if (selectedArmorStand != null) {
+			renderEntity(guiGraphics, selectedArmorStand, this.width / 2, 100);
+		}
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	}
+
+	private void renderEntity(GuiGraphics guiGraphics, LivingEntity entity, int xPos, int yPos) {
+		int startX = xPos - 80;
+		int startY = yPos - 120;
+		int endX = xPos + 80;
+		int endY = yPos + 120;
+		InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
+				50.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, entity);
 	}
 
 	@Override
