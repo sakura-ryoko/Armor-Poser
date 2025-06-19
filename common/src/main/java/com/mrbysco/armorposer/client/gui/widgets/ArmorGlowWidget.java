@@ -7,17 +7,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEntry> {
 	private final ArmorGlowScreen parent;
@@ -62,6 +57,12 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
 	}
 
+	@Override
+	public void setSelected(@Nullable ArmorGlowWidget.ListEntry selected) {
+		this.parent.setSelected(getSelected(), selected, visible);
+		super.setSelected(selected);
+	}
+
 	public class ListEntry extends Entry<ListEntry> {
 		private final ArmorGlowScreen parent;
 		private final ArmorStand armorStand;
@@ -79,13 +80,15 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 		@Override
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
-		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
+		                   int mouseX, int mouseY, boolean hovered, float partialTick) {
 			Font font = this.parent.getScreenFont();
 			renderScrollingString(guiGraphics, font, getPositionComponent(), left, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) {
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
 				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
 			}
+			if (isVisible() && getSelected() == this)
+				renderPose(guiGraphics, left + 16, top + 28, partialTick);
 		}
 
 		public ArmorStand getArmorStand() {
@@ -115,13 +118,6 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
 		                       int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
 			super.renderBack(guiGraphics, index, top, left, width, height, index, mouseY, isMouseOver, partialTick);
-		}
-
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			parent.setSelected(this);
-			ArmorGlowWidget.this.setSelected(this);
-			return false;
 		}
 
 		public Component getPositionComponent() {

@@ -226,6 +226,11 @@ public class ArmorPosesScreen extends Screen {
 				this.minecraft.setScreen(new DeletePoseScreen(this.parentScreen, selected));
 			}
 		}
+		if (this.poseListWidget[0].keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		} else if (this.poseListWidget[1].keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
@@ -234,8 +239,14 @@ public class ArmorPosesScreen extends Screen {
 		//Nope
 	}
 
-	public void setSelected(PoseListWidget.ListEntry entry) {
-		this.selected = entry == this.selected ? null : entry;
+	public void setSelected(PoseListWidget.ListEntry previousEntry, PoseListWidget.ListEntry entry, boolean visible) {
+		if (this.selected == previousEntry) {
+			this.selected = entry;
+		} else {
+			if (this.selected == null || entry != null) {
+				this.selected = entry;
+			}
+		}
 		updateCache();
 	}
 

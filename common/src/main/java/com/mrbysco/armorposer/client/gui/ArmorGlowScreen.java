@@ -1,25 +1,17 @@
 package com.mrbysco.armorposer.client.gui;
 
-import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.GlowHandler;
 import com.mrbysco.armorposer.client.gui.widgets.ArmorGlowWidget;
-import com.mrbysco.armorposer.client.gui.widgets.PoseListWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.level.Level;
-import org.joml.Quaternionf;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,30 +24,18 @@ public class ArmorGlowScreen extends Screen {
 
 	private ArmorGlowWidget[] armorListWidget = new ArmorGlowWidget[2];
 	private ArmorGlowWidget.ListEntry selected = null;
+
 	private final List<ArmorStand> armorStands;
 	private Button locateButton;
 	private Button modifyButton;
 
 	public final ArmorStandScreen parentScreen;
 
-	private final ArmorStand exampleArmorStand;
-
 	public ArmorGlowScreen(ArmorStandScreen parent) {
 		super(Component.translatable("armorposer.gui.armor_list.list"));
 		this.parentScreen = parent;
 
 		this.minecraft = Minecraft.getInstance();
-		Level level = this.minecraft.level;
-		if (level != null) {
-			this.exampleArmorStand = new ArmorStand(level, 0, 0, 0);
-			this.exampleArmorStand.setShowArms(true);
-			this.exampleArmorStand.yBodyRot = 210.0F;
-			this.exampleArmorStand.setXRot(25.0F);
-			this.exampleArmorStand.yHeadRot = exampleArmorStand.getYRot();
-			this.exampleArmorStand.yHeadRotO = exampleArmorStand.getYRot();
-		} else {
-			this.exampleArmorStand = null;
-		}
 
 		//Add the armor stands to the list
 		if (minecraft.player == null)
@@ -144,20 +124,7 @@ public class ArmorGlowScreen extends Screen {
 		this.armorListWidget[0].render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.armorListWidget[1].render(guiGraphics, mouseX, mouseY, partialTicks);
 
-		ArmorStand selectedArmorStand = this.selected != null ? this.selected.getArmorStand() : this.exampleArmorStand;
-		if (selectedArmorStand != null) {
-			renderEntity(guiGraphics, selectedArmorStand, this.width / 2, 100);
-		}
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-	}
-
-	private void renderEntity(GuiGraphics guiGraphics, LivingEntity entity, int xPos, int yPos) {
-		int startX = xPos - 80;
-		int startY = yPos - 120;
-		int endX = xPos + 80;
-		int endY = yPos + 120;
-		InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
-				50.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, entity);
 	}
 
 	@Override
@@ -170,8 +137,14 @@ public class ArmorGlowScreen extends Screen {
 		//Nope
 	}
 
-	public void setSelected(ArmorGlowWidget.ListEntry entry) {
-		this.selected = entry == this.selected ? null : entry;
+	public void setSelected(ArmorGlowWidget.ListEntry previousEntry, ArmorGlowWidget.ListEntry entry, boolean visible) {
+		if (this.selected == previousEntry) {
+			this.selected = entry;
+		} else {
+			if (this.selected == null || entry != null) {
+				this.selected = entry;
+			}
+		}
 		updateCache();
 	}
 

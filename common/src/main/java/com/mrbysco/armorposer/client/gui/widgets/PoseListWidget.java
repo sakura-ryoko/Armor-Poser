@@ -13,11 +13,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry> {
 	private final ArmorPosesScreen parent;
@@ -65,6 +64,12 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
 	}
 
+	@Override
+	public void setSelected(@Nullable PoseListWidget.ListEntry selected) {
+		this.parent.setSelected(getSelected(), selected, visible);
+		super.setSelected(selected);
+	}
+
 	public class ListEntry extends Entry<ListEntry> {
 		private final PoseEntry poseEntry;
 		private final ArmorPosesScreen parent;
@@ -108,14 +113,16 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 
 		@Override
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
-		                   int mouseX, int mouseY, boolean hovered, float partialTicks) {
+		                   int mouseX, int mouseY, boolean hovered, float partialTick) {
 			Font font = this.parent.getScreenFont();
 			renderScrollingString(guiGraphics, font, Component.literal(getName()),
 					left + 36, top + 10, left + width - 18, top + 20, ARGB.opaque(16777215));
 
+			if (getSelected() == this)
+				renderPose(guiGraphics, left + 16, top + 28, partialTick);
 		}
 
-		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, int size) {
+		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
 			if (cachedEntity != null) {
 				int startX = xPos - 40;
 				int startY = yPos - 60;
@@ -130,17 +137,6 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 		public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
 		                       int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
 			super.renderBack(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick);
-			renderPose(guiGraphics, left + 16, top + 28, 15);
-		}
-
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			parent.setSelected(this);
-			if (PoseListWidget.this.getSelected() == this)
-				PoseListWidget.this.setSelected(null);
-			else
-				PoseListWidget.this.setSelected(this);
-			return false;
 		}
 
 		public CompoundTag getTag() {
