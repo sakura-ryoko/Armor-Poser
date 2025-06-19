@@ -2,7 +2,6 @@ package com.mrbysco.armorposer.client.gui;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.armorposer.Reference;
-import com.mrbysco.armorposer.client.gui.widgets.NameBox;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
 import com.mrbysco.armorposer.client.gui.widgets.SizeField;
 import com.mrbysco.armorposer.client.gui.widgets.ToggleButton;
@@ -69,7 +68,7 @@ public class ArmorStandScreen extends Screen {
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
 	private final String version;
 
-	private NameBox nameField;
+	private EditBox nameField;
 	private String oldName;
 	private String changedName;
 	private Button renameButton;
@@ -120,7 +119,11 @@ public class ArmorStandScreen extends Screen {
 	public void init() {
 		super.init();
 
-		this.nameField = new NameBox(this.font, this.width / 2 - this.font.width(this.oldName) / 2, 10, 100, 20, Component.translatable("armorposer.gui.label.name"));
+		this.nameField = new EditBox(this.font,
+				this.width / 2 - this.font.width(this.oldName) / 2, 10,
+				100, 20,
+				Component.translatable("armorposer.gui.label.name")
+		);
 		this.nameField.setValue(this.oldName);
 		this.nameField.setTextColor(whiteColor);
 		this.nameField.setTextColorUneditable(whiteColor);

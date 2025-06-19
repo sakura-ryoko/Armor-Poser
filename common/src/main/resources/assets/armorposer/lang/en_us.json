@@ -39,6 +39,7 @@
   "armorposer.gui.label.show_arms": "Show Arms",
   "armorposer.gui.label.small": "Small",
   "armorposer.gui.label.rename": "Rename",
+  "armorposer.gui.label.name": "Name",
   "armorposer.gui.pose.arabesque": "Arabesque",
   "armorposer.gui.pose.attention": "Attention",
   "armorposer.gui.pose.block": "Block",
