@@ -17,7 +17,6 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
-import oshi.util.Constants;
 
 import java.nio.file.Path;
 import java.util.List;
