@@ -16,7 +16,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -39,18 +39,18 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 			armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
 
 			SyncData data = new SyncData(armorStand.getUUID(), outputCompound);
-			PacketDistributor.sendToServer(new ArmorStandSyncPayload(data));
+			ClientPacketDistributor.sendToServer(new ArmorStandSyncPayload(data));
 		}
 	}
 
 	@Override
 	public void swapSlots(ArmorStand armorStand, SwapData.Action action) {
-		PacketDistributor.sendToServer(new ArmorStandSwapPayload(new SwapData(armorStand.getUUID(), action)));
+		ClientPacketDistributor.sendToServer(new ArmorStandSwapPayload(new SwapData(armorStand.getUUID(), action)));
 	}
 
 	@Override
 	public void renameArmorStand(ArmorStand armorStand, String newName) {
-		PacketDistributor.sendToServer(new ArmorStandRenamePayload(new RenameData(armorStand.getUUID(), newName)));
+		ClientPacketDistributor.sendToServer(new ArmorStandRenamePayload(new RenameData(armorStand.getUUID(), newName)));
 	}
 
 	@Override
