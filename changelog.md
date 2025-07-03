@@ -1,1 +1,2 @@
-* Initial update to 1.21.7
+* Fix pose saving / deletion crashing the game
+* Add/update pt_br and ja_jp translations (Courtesy to seriousfreezing and PExPE3 on github)
