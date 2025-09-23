@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id "net.neoforged.moddev" version "2.0.99"
+    id "net.neoforged.moddev" version "2.0.107"
     id 'net.darkhax.curseforgegradle'
     id 'com.modrinth.minotaur'
 }
@@ -64,33 +64,28 @@ neoForge {
     }
 }
 
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
     compileOnly project(":common")
 }
 
-// NeoGradle compiles the game, but we don't want to add our common code to the game's code
-Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
-
-tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+compileJava {
     source(project(":common").sourceSets.main.allSource)
 }
 
-tasks.withType(Javadoc).matching(notNeoTask).configureEach {
-    source(project(":common").sourceSets.main.allJava)
+sourcesJar {
+    from project(":common").sourceSets.main.allJava
 }
 
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
+processResources {
     from project(":common").sourceSets.main.resources
 }
-
-//tasks.named("compileTestJava").configure {
-//    enabled = false
-//}
 
 publishing {
     publications {
