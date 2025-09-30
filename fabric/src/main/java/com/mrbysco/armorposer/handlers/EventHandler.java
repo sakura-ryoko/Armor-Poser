@@ -23,7 +23,7 @@ public class EventHandler {
 		if (target instanceof ArmorStand armorstand) {
 			PoserConfig config = ArmorPoser.config.get();
 			if (config.general.enableConfigGui && player.isShiftKeyDown()) {
-				if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide) {
+				if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide()) {
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandScreenPayload(armorstand.getId()));
 				}
@@ -34,7 +34,7 @@ public class EventHandler {
 				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 				if (!stack.isEmpty() && stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME)) {
 					cancelRightClick = true;
-					if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide) {
+					if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide()) {
 						armorstand.setCustomName(stack.getHoverName());
 						armorstand.setCustomNameVisible(true);
 					}

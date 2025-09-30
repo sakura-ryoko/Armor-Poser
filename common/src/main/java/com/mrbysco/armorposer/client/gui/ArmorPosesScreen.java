@@ -11,6 +11,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -221,18 +223,18 @@ public class ArmorPosesScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_DELETE) {
+	public boolean keyPressed(KeyEvent event) {
+		if (event.key() == GLFW.GLFW_KEY_DELETE) {
 			if (selected != null && selected.userAdded()) {
 				this.minecraft.setScreen(this.deletePoseScreen);
 			}
 		}
-		if (this.poseListWidget[0].keyPressed(keyCode, scanCode, modifiers)) {
+		if (this.poseListWidget[0].keyPressed(event)) {
 			return true;
-		} else if (this.poseListWidget[1].keyPressed(keyCode, scanCode, modifiers)) {
+		} else if (this.poseListWidget[1].keyPressed(event)) {
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
@@ -259,12 +261,12 @@ public class ArmorPosesScreen extends Screen {
 	 * Clear the search field when right-clicked on it
 	 */
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean flag = super.mouseClicked(mouseX, mouseY, button);
-		if (button == 1 && search.isMouseOver(mouseX, mouseY)) {
+	public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean flag) {
+		boolean clicked = super.mouseClicked(buttonEvent, flag);
+		if (buttonEvent.button() == 1 && search.isMouseOver(buttonEvent.x(), buttonEvent.y())) {
 			search.setValue("");
 		}
-		return flag;
+		return clicked;
 	}
 
 	@Override

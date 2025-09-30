@@ -44,10 +44,12 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	}
 
 	@Override
-	protected void renderSelection(GuiGraphics guiGraphics, int top, int width, int height, int outerColor, int innerColor) {
-		int xPos = this.getX() + (this.width - width) / 2;
-		int xPos2 = this.getX() + (this.width + width) / 2;
-		guiGraphics.fillGradient(xPos, top - 2, xPos2, top + height + 2, -1945083888, -1676648432);
+	protected void renderSelection(GuiGraphics guiGraphics, ArmorGlowWidget.ListEntry listEntry, int p_240142_) {
+		int x1 = listEntry.getX();
+		int y1 = listEntry.getY();
+		int x2 = x1 + listEntry.getWidth();
+		int y2 = y1 + listEntry.getHeight();
+		guiGraphics.fillGradient(x1, y1, x2, y2, -1945083888, -1676648432);
 	}
 
 	@Override
@@ -79,9 +81,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		}
 
 		@Override
-		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
-		                   int mouseX, int mouseY, boolean hovered, float partialTick) {
+		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
 			Font font = this.parent.getScreenFont();
+			int left = getContentX();
+			int top = getContentY();
 			renderScrollingString(guiGraphics, font, getPositionComponent(), left, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) {
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
@@ -112,12 +115,6 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
 						20.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
 			}
-		}
-
-		@Override
-		public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
-		                       int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-			super.renderBack(guiGraphics, index, top, left, width, height, index, mouseY, isMouseOver, partialTick);
 		}
 
 		public Component getPositionComponent() {

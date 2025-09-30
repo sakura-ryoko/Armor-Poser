@@ -19,6 +19,9 @@ import net.minecraft.client.gui.components.LockIconButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
@@ -407,7 +410,7 @@ public class ArmorStandScreen extends Screen {
 		buttonsLeft--;
 
 		ImageButton itemButton = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, ITEM_SPRITES, (button) -> {
-			if (hasShiftDown()) { //If shift is held the item will be upright
+			if (minecraft.hasShiftDown()) { //If shift is held the item will be upright
 				try {
 					Vec3 pos = this.entityArmorStand.position();
 
@@ -707,8 +710,8 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	@Override
-	public boolean charTyped(char codePoint, int modifiers) {
-		boolean typed = super.charTyped(codePoint, modifiers);
+	public boolean charTyped(CharacterEvent characterEvent) {
+		boolean typed = super.charTyped(characterEvent);
 		if (typed) {
 			this.textFieldUpdated();
 		}
@@ -717,7 +720,7 @@ public class ArmorStandScreen extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double xScroll, double yScroll) {
-		var multiplier = Screen.hasShiftDown() ? 10.0f : 1.0f;
+		var multiplier = minecraft.hasShiftDown() ? 10.0f : 1.0f;
 		if (allowScrolling && yScroll > 0) {
 			//Add 1 to the value
 			if (rotationTextField.canConsumeInput()) {
@@ -781,7 +784,8 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyEvent keyEvent) {
+		int keyCode = keyEvent.key();
 		if (keyCode == 15) { //Tab
 			for (int i = 0; i < this.poseTextFields.length; i++) {
 				if (this.poseTextFields[i].isFocused()) {
@@ -789,37 +793,37 @@ public class ArmorStandScreen extends Screen {
 					this.poseTextFields[i].moveCursorToEnd(false);
 					this.poseTextFields[i].setFocused(false);
 
-					int j = (!Screen.hasShiftDown() ? (i == this.poseTextFields.length - 1 ? 0 : i + 1) : (i == 0 ? this.poseTextFields.length - 1 : i - 1));
+					int j = (!minecraft.hasShiftDown() ? (i == this.poseTextFields.length - 1 ? 0 : i + 1) : (i == 0 ? this.poseTextFields.length - 1 : i - 1));
 					this.poseTextFields[j].setFocused(true);
 					this.poseTextFields[j].moveCursorTo(0, false);
 					this.poseTextFields[j].setHighlightPos(this.poseTextFields[j].getValue().length());
 				}
 			}
 		} else {
-			if (this.nameField.keyPressed(keyCode, scanCode, modifiers)) {
+			if (this.nameField.keyPressed(keyEvent)) {
 				this.textFieldUpdated();
 				return true;
-			} else if (this.rotationTextField.keyPressed(keyCode, scanCode, modifiers)) {
+			} else if (this.rotationTextField.keyPressed(keyEvent)) {
 				this.textFieldUpdated();
 				return true;
-			} else if (this.sizeField.keyPressed(keyCode, scanCode, modifiers)) {
+			} else if (this.sizeField.keyPressed(keyEvent)) {
 				this.textFieldUpdated();
 				return true;
 			} else {
 				for (NumberFieldBox textField : this.poseTextFields) {
-					if (textField.keyPressed(keyCode, scanCode, modifiers)) {
+					if (textField.keyPressed(keyEvent)) {
 						this.textFieldUpdated();
 						return true;
 					}
 				}
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyEvent);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		return super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean flag) {
+		return super.mouseClicked(buttonEvent, flag);
 	}
 
 	protected void textFieldUpdated() {

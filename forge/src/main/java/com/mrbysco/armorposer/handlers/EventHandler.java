@@ -27,7 +27,7 @@ public class EventHandler {
 			final Player player = event.getEntity();
 			final Level level = event.getLevel();
 			if (PoserConfig.COMMON.enableConfigGui.get() && player.isShiftKeyDown()) {
-				if (event.getHand() == InteractionHand.MAIN_HAND && !level.isClientSide) {
+				if (event.getHand() == InteractionHand.MAIN_HAND && !level.isClientSide()) {
 					((ServerPlayer) player).connection.send(new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
 					((ServerPlayer) player).connection.send(new ArmorStandScreenPayload(armorstand.getId()));
 				}
@@ -39,7 +39,7 @@ public class EventHandler {
 				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 				if (!stack.isEmpty() && stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME)) {
 					cancelRightClick = true;
-					if (event.getHand() == InteractionHand.MAIN_HAND && !level.isClientSide) {
+					if (event.getHand() == InteractionHand.MAIN_HAND && !level.isClientSide()) {
 						armorstand.setCustomName(stack.getHoverName());
 						armorstand.setCustomNameVisible(true);
 					}
