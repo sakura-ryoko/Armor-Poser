@@ -41,6 +41,12 @@ public interface IPlatformHelper {
 	boolean isResizeRestrictedToOPS();
 
 	/**
+	 * Check if name based features are enabled
+	 * @return If name based features are enabled
+	 */
+	boolean nameBasedFeatures();
+
+	/**
 	 * Gets a list of players that are allowed to resize the Armor Stand while restrictResizeToOP is enabled
 	 * @return The resize whitelist
 	 */

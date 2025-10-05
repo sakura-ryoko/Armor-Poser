@@ -28,6 +28,9 @@ public class PoserConfig implements ConfigData {
 		@Comment("Restrict the ability to resize the Armor Stand to server operators")
 		public boolean restrictResizeToOP = false;
 		@ConfigEntry.Gui.Tooltip
+		@Comment("Allow the spawned Armor Stand to have settings set based on its name")
+		public boolean nameBasedFeatures = false;
+		@ConfigEntry.Gui.Tooltip
 		@Comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
 		public List<String> resizeWhitelist = List.of();
 	}

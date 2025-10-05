@@ -74,6 +74,11 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
+	public boolean nameBasedFeatures() {
+		return PoserConfig.COMMON.nameBasedFeatures.get();
+	}
+
+	@Override
 	public String getModVersion() {
 		return ModList.get().getModFileById(Reference.MOD_ID).versionString();
 	}

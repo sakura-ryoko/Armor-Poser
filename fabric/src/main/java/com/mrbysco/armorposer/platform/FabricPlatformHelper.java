@@ -79,6 +79,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
+	public boolean nameBasedFeatures() {
+		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
+		return config.general.nameBasedFeatures;
+	}
+
+	@Override
 	public String getModVersion() {
 		return FabricLoader.getInstance().getModContainer(Reference.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
 	}

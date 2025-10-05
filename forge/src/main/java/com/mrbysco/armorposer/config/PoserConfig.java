@@ -17,6 +17,7 @@ public class PoserConfig {
 		public final BooleanValue enableNameTags;
 		public final BooleanValue allowScrolling;
 		public final BooleanValue restrictResizeToOP;
+		public final BooleanValue nameBasedFeatures;
 		public final ModConfigSpec.ConfigValue<List<? extends String>> resizeWhitelist;
 
 		Common(ModConfigSpec.Builder builder) {
@@ -43,6 +44,11 @@ public class PoserConfig {
 					.comment("Restrict the ability to resize the Armor Stand to server operators")
 					.translation("armorposer.config.restrictResizeToOP")
 					.define("restrictResizeToOP", false);
+
+			nameBasedFeatures = builder
+					.comment("Allow the spawned Armor Stand to have settings set based on its name")
+					.translation("armorposer.config.nameBasedFeatures")
+					.define("nameBasedFeatures", false);
 
 			resizeWhitelist = builder
 					.comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
