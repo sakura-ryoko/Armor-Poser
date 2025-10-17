@@ -12,10 +12,10 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,6 +28,7 @@ public class ArmorGlowScreen extends Screen {
 	private ArmorGlowWidget.ListEntry selected = null;
 
 	private final List<ArmorStand> armorStands;
+	private final List<ArmorStand> invisiblearmorStands;
 	private Button locateButton;
 	private Button modifyButton;
 
@@ -51,7 +52,8 @@ public class ArmorGlowScreen extends Screen {
 			double distance2 = armorStand2.distanceToSqr(minecraft.player);
 			return Double.compare(distance1, distance2);
 		});
-		this.armorStands = Collections.unmodifiableList(armorStands);
+		this.armorStands = armorStands.stream().filter(stand -> !stand.isInvisible()).toList();
+		this.invisiblearmorStands = armorStands.stream().filter(Entity::isInvisible).toList();
 	}
 
 	@Override
@@ -90,15 +92,16 @@ public class ArmorGlowScreen extends Screen {
 		this.armorListWidget[0].setX(0);
 		this.armorListWidget[0].setY(16);
 		this.armorListWidget[0].setHeight(this.height);
+		addRenderableOnly(armorListWidget[0]);
+		armorListWidget[0].refreshList(true);
 
 		this.armorListWidget[1] = new ArmorGlowWidget(this, Component.translatable("armorposer.gui.armor_list.list2"),
 				false, listWidth, fullButtonHeight, y - getScreenFont().lineHeight - PADDING);
 		this.armorListWidget[1].setX(width - listWidth);
 		this.armorListWidget[1].setY(16);
 		this.armorListWidget[1].setHeight(this.height);
-
-		addWidget(armorListWidget[0]);
-		addWidget(armorListWidget[1]);
+		addRenderableOnly(armorListWidget[1]);
+		armorListWidget[1].refreshList(false);
 
 		updateCache();
 	}
@@ -114,23 +117,26 @@ public class ArmorGlowScreen extends Screen {
 		}
 	}
 
-	public <T extends ObjectSelectionList.Entry<T>> void buildPositionList(Consumer<T> ListViewConsumer, Function<ArmorStand, T> newEntry, boolean visible) {
-		List<ArmorStand> filteredArmorStands = this.armorStands.stream()
-				.filter(armorStand -> visible == !armorStand.isInvisible())
-				.toList();
-		filteredArmorStands.forEach(stand -> ListViewConsumer.accept(newEntry.apply(stand)));
+	public <T extends ObjectSelectionList.Entry<T>> void buildVisiblePositions(Consumer<T> listViewConsumer, Function<ArmorStand, T> newEntry) {
+		armorStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
+	}
+
+	public <T extends ObjectSelectionList.Entry<T>> void buildInvisiblePositions(Consumer<T> listViewConsumer, Function<ArmorStand, T> newEntry) {
+		invisiblearmorStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
 	}
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.armorListWidget[0].render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.armorListWidget[1].render(guiGraphics, mouseX, mouseY, partialTicks);
-
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
+		if (this.armorListWidget[0].keyPressed(event)) {
+			return true;
+		} else if (this.armorListWidget[1].keyPressed(event)) {
+			return true;
+		}
 		return super.keyPressed(event);
 	}
 
@@ -160,7 +166,13 @@ public class ArmorGlowScreen extends Screen {
 	 */
 	@Override
 	public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean flag) {
-		return super.mouseClicked(buttonEvent, flag);
+		boolean clicked = super.mouseClicked(buttonEvent, flag);
+		if (this.armorListWidget[0].mouseClicked(buttonEvent, flag)) {
+			return true;
+		} else if (this.armorListWidget[1].mouseClicked(buttonEvent, flag)) {
+			return true;
+		}
+		return clicked;
 	}
 
 	@Override
