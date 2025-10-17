@@ -14,8 +14,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -113,23 +115,24 @@ public class ArmorPosesScreen extends Screen {
 		y -= 14 + PADDING;
 		search = new EditBox(getScreenFont(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
 				Component.translatable("armorposer.gui.poses.search"));
+		search.setFocused(false);
+		search.setCanLoseFocus(true);
+		addRenderableWidget(search);
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
-		this.poseListWidget[0] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.default"), false, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
+		this.poseListWidget[0] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.default"),
+				false, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
 		this.poseListWidget[0].setX(0);
 		this.poseListWidget[0].setY(16);
 		this.poseListWidget[0].setHeight(this.height);
+		addRenderableWidget(poseListWidget[0]);
 
-		this.poseListWidget[1] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.user"), true, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
+		this.poseListWidget[1] = new PoseListWidget(this, Component.translatable("armorposer.gui.poses.user"),
+				true, listWidth, fullButtonHeight, search.getY() - getScreenFont().lineHeight - PADDING);
 		this.poseListWidget[1].setX(width - listWidth);
 		this.poseListWidget[1].setY(16);
 		this.poseListWidget[1].setHeight(this.height);
-
-		addWidget(search);
-		addWidget(poseListWidget[0]);
-		addWidget(poseListWidget[1]);
-		search.setFocused(false);
-		search.setCanLoseFocus(true);
+		addRenderableWidget(poseListWidget[1]);
 
 		final int width = listWidth / numButtons;
 		int x = centerWidth + PADDING - width;
@@ -211,15 +214,11 @@ public class ArmorPosesScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.poseListWidget[0].render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.poseListWidget[1].render(guiGraphics, mouseX, mouseY, partialTicks);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("armorposer.gui.poses.search");
 		guiGraphics.drawCenteredString(getScreenFont(), text, this.width / 2 + PADDING,
 				search.getY() - getScreenFont().lineHeight - 2, -1);
-
-		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
