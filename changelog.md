@@ -1,6 +1,3 @@
-* Add config option `nameBasedFeatures` which adds name based settings for newly spawned Armor Stands **(Disabled by default)**
-* Different named Armor Stands will have different properties **when enabled**:
-    - `armstrong` will enable arms on the Armor Stand
-    - `baseless` will remove the baseplate of the Armor Stand
-    - `small` will make the Armor Stand small
-    - `levitation` will make the Armor Stand have no gravity
+* Update to 1.21.10
+* Fix invisible armor stands not showing in the armor stand list screen
+* Fix not being able to select armor stands in the list screen
