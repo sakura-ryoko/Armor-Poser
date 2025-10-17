@@ -25,7 +25,6 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		this.title = title;
 		this.listWidth = listWidth;
 		this.refreshList(visible);
-//		this.setRenderBackground(false);
 	}
 
 	@Override
@@ -40,7 +39,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 	public void refreshList(boolean visible) {
 		this.clearEntries();
-		parent.buildPositionList(this::addEntry, location -> new ListEntry(location, this.parent), visible);
+		if (visible)
+			parent.buildVisiblePositions(this::addEntry, location -> new ArmorGlowWidget.ListEntry(location, this.parent));
+		else
+			parent.buildInvisiblePositions(this::addEntry, location -> new ArmorGlowWidget.ListEntry(location, this.parent));
 	}
 
 	@Override
@@ -85,7 +87,8 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			Font font = this.parent.getScreenFont();
 			int left = getContentX();
 			int top = getContentY();
-			renderScrollingString(guiGraphics, font, getPositionComponent(), left, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
+			renderScrollingString(guiGraphics, font, getPositionComponent(),
+					left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) {
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
 				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
@@ -121,7 +124,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			MutableComponent component = Component.literal(getArmorStand().blockPosition().toShortString());
 			if (this.showPlate)
 				component = component.withStyle(ChatFormatting.UNDERLINE);
-			if (this.locked)
+			if (this.isLocked())
 				component = component.append(" \uD83D\uDD12").withStyle(ChatFormatting.BOLD);
 			return component;
 		}
