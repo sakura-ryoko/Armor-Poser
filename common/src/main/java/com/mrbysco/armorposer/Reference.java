@@ -85,7 +85,7 @@ public class Reference {
 
 	public static boolean canResize(Player player) {
 		if (Services.PLATFORM.isResizeRestrictedToOPS() && player != null) {
-			if (Services.PLATFORM.getResizeWhitelist().contains(player.getGameProfile().name())){
+			if (Services.PLATFORM.getResizeWhitelist().contains(player.getGameProfile().name())) {
 				return true;
 			}
 			return player.hasPermissions(4);

@@ -41,7 +41,7 @@ public class ClientPayloadHandler {
 			if (mc.level != null) {
 				entity = mc.level.getEntity(armorStandLockedPayload.entityID());
 			}
-			if(entity instanceof ArmorStand armorStandEntity) {
+			if (entity instanceof ArmorStand armorStandEntity) {
 				armorStandEntity.setInvulnerable(armorStandLockedPayload.isLocked());
 			}
 		});

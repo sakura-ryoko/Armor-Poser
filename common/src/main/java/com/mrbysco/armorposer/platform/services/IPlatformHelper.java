@@ -30,30 +30,35 @@ public interface IPlatformHelper {
 
 	/**
 	 * Get the user preset folder
+	 *
 	 * @return The user preset folder
 	 */
 	Path getUserPresetFolder();
 
 	/**
 	 * Check if the resize is restricted to OPs
+	 *
 	 * @return If the resize is restricted to OPs
 	 */
 	boolean isResizeRestrictedToOPS();
 
 	/**
 	 * Check if name based features are enabled
+	 *
 	 * @return If name based features are enabled
 	 */
 	boolean nameBasedFeatures();
 
 	/**
 	 * Gets a list of players that are allowed to resize the Armor Stand while restrictResizeToOP is enabled
+	 *
 	 * @return The resize whitelist
 	 */
 	List<? extends String> getResizeWhitelist();
 
 	/**
 	 * Get the mod version
+	 *
 	 * @return The mod version
 	 */
 	String getModVersion();

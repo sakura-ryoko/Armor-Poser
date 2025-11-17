@@ -59,7 +59,7 @@ public class EventHandler {
 
 	@SubscribeEvent
 	public static void playerTracking(PlayerEvent.StartTracking event) {
-		if(event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ArmorStand armorStand) {
+		if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ArmorStand armorStand) {
 			serverPlayer.connection.send(new ArmorStandLockedPayload(armorStand.getId(), armorStand.isInvulnerable()));
 		}
 	}
