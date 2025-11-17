@@ -92,7 +92,7 @@ public class ArmorGlowScreen extends Screen {
 		this.armorListWidget[0].setX(0);
 		this.armorListWidget[0].setY(16);
 		this.armorListWidget[0].setHeight(this.height);
-		addRenderableOnly(armorListWidget[0]);
+		addRenderableWidget(armorListWidget[0]);
 		armorListWidget[0].refreshList(true);
 
 		this.armorListWidget[1] = new ArmorGlowWidget(this, Component.translatable("armorposer.gui.armor_list.list2"),
@@ -100,7 +100,7 @@ public class ArmorGlowScreen extends Screen {
 		this.armorListWidget[1].setX(width - listWidth);
 		this.armorListWidget[1].setY(16);
 		this.armorListWidget[1].setHeight(this.height);
-		addRenderableOnly(armorListWidget[1]);
+		addRenderableWidget(armorListWidget[1]);
 		armorListWidget[1].refreshList(false);
 
 		updateCache();
