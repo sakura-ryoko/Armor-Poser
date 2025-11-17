@@ -1,5 +1,8 @@
 package com.mrbysco.armorposer.client;
 
+import com.mrbysco.armorposer.client.debug.DebugHandler;
+import net.minecraft.client.Minecraft;
+
 import java.util.UUID;
 
 public class GlowHandler {
@@ -19,6 +22,11 @@ public class GlowHandler {
 	}
 
 	public static boolean isGlowing(UUID uuid) {
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.debugEntries.isCurrentlyEnabled(DebugHandler.SHOW_ARMOR_STANDS) && !minecraft.showOnlyReducedInfo()) {
+			return true;
+		}
+
 		if (!shouldArmorStandGlow())
 			return false;
 		else

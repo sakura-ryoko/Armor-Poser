@@ -10,7 +10,8 @@
     "ArmorStandMixin"
   ],
   "client": [
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "DebugScreenEntriesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,5 +1,6 @@
 package com.mrbysco.armorposer;
 
+import com.mrbysco.armorposer.client.debug.DebugHandler;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
 import net.fabricmc.api.ClientModInitializer;
@@ -37,5 +38,6 @@ public class ArmorPoserClient implements ClientModInitializer {
 				armorStandEntity.setInvulnerable(payload.isLocked());
 			}
 		});
+		DebugHandler.init();
 	}
 }

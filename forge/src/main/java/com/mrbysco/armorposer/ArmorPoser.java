@@ -1,5 +1,6 @@
 package com.mrbysco.armorposer;
 
+import com.mrbysco.armorposer.client.debug.DebugHandler;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
@@ -29,6 +30,7 @@ public class ArmorPoser {
 
 		if (dist.isClient()) {
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+			DebugHandler.init();
 		}
 	}
 
