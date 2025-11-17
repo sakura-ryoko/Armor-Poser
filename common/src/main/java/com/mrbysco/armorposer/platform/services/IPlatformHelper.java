@@ -62,4 +62,18 @@ public interface IPlatformHelper {
 	 * @return The mod version
 	 */
 	String getModVersion();
+
+	/**
+	 * Check if nametag rendering is set to direct only
+	 *
+	 * @return If nametag rendering is direct only
+	 */
+	boolean directNametagOnly();
+
+	/**
+	 * Get the nametag render distance
+	 *
+	 * @return The nametag render distance
+	 */
+	int nametagRenderDistance();
 }

@@ -12,6 +12,11 @@
   "armorposer.config.restrictResizeToOP.tooltip": "Restrict the ability to resize the Armor Stand to server operators",
   "armorposer.config.nameBasedFeatures": "Name Based Features",
   "armorposer.config.nameBasedFeatures.tooltip": "Allow the spawned Armor Stand to have settings set based on its name",
+  "armorposer.config.client": "Client",
+  "armorposer.config.directNametagOnly": "Direct Nametag Only",
+  "armorposer.config.directNametagOnly.tooltip": "Only render the nametag when directly looking at the Armor Stand. Set to false to use vanilla behavior",
+  "armorposer.config.nametagRenderDistance": "Nametag Render Distance",
+  "armorposer.config.nametagRenderDistance.tooltip": "The distance squared at which Armor Stand nametags are rendered. Set to 0 to use vanilla behavior",
   "armorposer.configuration.title": "Armor Poser",
   "armorposer.gui.armor_list.list": "Visible Armor Stands",
   "armorposer.gui.armor_list.list2": "Invisible Armor Stands",
@@ -128,5 +133,11 @@
   "text.autoconfig.armorposer.option.general.restrictResizeToOP.@Tooltip": "Restrict the ability to resize the Armor Stand to server operators",
   "text.autoconfig.armorposer.option.general.nameBasedFeatures": "Name Based Features",
   "text.autoconfig.armorposer.option.general.nameBasedFeatures.@Tooltip": "Allow the spawned Armor Stand to have settings set based on its name",
-  "text.autoconfig.armorposer.title": "Armor Poser"
+  "text.autoconfig.armorposer.title": "Armor Poser",
+  "text.autoconfig.armorposer.option.client": "Client",
+  "text.autoconfig.armorposer.option.client.directNametagOnly": "Direct Nametag Only",
+  "text.autoconfig.armorposer.option.client.directNametagOnly.@Tooltip": "Only render the nametag when directly looking at the Armor Stand. Set to false to use vanilla behavior",
+  "text.autoconfig.armorposer.option.client.nametagRenderDistance": "Nametag Render Distance",
+  "text.autoconfig.armorposer.option.client.nametagRenderDistance.@Tooltip": "The distance squared at which Armor Stand nametags are rendered. Set to 0 to use vanilla behavior"
+
 }

@@ -34,4 +34,16 @@ public class PoserConfig implements ConfigData {
 		@Comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
 		public List<String> resizeWhitelist = List.of();
 	}
+
+	@CollapsibleObject
+	public Client client = new Client();
+
+	public static class Client {
+		@ConfigEntry.Gui.Tooltip
+		@Comment("Only render the nametag when directly looking at the Armor Stand. Set to false to use vanilla behavior (default: false)")
+		public boolean directNametagOnly = false;
+		@ConfigEntry.Gui.Tooltip
+		@Comment("The distance squared at which Armor Stand nametags are rendered. Set to 0 to use vanilla behavior (default: 0)")
+		public int nametagRenderDistance = 0;
+	}
 }

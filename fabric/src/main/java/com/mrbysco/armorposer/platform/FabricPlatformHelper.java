@@ -88,4 +88,16 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	public String getModVersion() {
 		return FabricLoader.getInstance().getModContainer(Reference.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
 	}
+
+	@Override
+	public boolean directNametagOnly() {
+		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
+		return config.client.directNametagOnly;
+	}
+
+	@Override
+	public int nametagRenderDistance() {
+		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
+		return config.client.nametagRenderDistance;
+	}
 }

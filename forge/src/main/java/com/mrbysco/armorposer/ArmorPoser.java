@@ -29,6 +29,7 @@ public class ArmorPoser {
 		eventBus.addListener(this::setupPackets);
 
 		if (dist.isClient()) {
+			container.registerConfig(Type.CLIENT, PoserConfig.clientSpec);
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 			DebugHandler.init();
 		}

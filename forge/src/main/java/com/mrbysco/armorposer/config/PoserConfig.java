@@ -69,6 +69,39 @@ public class PoserConfig {
 		COMMON = specPair.getLeft();
 	}
 
+	public static class Client {
+		public final BooleanValue directNametagOnly;
+		public final ModConfigSpec.IntValue nametagRenderDistance;
+
+		Client(ModConfigSpec.Builder builder) {
+			builder.comment("Client settings")
+					.translation("armorposer.config.client")
+					.push("Client");
+
+			directNametagOnly = builder
+					.comment("Only render the nametag when directly looking at the Armor Stand. Set to false to use vanilla behavior (default: false)")
+					.translation("armorposer.config.directNametagOnly")
+					.define("directNametagOnly", false);
+
+			nametagRenderDistance = builder
+					.comment("The distance squared at which Armor Stand nametags are rendered. Set to 0 to use vanilla behavior (default: 0)")
+					.translation("armorposer.config.nametagRenderDistance")
+					.defineInRange("nametagRenderDistance", 0, 0, 64);
+
+			builder.pop();
+		}
+
+	}
+
+	public static final ModConfigSpec clientSpec;
+	public static final Client CLIENT;
+
+	static {
+		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
+		clientSpec = specPair.getRight();
+		CLIENT = specPair.getLeft();
+	}
+
 	@SubscribeEvent
 	public static void onLoad(final ModConfigEvent.Loading configEvent) {
 		Reference.LOGGER.debug("Loaded {}'s config file {}", Reference.MOD_ID, configEvent.getConfig().getFileName());

@@ -11,6 +11,7 @@
   ],
   "client": [
     "AbstractSliderButtonAccessor",
+    "ArmorStandRendererMixin",
     "DebugScreenEntriesAccessor",
     "MinecraftMixin"
   ],

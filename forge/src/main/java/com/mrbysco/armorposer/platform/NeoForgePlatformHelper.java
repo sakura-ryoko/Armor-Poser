@@ -82,4 +82,14 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	public String getModVersion() {
 		return ModList.get().getModFileById(Reference.MOD_ID).versionString();
 	}
+
+	@Override
+	public boolean directNametagOnly() {
+		return PoserConfig.CLIENT.directNametagOnly.getAsBoolean();
+	}
+
+	@Override
+	public int nametagRenderDistance() {
+		return PoserConfig.CLIENT.nametagRenderDistance.getAsInt();
+	}
 }
