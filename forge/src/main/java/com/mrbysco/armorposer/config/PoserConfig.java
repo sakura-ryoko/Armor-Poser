@@ -1,10 +1,10 @@
 package com.mrbysco.armorposer.config;
 
 import com.mrbysco.armorposer.Reference;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class PoserConfig {
 			resizeWhitelist = builder
 					.comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
 					.translation("armorposer.config.resizeWhitelist")
-					.defineListAllowEmpty("resizeWhitelist", List.of(), () -> "", o -> o instanceof String);
+					.defineListAllowEmpty("resizeWhitelist", List.of(), String::new, o -> o instanceof String);
 
 			builder.pop();
 		}
