@@ -21,12 +21,15 @@ public class Reference {
 	public static final String MOD_NAME = "Armor Poser";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
+	public static ResourceLocation modLoc(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	}
 
-	public static final ResourceLocation SYNC_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "sync_packet");
-	public static final ResourceLocation SWAP_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "swap_packet");
-	public static final ResourceLocation RENAME_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "rename_packet");
-	public static final ResourceLocation SCREEN_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "screen_packet");
-	public static final ResourceLocation LOCKED_PACKET_ID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "locked_packet");
+	public static final ResourceLocation SYNC_PACKET_ID = modLoc("sync_packet");
+	public static final ResourceLocation SWAP_PACKET_ID = modLoc("swap_packet");
+	public static final ResourceLocation RENAME_PACKET_ID = modLoc("rename_packet");
+	public static final ResourceLocation SCREEN_PACKET_ID = modLoc("screen_packet");
+	public static final ResourceLocation LOCKED_PACKET_ID = modLoc("locked_packet");
 
 	public static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
 	public static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);

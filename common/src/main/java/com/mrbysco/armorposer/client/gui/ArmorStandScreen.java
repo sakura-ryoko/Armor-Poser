@@ -41,28 +41,28 @@ import java.util.Optional;
 
 public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites MIRROR_POSE_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_pose"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_pose_highlighted")
+			Reference.modLoc("widget/mirror_pose"), Reference.modLoc("widget/mirror_pose_highlighted")
 	);
 	private static final WidgetSprites MIRROR_LEGS_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_legs"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_legs_highlighted")
+			Reference.modLoc("widget/mirror_legs"), Reference.modLoc("widget/mirror_legs_highlighted")
 	);
 	private static final WidgetSprites MIRROR_ARMS_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_arms"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_arms_highlighted")
+			Reference.modLoc("widget/mirror_arms"), Reference.modLoc("widget/mirror_arms_highlighted")
 	);
 	private static final WidgetSprites SWAP_TO_HEAD_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/swap_to_head"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/swap_to_head_highlighted")
+			Reference.modLoc("widget/swap_to_head"), Reference.modLoc("widget/swap_to_head_highlighted")
 	);
 	private static final WidgetSprites MIRROR_HANDS_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_hands"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/mirror_hands_highlighted")
+			Reference.modLoc("widget/mirror_hands"), Reference.modLoc("widget/mirror_hands_highlighted")
 	);
 	private static final WidgetSprites BLOCK_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/block"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/block_highlighted")
+			Reference.modLoc("widget/block"), Reference.modLoc("widget/block_highlighted")
 	);
 	private static final WidgetSprites ITEM_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/item"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/item_highlighted")
+			Reference.modLoc("widget/item"), Reference.modLoc("widget/item_highlighted")
 	);
 	private static final WidgetSprites TOOL_SPRITES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/tool"), ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "widget/tool_highlighted")
+			Reference.modLoc("widget/tool"), Reference.modLoc("widget/tool_highlighted")
 	);
 	private final ArmorStand entityArmorStand;
 	private final ArmorStandData armorStandData;
