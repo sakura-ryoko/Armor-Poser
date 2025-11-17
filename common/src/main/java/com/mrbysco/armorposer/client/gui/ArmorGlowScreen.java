@@ -2,11 +2,14 @@ package com.mrbysco.armorposer.client.gui;
 
 import com.mrbysco.armorposer.client.GlowHandler;
 import com.mrbysco.armorposer.client.gui.widgets.ArmorGlowWidget;
+import com.mrbysco.armorposer.client.gui.widgets.RangeSlider;
+import com.mrbysco.armorposer.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -16,12 +19,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ArmorGlowScreen extends Screen {
+	private final boolean allowScrolling;
 	private static final int PADDING = 6;
 
 	private ArmorGlowWidget[] armorListWidget = new ArmorGlowWidget[2];
@@ -31,8 +35,10 @@ public class ArmorGlowScreen extends Screen {
 	private final List<ArmorStand> invisiblearmorStands;
 	private Button locateButton;
 	private Button modifyButton;
+	private RangeSlider rangeSlider;
 
 	public final ArmorStandScreen parentScreen;
+	private double range = 30;
 
 	public ArmorGlowScreen(ArmorStandScreen parent) {
 		super(Component.translatable("armorposer.gui.armor_list.list"));
@@ -41,11 +47,12 @@ public class ArmorGlowScreen extends Screen {
 		this.minecraft = Minecraft.getInstance();
 
 		//Add the armor stands to the list
-		if (minecraft.player == null)
+		if (minecraft.player == null || minecraft.level == null)
 			this.onClose();
 
-		List<ArmorStand> armorStands = minecraft.level.getEntitiesOfClass(ArmorStand.class,
-				minecraft.player.getBoundingBox().inflate(30.0D), EntitySelector.LIVING_ENTITY_STILL_ALIVE).stream().collect(Collectors.toList());
+		assert minecraft.level != null;
+		List<ArmorStand> armorStands = new ArrayList<>(minecraft.level.getEntitiesOfClass(ArmorStand.class,
+				minecraft.player.getBoundingBox().inflate(30.0D), EntitySelector.LIVING_ENTITY_STILL_ALIVE));
 		//Sort the list based on how far the armor stand is from the player
 		armorStands.sort((armorStand, armorStand2) -> {
 			double distance1 = armorStand.distanceToSqr(minecraft.player);
@@ -54,6 +61,7 @@ public class ArmorGlowScreen extends Screen {
 		});
 		this.armorStands = armorStands.stream().filter(stand -> !stand.isInvisible()).toList();
 		this.invisiblearmorStands = armorStands.stream().filter(Entity::isInvisible).toList();
+		this.allowScrolling = Services.PLATFORM.allowScrolling();
 	}
 
 	@Override
@@ -103,6 +111,17 @@ public class ArmorGlowScreen extends Screen {
 		addRenderableWidget(armorListWidget[1]);
 		armorListWidget[1].refreshList(false);
 
+		// Range textbox
+		this.rangeSlider = new RangeSlider(centerWidth - 50, 4, 100, 20,
+				Component.translatable("armorposer.gui.label.range").append(" : "), Component.empty(), 1f, 30f, 30, true, (value) -> {
+			this.range = value;
+			this.armorListWidget[0].refreshList(true);
+			this.armorListWidget[1].refreshList(false);
+		}
+		);
+		this.rangeSlider.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.range")));
+		this.addRenderableWidget(this.rangeSlider);
+
 		updateCache();
 	}
 
@@ -118,11 +137,20 @@ public class ArmorGlowScreen extends Screen {
 	}
 
 	public <T extends ObjectSelectionList.Entry<T>> void buildVisiblePositions(Consumer<T> listViewConsumer, Function<ArmorStand, T> newEntry) {
-		armorStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
+		List<ArmorStand> filteredStands = filterRange(armorStands, range);
+		filteredStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
 	}
 
 	public <T extends ObjectSelectionList.Entry<T>> void buildInvisiblePositions(Consumer<T> listViewConsumer, Function<ArmorStand, T> newEntry) {
-		invisiblearmorStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
+		List<ArmorStand> filteredStands = filterRange(invisiblearmorStands, range);
+		filteredStands.forEach(stand -> listViewConsumer.accept(newEntry.apply(stand)));
+	}
+
+	private List<ArmorStand> filterRange(List<ArmorStand> stands, double range) {
+		if (minecraft.player == null) {
+			return stands;
+		}
+		return stands.stream().filter(stand -> stand.distanceToSqr(minecraft.player) <= range * range).toList();
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Locale;
@@ -51,6 +52,10 @@ public class NumberFieldBox extends EditBox {
 
 	public float getFloat() {
 		return NumberUtils.toFloat(super.getValue(), 0.0F);
+	}
+
+	public int getInt() {
+		return Mth.ceil(getFloat());
 	}
 
 	@Override

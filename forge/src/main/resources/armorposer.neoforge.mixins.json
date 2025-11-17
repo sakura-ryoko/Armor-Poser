@@ -8,8 +8,9 @@
     "ArmorStandItemMixin"
   ],
   "client": [
-    "MinecraftMixin",
-    "DebugScreenEntriesAccessor"
+    "AbstractSliderButtonAccessor",
+    "DebugScreenEntriesAccessor",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
