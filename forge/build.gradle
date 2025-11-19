@@ -12,10 +12,6 @@ base {
     archivesName = "${mod_name}-neoforge-${minecraft_version}"
 }
 
-if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-    minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
-}
-
 configurations {
     testmodImplementation.extendsFrom implementation
 }
