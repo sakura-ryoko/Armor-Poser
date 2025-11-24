@@ -32,7 +32,7 @@ public class SavePoseScreen extends Screen {
 			this.minecraft.setScreen(this.parentScreen);
 		}).bounds(this.width / 2 - 4, this.height / 2 + 3, 60, 20).build());
 
-		this.nameField = new EditBox(this.minecraft.font, this.width / 2 - 90, this.height / 2 - 24, 180, 20, Component.literal("Name"));
+		this.nameField = new EditBox(this.font, this.width / 2 - 90, this.height / 2 - 24, 180, 20, Component.literal("Name"));
 		this.nameField.setMaxLength(31);
 		this.nameField.setTextColor(-1);
 		this.addWidget(this.nameField);
