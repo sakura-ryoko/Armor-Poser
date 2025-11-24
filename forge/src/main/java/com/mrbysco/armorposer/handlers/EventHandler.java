@@ -16,6 +16,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = Reference.MOD_ID)
 public class EventHandler {
@@ -27,9 +28,9 @@ public class EventHandler {
 			final Player player = event.getEntity();
 			final Level level = event.getLevel();
 			if (PoserConfig.COMMON.enableConfigGui.get() && player.isShiftKeyDown()) {
-				if (event.getHand() == InteractionHand.MAIN_HAND && !level.isClientSide()) {
-					((ServerPlayer) player).connection.send(new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
-					((ServerPlayer) player).connection.send(new ArmorStandScreenPayload(armorstand.getId()));
+				if (event.getHand() == InteractionHand.MAIN_HAND && player instanceof ServerPlayer serverPlayer) {
+					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
+					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId()));
 				}
 				event.setCanceled(true);
 				return;
@@ -60,7 +61,7 @@ public class EventHandler {
 	@SubscribeEvent
 	public static void playerTracking(PlayerEvent.StartTracking event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ArmorStand armorStand) {
-			serverPlayer.connection.send(new ArmorStandLockedPayload(armorStand.getId(), armorStand.isInvulnerable()));
+			PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorStand.getId(), armorStand.isInvulnerable()));
 		}
 	}
 }
