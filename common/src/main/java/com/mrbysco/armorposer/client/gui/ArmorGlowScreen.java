@@ -3,7 +3,6 @@ package com.mrbysco.armorposer.client.gui;
 import com.mrbysco.armorposer.client.GlowHandler;
 import com.mrbysco.armorposer.client.gui.widgets.ArmorGlowWidget;
 import com.mrbysco.armorposer.client.gui.widgets.RangeSlider;
-import com.mrbysco.armorposer.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ArmorGlowScreen extends Screen {
-	private final boolean allowScrolling;
 	private static final int PADDING = 6;
 
 	private ArmorGlowWidget[] armorListWidget = new ArmorGlowWidget[2];
@@ -44,8 +42,6 @@ public class ArmorGlowScreen extends Screen {
 		super(Component.translatable("armorposer.gui.armor_list.list"));
 		this.parentScreen = parent;
 
-		this.minecraft = Minecraft.getInstance();
-
 		//Add the armor stands to the list
 		if (minecraft.player == null || minecraft.level == null)
 			this.onClose();
@@ -61,7 +57,6 @@ public class ArmorGlowScreen extends Screen {
 		});
 		this.armorStands = armorStands.stream().filter(stand -> !stand.isInvisible()).toList();
 		this.invisiblearmorStands = armorStands.stream().filter(Entity::isInvisible).toList();
-		this.allowScrolling = Services.PLATFORM.allowScrolling();
 	}
 
 	@Override
@@ -204,9 +199,9 @@ public class ArmorGlowScreen extends Screen {
 	}
 
 	@Override
-	public void resize(Minecraft mc, int width, int height) {
+	public void resize(int width, int height) {
 		ArmorGlowWidget.ListEntry selected = this.selected;
-		this.init(mc, width, height);
+		this.init(width, height);
 		this.selected = selected;
 		updateCache();
 	}

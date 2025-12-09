@@ -5,7 +5,8 @@ import com.mrbysco.armorposer.platform.Services;
 import com.mrbysco.armorposer.poses.UserPoseHandler;
 import com.mrbysco.armorposer.util.PoseData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -21,15 +22,15 @@ public class Reference {
 	public static final String MOD_NAME = "Armor Poser";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static ResourceLocation modLoc(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier modLoc(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
-	public static final ResourceLocation SYNC_PACKET_ID = modLoc("sync_packet");
-	public static final ResourceLocation SWAP_PACKET_ID = modLoc("swap_packet");
-	public static final ResourceLocation RENAME_PACKET_ID = modLoc("rename_packet");
-	public static final ResourceLocation SCREEN_PACKET_ID = modLoc("screen_packet");
-	public static final ResourceLocation LOCKED_PACKET_ID = modLoc("locked_packet");
+	public static final Identifier SYNC_PACKET_ID = modLoc("sync_packet");
+	public static final Identifier SWAP_PACKET_ID = modLoc("swap_packet");
+	public static final Identifier RENAME_PACKET_ID = modLoc("rename_packet");
+	public static final Identifier SCREEN_PACKET_ID = modLoc("screen_packet");
+	public static final Identifier LOCKED_PACKET_ID = modLoc("locked_packet");
 
 	public static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
 	public static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);
@@ -88,7 +89,7 @@ public class Reference {
 			if (Services.PLATFORM.getResizeWhitelist().contains(player.getGameProfile().name())) {
 				return true;
 			}
-			return player.hasPermissions(4);
+			return player.permissions().hasPermission(Permissions.COMMANDS_OWNER);
 		}
 		return true;
 	}

@@ -3,10 +3,9 @@ package com.mrbysco.armorposer.client.gui.widgets;
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.ArmorPosesScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
+import org.joml.Matrix3x2fStack;
 
 public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry> {
 	private final ArmorPosesScreen parent;
@@ -74,11 +73,15 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 	public class ListEntry extends Entry<ListEntry> {
 		private final PoseEntry poseEntry;
 		private final ArmorPosesScreen parent;
-		private ArmorStand cachedEntity;
+		private final ArmorStandRenderState armorStandPreview = new ArmorStandRenderState();
 
 		ListEntry(PoseEntry entry, ArmorPosesScreen parent) {
 			this.poseEntry = entry;
 			this.parent = parent;
+
+			this.armorStandPreview.entityType = EntityType.ARMOR_STAND;
+			this.armorStandPreview.xRot = 25.0F;
+			this.armorStandPreview.bodyRot = 210.0F;
 
 			Minecraft mc = parent.getScreenMinecraft();
 			if (mc == null) {
@@ -95,7 +98,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 					if (!tag.isEmpty()) {
 						nbt.merge(tag);
 					}
-					this.cachedEntity = (ArmorStand) EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
+					ArmorStand armorStand = (ArmorStand) EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
 						if (entity instanceof ArmorStand stand) {
 							stand.setNoBasePlate(true);
 							stand.setShowArms(true);
@@ -106,32 +109,53 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 						}
 						return entity;
 					});
+					if (armorStand != null) {
+						this.updateState(armorStand);
+					}
 				} catch (Exception e) {
 					Reference.LOGGER.error("Unable to parse nbt pose {}", e.getMessage());
 				}
 			}
 		}
 
+		public void updateState(ArmorStand stand) {
+			this.armorStandPreview.showBasePlate = stand.showBasePlate();
+			this.armorStandPreview.isSmall = stand.isSmall();
+			this.armorStandPreview.showArms = stand.showArms();
+			this.armorStandPreview.isInvisible = stand.isInvisible();
+			this.armorStandPreview.nameTag = stand.getCustomName();
+
+			this.armorStandPreview.headPose = stand.getHeadPose();
+			this.armorStandPreview.bodyPose = stand.getBodyPose();
+			this.armorStandPreview.leftArmPose = stand.getLeftArmPose();
+			this.armorStandPreview.rightArmPose = stand.getRightArmPose();
+			this.armorStandPreview.leftLegPose = stand.getLeftLegPose();
+			this.armorStandPreview.rightLegPose = stand.getRightLegPose();
+		}
+
 		@Override
 		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
-			Font font = this.parent.getScreenFont();
 			int left = getContentX();
 			int top = getContentY();
-			renderScrollingString(guiGraphics, font, Component.literal(getName()),
-					left + 36, top + 10, left + width - 18, top + 20, ARGB.opaque(16777215));
+			Matrix3x2fStack pose = guiGraphics.pose();
+			pose.pushMatrix();
+			pose.translate(left, top - (height / 2));
+			renderScrollingStringOverContents(guiGraphics.textRenderer(), Component.literal(getName()), 18);
 
 			if (getSelected() == this)
 				renderPose(guiGraphics, left + 16, top + 28, partialTick);
+			pose.popMatrix();
 		}
 
 		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
-			if (cachedEntity != null) {
+			if (armorStandPreview != null) {
 				int startX = xPos - 40;
 				int startY = yPos - 60;
 				int endX = xPos + 40;
 				int endY = yPos + 60;
-				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
-						20.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, this.cachedEntity);
+
+				guiGraphics.submitEntityRenderState(this.armorStandPreview, 20.0F,
+						Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, null, startX, startY, endX, endY);
 			}
 		}
 

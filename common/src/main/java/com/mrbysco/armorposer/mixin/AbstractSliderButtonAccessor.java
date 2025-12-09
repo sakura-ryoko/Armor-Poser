@@ -1,7 +1,7 @@
 package com.mrbysco.armorposer.mixin;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -15,8 +15,8 @@ public interface AbstractSliderButtonAccessor {
 	void armorposer$setDragging(boolean dragging);
 
 	@Invoker("getSprite")
-	ResourceLocation armorposer$getSprite();
+	Identifier armorposer$getSprite();
 
 	@Invoker("getHandleSprite")
-	ResourceLocation armorposer$getHandleSprite();
+	Identifier armorposer$getHandleSprite();
 }

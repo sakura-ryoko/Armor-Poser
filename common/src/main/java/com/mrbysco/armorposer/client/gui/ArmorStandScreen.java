@@ -91,19 +91,19 @@ public class ArmorStandScreen extends Screen {
 
 	private final int whiteColor = ARGB.opaque(16777215);
 
-	public ArmorStandScreen(ArmorStand entityArmorStand) {
+	public ArmorStandScreen(ArmorStand armorStand) {
 		super(Component.translatable("armorposer.gui.title"));
-		this.entityArmorStand = entityArmorStand;
-		this.oldName = entityArmorStand.hasCustomName() ? entityArmorStand.getName().getString() : this.getTitle().getString();
+		this.entityArmorStand = armorStand;
+		this.oldName = armorStand.hasCustomName() ? armorStand.getName().getString() : this.getTitle().getString();
 
 		this.armorStandData = new ArmorStandData();
 		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
-			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, entityArmorStand.registryAccess());
-			entityArmorStand.saveWithoutId(output);
+			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, armorStand.registryAccess());
+			armorStand.saveWithoutId(output);
 			CompoundTag tag = output.buildResult();
 
 			if (tag.getCompoundOrEmpty("Pose").isEmpty()) {
-				CompoundTag poseTag = ArmorUtil.writeAllPoses(entityArmorStand);
+				CompoundTag poseTag = ArmorUtil.writeAllPoses(armorStand);
 				tag.put("Pose", poseTag);
 			}
 			this.armorStandData.readFromNBT(tag);
@@ -594,9 +594,9 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	@Override
-	public void resize(Minecraft minecraft, int width, int height) {
+	public void resize(int width, int height) {
 		String s = this.nameField.getValue();
-		this.init(minecraft, width, height);
+		this.init(width, height);
 		this.nameField.setValue(s);
 	}
 

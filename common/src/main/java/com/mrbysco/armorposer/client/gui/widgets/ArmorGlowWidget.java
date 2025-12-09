@@ -6,13 +6,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
+import org.joml.Matrix3x2fStack;
 
 public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEntry> {
 	private final ArmorGlowScreen parent;
@@ -29,7 +30,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 	@Override
 	protected int scrollBarX() {
-		return this.getX() + this.listWidth - 6;
+		return this.listWidth;
 	}
 
 	@Override
@@ -69,36 +70,62 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 	public class ListEntry extends Entry<ListEntry> {
 		private final ArmorGlowScreen parent;
-		private final ArmorStand armorStand;
+		private final ArmorStandRenderState armorStandPreview = new ArmorStandRenderState();
+		private final ArmorStand armorstand;
 		private final float scale;
 		private final boolean showPlate;
 		private final boolean locked;
 
 		ListEntry(ArmorStand armorStand, ArmorGlowScreen parent) {
-			this.armorStand = armorStand;
 			this.parent = parent;
 			this.scale = armorStand.getScale();
 			this.showPlate = armorStand.showBasePlate();
 			this.locked = armorStand.isInvulnerable();
+
+			this.armorstand = armorStand;
+
+			this.armorStandPreview.entityType = EntityType.ARMOR_STAND;
+			this.armorStandPreview.xRot = 25.0F;
+			this.armorStandPreview.bodyRot = 210.0F;
+			this.updateState(armorStand);
+		}
+
+		public void updateState(ArmorStand stand) {
+			this.armorStandPreview.showBasePlate = stand.showBasePlate();
+			this.armorStandPreview.isSmall = stand.isSmall();
+			this.armorStandPreview.showArms = stand.showArms();
+			this.armorStandPreview.isInvisible = stand.isInvisible();
+			this.armorStandPreview.nameTag = stand.getCustomName();
+
+			this.armorStandPreview.headPose = stand.getHeadPose();
+			this.armorStandPreview.bodyPose = stand.getBodyPose();
+			this.armorStandPreview.leftArmPose = stand.getLeftArmPose();
+			this.armorStandPreview.rightArmPose = stand.getRightArmPose();
+			this.armorStandPreview.leftLegPose = stand.getLeftLegPose();
+			this.armorStandPreview.rightLegPose = stand.getRightLegPose();
 		}
 
 		@Override
 		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
-			Font font = this.parent.getScreenFont();
 			int left = getContentX();
 			int top = getContentY();
-			renderScrollingString(guiGraphics, font, getPositionComponent(),
-					left + 36, top + 10, left + width - 18, top + 20, 0xFFFFFFFF);
+			Matrix3x2fStack pose = guiGraphics.pose();
+			pose.pushMatrix();
+			pose.translate(left, top - (height / 2));
+			renderScrollingStringOverContents(guiGraphics.textRenderer(), getPositionComponent(), 18);
+
 			if (isMouseOver(mouseX, mouseY)) {
+				Font font = this.parent.getScreenFont();
 				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
 				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
 			}
 			if (isVisible() && getSelected() == this)
 				renderPose(guiGraphics, left + 16, top + 28, partialTick);
+			pose.popMatrix();
 		}
 
 		public ArmorStand getArmorStand() {
-			return armorStand;
+			return armorstand;
 		}
 
 		public boolean isLocked() {
@@ -106,22 +133,23 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		}
 
 		public boolean isVisible() {
-			return !armorStand.isInvisible();
+			return !armorStandPreview.isInvisible;
 		}
 
 		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
-			if (armorStand != null) {
+			if (armorStandPreview != null) {
 				int startX = xPos - 40;
 				int startY = yPos - 60;
 				int endX = xPos + 40;
 				int endY = yPos + 60;
-				InventoryScreen.renderEntityInInventory(guiGraphics, startX, startY, endX, endY,
-						20.0F, Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, (Quaternionf) null, this.armorStand);
+
+				guiGraphics.submitEntityRenderState(this.armorStandPreview, 20.0F,
+						Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, null, startX, startY, endX, endY);
 			}
 		}
 
 		public Component getPositionComponent() {
-			MutableComponent component = Component.literal(getArmorStand().blockPosition().toShortString());
+			MutableComponent component = Component.literal(this.getArmorStand().blockPosition().toShortString());
 			if (this.showPlate)
 				component = component.withStyle(ChatFormatting.UNDERLINE);
 			if (this.isLocked())

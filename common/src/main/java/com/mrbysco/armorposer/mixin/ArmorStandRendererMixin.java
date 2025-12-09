@@ -2,7 +2,7 @@ package com.mrbysco.armorposer.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mrbysco.armorposer.util.NameTagHelper;
-import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
