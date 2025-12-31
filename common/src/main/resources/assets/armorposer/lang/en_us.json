@@ -139,5 +139,4 @@
   "text.autoconfig.armorposer.option.client.directNametagOnly.@Tooltip": "Only render the nametag when directly looking at the Armor Stand. Set to false to use vanilla behavior",
   "text.autoconfig.armorposer.option.client.nametagRenderDistance": "Nametag Render Distance",
   "text.autoconfig.armorposer.option.client.nametagRenderDistance.@Tooltip": "The distance squared at which Armor Stand nametags are rendered. Set to 0 to use vanilla behavior"
-
 }
