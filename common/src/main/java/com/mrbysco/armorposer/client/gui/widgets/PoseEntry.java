@@ -2,9 +2,9 @@ package com.mrbysco.armorposer.client.gui.widgets;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.armorposer.util.PoseData;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public record PoseEntry(PoseData pose, boolean userAdded) implements Comparable<PoseEntry> {
@@ -13,8 +13,8 @@ public record PoseEntry(PoseData pose, boolean userAdded) implements Comparable<
 		this(new PoseData(name, data), userAdded);
 	}
 
-	public String getName() {
-		return userAdded() ? pose().name() : I18n.get("armorposer.gui.pose." + pose().name());
+	public Component getName() {
+		return userAdded() ? Component.literal(pose().name()) : Component.translatable("armorposer.gui.pose." + pose().name());
 	}
 
 	public CompoundTag getTag() {
@@ -27,6 +27,6 @@ public record PoseEntry(PoseData pose, boolean userAdded) implements Comparable<
 
 	@Override
 	public int compareTo(@NotNull PoseEntry o) {
-		return getName().compareTo(o.getName());
+		return getName().getString().compareTo(o.getName().getString());
 	}
 }

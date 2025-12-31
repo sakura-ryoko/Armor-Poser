@@ -111,7 +111,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			int top = getContentY();
 			Matrix3x2fStack pose = guiGraphics.pose();
 			pose.pushMatrix();
-			pose.translate(left, top - (height / 2));
+			pose.translate(0, top - (height / 2));
 			renderScrollingStringOverContents(guiGraphics.textRenderer(), getPositionComponent(), 18);
 
 			if (isMouseOver(mouseX, mouseY)) {

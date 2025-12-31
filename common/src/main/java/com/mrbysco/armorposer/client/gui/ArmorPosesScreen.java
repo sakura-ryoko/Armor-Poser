@@ -182,11 +182,11 @@ public class ArmorPosesScreen extends Screen {
 
 	private void reloadPoses() {
 		this.poses = this.unsortedPoses.stream().
-				filter(entry -> entry.getName().toLowerCase(Locale.ROOT).contains(search.getValue().toLowerCase(Locale.ROOT)))
+				filter(entry -> entry.getName().getString().toLowerCase(Locale.ROOT).contains(search.getValue().toLowerCase(Locale.ROOT)))
 				.collect(Collectors.toList());
 
 		this.userPoses = this.unsortedUserPoses.stream().
-				filter(entry -> entry.getName().toLowerCase(Locale.ROOT).contains(search.getValue().toLowerCase(Locale.ROOT)))
+				filter(entry -> entry.getName().getString().toLowerCase(Locale.ROOT).contains(search.getValue().toLowerCase(Locale.ROOT)))
 				.collect(Collectors.toList());
 
 		lastFilterText = search.getValue();

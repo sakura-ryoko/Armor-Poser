@@ -139,8 +139,8 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 			int top = getContentY();
 			Matrix3x2fStack pose = guiGraphics.pose();
 			pose.pushMatrix();
-			pose.translate(left, top - (height / 2));
-			renderScrollingStringOverContents(guiGraphics.textRenderer(), Component.literal(getName()), 18);
+			pose.translate(0, top - ((float) height / 2));
+			renderScrollingStringOverContents(guiGraphics.textRenderer(), getName(), 18);
 
 			if (getSelected() == this)
 				renderPose(guiGraphics, left + 16, top + 28, partialTick);
@@ -163,7 +163,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 			return poseEntry.getTag();
 		}
 
-		public String getName() {
+		public Component getName() {
 			return poseEntry.getName();
 		}
 
@@ -177,7 +177,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 
 		@Override
 		public Component getNarration() {
-			return Component.literal(getName());
+			return getName();
 		}
 	}
 }
