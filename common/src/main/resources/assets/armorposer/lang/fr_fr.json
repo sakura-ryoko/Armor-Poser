@@ -14,9 +14,9 @@
   "armorposer.config.nameBasedFeatures.tooltip": "Autoriser le Porte-Armure généré à avoir des paramètres définis en fonction de son nom",
   "armorposer.config.client": "Client",
   "armorposer.config.directNametagOnly": "Étiquette de nom en vue directe uniquement",
-  "armorposer.config.directNametagOnly.tooltip": "Afficher l'étiquette de nom uniquement lorsque vous regardez directement le Porte-Armure. Désactivez cette option pour utiliser le fonctionnement vanilla",
+  "armorposer.config.directNametagOnly.tooltip": "Afficher l'étiquette de nom uniquement lorsque vous regardez directement le Porte-Armure. Désactiver cette option pour utiliser le fonctionnement vanilla",
   "armorposer.config.nametagRenderDistance": "Distance d'affichage de l'étiquette de nom",
-  "armorposer.config.nametagRenderDistance.tooltip": "Distance au carré à laquelle les étiquettes de nom des Porte-Armures sont affichées. Réglez à 0 pour utiliser le fonctionnement vanilla",
+  "armorposer.config.nametagRenderDistance.tooltip": "Distance au carré à laquelle les étiquettes de nom des Porte-Armures sont affichées. Régler à 0 pour utiliser le fonctionnement vanilla",
   "armorposer.configuration.title": "Armor Poser",
   "armorposer.gui.armor_list.list": "Porte-Armures",
   "armorposer.gui.armor_list.list2": "Porte-Armures invisibles",
@@ -108,7 +108,7 @@
   "armorposer.gui.tooltip.x_position": "Ajuster la position X",
   "armorposer.gui.tooltip.x_rotation": "Ajuster la rotation X",
   "armorposer.gui.tooltip.y_position": "Ajuster la position Y",
-  "armorposer.gui.tooltip.y_position.disabled": "Désactivez la gravité pour ajuster la position Y",
+  "armorposer.gui.tooltip.y_position.disabled": "Désactiver la gravité pour ajuster la position Y",
   "armorposer.gui.tooltip.y_rotation": "Ajuster la rotation Y",
   "armorposer.gui.tooltip.z_position": "Ajuster la position Z",
   "armorposer.gui.tooltip.z_rotation": "Ajuster la rotation Z",
@@ -136,7 +136,7 @@
   "text.autoconfig.armorposer.title": "Armor Poser",
   "text.autoconfig.armorposer.option.client": "Client",
   "text.autoconfig.armorposer.option.client.directNametagOnly": "Étiquette de nom en vue directe uniquement",
-  "text.autoconfig.armorposer.option.client.directNametagOnly.@Tooltip": "Afficher l'étiquette de nom uniquement lorsque vous regardez directement le Porte-Armure. Désactivez cette option pour utiliser le fonctionnement vanilla",
+  "text.autoconfig.armorposer.option.client.directNametagOnly.@Tooltip": "Afficher l'étiquette de nom uniquement lorsque vous regardez directement le Porte-Armure. Désactiver cette option pour utiliser le fonctionnement vanilla",
   "text.autoconfig.armorposer.option.client.nametagRenderDistance": "Distance d'affichage de l'étiquette de nom",
-  "text.autoconfig.armorposer.option.client.nametagRenderDistance.@Tooltip": "Distance au carré à laquelle les étiquettes de nom des Porte-Armures sont affichées. Réglez à 0 pour utiliser le fonctionnement vanilla"
+  "text.autoconfig.armorposer.option.client.nametagRenderDistance.@Tooltip": "Distance au carré à laquelle les étiquettes de nom des Porte-Armures sont affichées. Régler à 0 pour utiliser le fonctionnement vanilla"
 }
