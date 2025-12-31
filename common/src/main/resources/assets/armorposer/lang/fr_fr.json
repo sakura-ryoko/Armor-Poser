@@ -95,7 +95,7 @@
   "armorposer.gui.tooltip.base_plate": "Activer/Désactiver la base",
   "armorposer.gui.tooltip.gravity": "Activer/Désactiver la gravité",
   "armorposer.gui.tooltip.paste": "Coller la pose depuis le presse-papiers",
-  "armorposer.gui.tooltip.poses": "Afficher les poses intégrées",
+  "armorposer.gui.tooltip.poses": "Afficher les poses prédéfinies",
   "armorposer.gui.tooltip.rotation": "Modifier la rotation",
   "armorposer.gui.tooltip.scale": "Changer la taille",
   "armorposer.gui.tooltip.save": "Sauvegarder la pose actuelle dans les poses utilisateur",
