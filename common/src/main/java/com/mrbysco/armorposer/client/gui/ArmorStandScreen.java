@@ -36,6 +36,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3x2fStack;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ArmorStandScreen extends Screen {
@@ -55,17 +56,18 @@ public class ArmorStandScreen extends Screen {
 			Reference.modLoc("widget/mirror_hands"), Reference.modLoc("widget/mirror_hands_highlighted")
 	);
 	private static final WidgetSprites BLOCK_SPRITES = new WidgetSprites(
-			Reference.modLoc("widget/block"), Reference.modLoc("widget/block_highlighted")
+			Reference.modLoc("widget/block"), Reference.modLoc("widget/block_disabled"), Reference.modLoc("widget/block_highlighted")
 	);
 	private static final WidgetSprites ITEM_SPRITES = new WidgetSprites(
-			Reference.modLoc("widget/item"), Reference.modLoc("widget/item_highlighted")
+			Reference.modLoc("widget/item"), Reference.modLoc("widget/item_disabled"), Reference.modLoc("widget/item_highlighted")
 	);
 	private static final WidgetSprites TOOL_SPRITES = new WidgetSprites(
-			Reference.modLoc("widget/tool"), Reference.modLoc("widget/tool_highlighted")
+			Reference.modLoc("widget/tool"), Reference.modLoc("widget/tool_disabled"), Reference.modLoc("widget/tool_highlighted")
 	);
 	private final ArmorStand entityArmorStand;
 	private final ArmorStandData armorStandData;
 	private final SavePoseScreen savePoseScreen;
+	private final List<String> disabledFeatures;
 
 	private final String[] buttonLabels = new String[]{"invisible", "base_plate", "gravity", "show_arms", "small", "name_visible", "rotation", "scale"};
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
@@ -91,10 +93,11 @@ public class ArmorStandScreen extends Screen {
 
 	private final int whiteColor = ARGB.opaque(16777215);
 
-	public ArmorStandScreen(ArmorStand armorStand) {
+	public ArmorStandScreen(ArmorStand armorStand, List<String> disabledFeatures) {
 		super(Component.translatable("armorposer.gui.title"));
 		this.entityArmorStand = armorStand;
 		this.oldName = armorStand.hasCustomName() ? armorStand.getName().getString() : this.getTitle().getString();
+		this.disabledFeatures = disabledFeatures;
 
 		this.armorStandData = new ArmorStandData();
 		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
@@ -169,6 +172,10 @@ public class ArmorStandScreen extends Screen {
 				this.textFieldUpdated();
 			}).bounds(x, y, width, height).build());
 			this.toggleButtons[i].setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip." + buttonLabels[i])));
+			if (this.disabledFeatures.contains(buttonLabels[i])) {
+				this.toggleButtons[i].active = false;
+				this.toggleButtons[i].setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip." + buttonLabels[i] + ".disabled").withStyle(ChatFormatting.RED)));
+			}
 		}
 
 		// rotation textbox
@@ -177,6 +184,11 @@ public class ArmorStandScreen extends Screen {
 		this.rotationTextField.setMaxLength(4);
 		this.addWidget(this.rotationTextField);
 		this.rotationTextField.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.rotation")));
+		if (this.disabledFeatures.contains("rotation")) {
+			this.rotationTextField.setEditable(false);
+			this.rotationTextField.active = false;
+			this.rotationTextField.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.rotation.disabled").withStyle(ChatFormatting.RED)));
+		}
 
 		// Size slider
 		this.sizeField = new SizeField(this.font, 1 + offsetX, offsetY + ((this.toggleButtons.length + 1) * 22), 38, 17, Component.translatable("armorposer.gui.label.scale"));
@@ -184,7 +196,7 @@ public class ArmorStandScreen extends Screen {
 		this.sizeField.setMaxLength(4);
 		this.addWidget(this.sizeField);
 		this.sizeField.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.scale")));
-		if (minecraft != null && !Reference.canResize(minecraft.player)) {
+		if (this.disabledFeatures.contains("resize")) {
 			this.sizeField.setEditable(false);
 			this.sizeField.active = false;
 			this.sizeField.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.size.disabled").withStyle(ChatFormatting.RED)));
@@ -568,6 +580,16 @@ public class ArmorStandScreen extends Screen {
 		toolButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.tool")));
 		buttonsLeft--;
 
+		if (this.disabledFeatures.contains("align")) {
+			blockButton.active = false;
+			blockButton.setAlpha(0.5F);
+			blockButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.align.disabled").withStyle(ChatFormatting.RED)));
+			itemButton.active = false;
+			itemButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.align.disabled").withStyle(ChatFormatting.RED)));
+			toolButton.active = false;
+			toolButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.align.disabled").withStyle(ChatFormatting.RED)));
+		}
+
 		this.addRenderableWidget(this.lockButton = new LockIconButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, (button) -> {
 			this.lockButton.setLocked(!this.lockButton.isLocked());
 			this.textFieldUpdated();
@@ -949,11 +971,15 @@ public class ArmorStandScreen extends Screen {
 		}
 	}
 
-	public static void openScreen(ArmorStand armorStandEntity) {
-		Minecraft.getInstance().setScreen(new ArmorStandScreen(armorStandEntity));
+	public static void openScreen(ArmorStand armorStandEntity, List<String> disabledFeatures) {
+		Minecraft.getInstance().setScreen(new ArmorStandScreen(armorStandEntity, disabledFeatures));
 	}
 
 	public void updateEntity(CompoundTag compound) {
 		Services.PLATFORM.updateEntity(this.entityArmorStand, compound);
+	}
+
+	public List<String> getDisabledFeatures() {
+		return disabledFeatures;
 	}
 }

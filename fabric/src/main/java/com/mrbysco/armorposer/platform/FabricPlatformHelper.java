@@ -67,15 +67,32 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public boolean isResizeRestrictedToOPS() {
+	public boolean isRestrictedToOPS(String feature) {
 		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.general.restrictResizeToOP;
+		return switch (feature) {
+			case "invisible" -> config.restrict.restrictInvisibleToOP;
+			case "base_plate" -> config.restrict.restrictBasePlateToOP;
+			case "gravity" -> config.restrict.restrictGravityToOP;
+			case "show_arms" -> config.restrict.restrictShowArmsToOP;
+			case "small" -> config.restrict.restrictSmallToOP;
+			case "name_visible" -> config.restrict.restrictNameVisibleToOP;
+			case "rotation" -> config.restrict.restrictRotationToOP;
+			case "resize" -> config.restrict.restrictResizeToOP;
+			case "align" -> config.restrict.restrictAlignToOP;
+			default -> false;
+		};
 	}
 
 	@Override
 	public List<? extends String> getResizeWhitelist() {
 		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.general.resizeWhitelist;
+		return config.restrict.resizeWhitelist;
+	}
+
+	@Override
+	public List<? extends String> getRestrictWhitelist() {
+		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
+		return config.restrict.restrictWhitelist;
 	}
 
 	@Override

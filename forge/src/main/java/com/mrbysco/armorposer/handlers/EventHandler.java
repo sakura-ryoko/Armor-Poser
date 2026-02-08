@@ -30,7 +30,7 @@ public class EventHandler {
 			if (PoserConfig.COMMON.enableConfigGui.get() && player.isShiftKeyDown()) {
 				if (event.getHand() == InteractionHand.MAIN_HAND && player instanceof ServerPlayer serverPlayer) {
 					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
-					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId()));
+					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
 				}
 				event.setCanceled(true);
 				return;

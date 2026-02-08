@@ -64,13 +64,29 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public boolean isResizeRestrictedToOPS() {
-		return PoserConfig.COMMON.restrictResizeToOP.get();
+	public boolean isRestrictedToOPS(String feature) {
+		return switch (feature) {
+			case "invisible" -> PoserConfig.COMMON.restrictInvisibleToOP.get();
+			case "base_plate" -> PoserConfig.COMMON.restrictBasePlateToOP.get();
+			case "gravity" -> PoserConfig.COMMON.restrictGravityToOP.get();
+			case "show_arms" -> PoserConfig.COMMON.restrictShowArmsToOP.get();
+			case "small" -> PoserConfig.COMMON.restrictSmallToOP.get();
+			case "name_visible" -> PoserConfig.COMMON.restrictNameVisibleToOP.get();
+			case "rotation" -> PoserConfig.COMMON.restrictRotationToOP.get();
+			case "resize" -> PoserConfig.COMMON.restrictResizeToOP.get();
+			case "align" -> PoserConfig.COMMON.restrictAlignToOP.get();
+			default -> false;
+		};
 	}
 
 	@Override
 	public List<? extends String> getResizeWhitelist() {
 		return PoserConfig.COMMON.resizeWhitelist.get();
+	}
+
+	@Override
+	public List<? extends String> getRestrictWhitelist() {
+		return PoserConfig.COMMON.restrictWhitelist.get();
 	}
 
 	@Override

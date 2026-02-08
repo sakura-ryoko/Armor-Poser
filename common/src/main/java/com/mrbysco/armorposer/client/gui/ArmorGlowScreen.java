@@ -84,7 +84,7 @@ public class ArmorGlowScreen extends Screen {
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, buttonWidth, 20).build());
 		this.addRenderableWidget(this.modifyButton = Button.builder(Component.translatable("armorposer.gui.armor_list.modify"), b -> {
 			if (selected != null && minecraft.player != null) {
-				minecraft.setScreen(new ArmorStandScreen(selected.getArmorStand()));
+				minecraft.setScreen(new ArmorStandScreen(selected.getArmorStand(), parentScreen.getDisabledFeatures()));
 			}
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING + buttonWidth + 2, y, buttonWidth, 20).build());
 

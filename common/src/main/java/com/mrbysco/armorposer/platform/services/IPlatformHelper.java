@@ -36,11 +36,12 @@ public interface IPlatformHelper {
 	Path getUserPresetFolder();
 
 	/**
-	 * Check if the resize is restricted to OPs
+	 * Check if a feature is restricted to ops only
 	 *
-	 * @return If the resize is restricted to OPs
+	 * @param feature The feature to check
+	 * @return If the feature is restricted to ops only
 	 */
-	boolean isResizeRestrictedToOPS();
+	boolean isRestrictedToOPS(String feature);
 
 	/**
 	 * Check if name based features are enabled
@@ -54,7 +55,15 @@ public interface IPlatformHelper {
 	 *
 	 * @return The resize whitelist
 	 */
+	@Deprecated
 	List<? extends String> getResizeWhitelist();
+
+	/**
+	 * Gets a list of players that are allowed to use restricted features while they are restricted to ops only
+	 *
+	 * @return The restrict whitelist
+	 */
+	List<? extends String> getRestrictWhitelist();
 
 	/**
 	 * Get the mod version

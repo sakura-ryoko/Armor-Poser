@@ -24,7 +24,7 @@ public class ClientPayloadHandler {
 						entity = mc.level.getEntity(screenMessage.entityID());
 					}
 					if (entity instanceof ArmorStand armorStandEntity) {
-						com.mrbysco.armorposer.client.gui.ArmorStandScreen.openScreen(armorStandEntity);
+						com.mrbysco.armorposer.client.gui.ArmorStandScreen.openScreen(armorStandEntity, screenMessage.disabledFeatures());
 					}
 				})
 				.exceptionally(e -> {

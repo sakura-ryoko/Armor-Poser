@@ -16,9 +16,20 @@ public class PoserConfig {
 		public final BooleanValue enableConfigGui;
 		public final BooleanValue enableNameTags;
 		public final BooleanValue allowScrolling;
-		public final BooleanValue restrictResizeToOP;
 		public final BooleanValue nameBasedFeatures;
+
+		public final BooleanValue restrictInvisibleToOP;
+		public final BooleanValue restrictBasePlateToOP;
+		public final BooleanValue restrictGravityToOP;
+		public final BooleanValue restrictShowArmsToOP;
+		public final BooleanValue restrictSmallToOP;
+		public final BooleanValue restrictNameVisibleToOP;
+		public final BooleanValue restrictRotationToOP;
+		public final BooleanValue restrictAlignToOP;
+		public final BooleanValue restrictResizeToOP;
+		@Deprecated
 		public final ModConfigSpec.ConfigValue<List<? extends String>> resizeWhitelist;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> restrictWhitelist;
 
 		Common(ModConfigSpec.Builder builder) {
 			builder.comment("General settings")
@@ -40,20 +51,70 @@ public class PoserConfig {
 					.translation("armorposer.config.allowScrolling")
 					.define("allowScrolling", true);
 
-			restrictResizeToOP = builder
-					.comment("Restrict the ability to resize the Armor Stand to server operators")
-					.translation("armorposer.config.restrictResizeToOP")
-					.define("restrictResizeToOP", false);
-
 			nameBasedFeatures = builder
 					.comment("Allow the spawned Armor Stand to have settings set based on its name")
 					.translation("armorposer.config.nameBasedFeatures")
 					.define("nameBasedFeatures", false);
 
+			builder.pop();
+			builder.comment("Restrict settings")
+					.translation("armorposer.config.restrict")
+					.push("Restrict");
+
+			restrictInvisibleToOP = builder
+					.comment("Restrict the ability to toggle invisibility to server operators")
+					.translation("armorposer.config.restrictInvisibleToOP")
+					.define("restrictInvisibleToOP", false);
+
+			restrictBasePlateToOP = builder
+					.comment("Restrict the ability to toggle the base plate to server operators")
+					.translation("armorposer.config.restrictBasePlateToOP")
+					.define("restrictBasePlateToOP", false);
+
+			restrictGravityToOP = builder
+					.comment("Restrict the ability to toggle gravity to server operators")
+					.translation("armorposer.config.restrictGravityToOP")
+					.define("restrictGravityToOP", false);
+
+			restrictShowArmsToOP = builder
+					.comment("Restrict the ability to toggle arms to server operators")
+					.translation("armorposer.config.restrictShowArmsToOP")
+					.define("restrictShowArmsToOP", false);
+
+			restrictSmallToOP = builder
+					.comment("Restrict the ability to toggle small size to server operators")
+					.translation("armorposer.config.restrictSmallToOP")
+					.define("restrictSmallToOP", false);
+
+			restrictNameVisibleToOP = builder
+					.comment("Restrict the ability to toggle name visibility to server operators")
+					.translation("armorposer.config.restrictNameVisibleToOP")
+					.define("restrictNameVisibleToOP", false);
+
+			restrictRotationToOP = builder
+					.comment("Restrict the ability to rotate the Armor Stand to server operators")
+					.translation("armorposer.config.restrictRotationToOP")
+					.define("restrictRotationToOP", false);
+
+			restrictAlignToOP = builder
+					.comment("Restrict the align options for Armor Stand to server operators")
+					.translation("armorposer.config.restrictAlignToOP")
+					.define("restrictAlignToOP", false);
+
+			restrictResizeToOP = builder
+					.comment("Restrict the ability to resize the Armor Stand to server operators")
+					.translation("armorposer.config.restrictResizeToOP")
+					.define("restrictResizeToOP", false);
+
 			resizeWhitelist = builder
 					.comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
 					.translation("armorposer.config.resizeWhitelist")
 					.defineListAllowEmpty("resizeWhitelist", List.of(), String::new, o -> o instanceof String);
+
+			restrictWhitelist = builder
+					.comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"mrbysco\") or a specific restriction using the format \"username,feature\" (e.g. \"mrbysco,resize\").")
+					.translation("armorposer.config.restrictWhitelist")
+					.defineListAllowEmpty("restrictWhitelist", List.of(), String::new, o -> o instanceof String);
 
 			builder.pop();
 		}

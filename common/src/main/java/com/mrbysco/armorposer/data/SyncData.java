@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public record SyncData(UUID entityUUID, CompoundTag tag) {
@@ -27,7 +28,17 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 			SyncData::new);
 	private static final List<String> allowedKeys = List.of(
 			"Invisible", "NoBasePlate", "NoGravity", "ShowArms", "Small", "CustomNameVisible", "Invulnerable",
-			"Pose", "DisabledSlots", "Pose", "Scale", "Move", "Rotation"
+			"DisabledSlots", "Pose", "Scale", "Move", "Rotation"
+	);
+	private static final Map<String, String> permissionKeyMap = Map.of(
+			"Invisible", "invisible",
+			"NoBasePlate", "base_plate",
+			"NoGravity", "gravity",
+			"ShowArms", "show_arms",
+			"Small", "small",
+			"CustomNameVisible", "name_visible",
+			"Rotation", "rotation",
+			"Scale", "resize"
 	);
 
 	public void handleData(ArmorStand armorStand, Player player) {
@@ -49,6 +60,15 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 				armorStand.load(TagValueInput.create(ProblemReporter.DISCARDING, armorStand.registryAccess(), outputCompound));
 				armorStand.setUUID(entityUUID);
 
+				// Permission checks
+				for (Map.Entry<String, String> entry : permissionKeyMap.entrySet()) {
+					String nbtKey = entry.getKey();
+					String permissionKey = entry.getValue();
+					if (tag.contains(nbtKey) && !Reference.canUseFeature(player, permissionKey)) {
+						tag.remove(nbtKey);
+					}
+				}
+
 				Vec3 offset = tag.read("Move", Vec3.CODEC).orElse(Vec3.ZERO);
 				double xOffset = offset.x();
 				double yOffset = offset.y();
@@ -58,13 +78,11 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 							armorStand.getY() + yOffset,
 							armorStand.getZ() + zOffset);
 
-				if (Reference.canResize(player)) {
-					double scale = tag.getDoubleOr("Scale", 0);
-					if (scale > 0) {
-						AttributeInstance attributeInstance = armorStand.getAttributes().getInstance(Attributes.SCALE);
-						if (attributeInstance != null) {
-							attributeInstance.setBaseValue(scale);
-						}
+				double scale = tag.getDoubleOr("Scale", 0);
+				if (scale > 0) {
+					AttributeInstance attributeInstance = armorStand.getAttributes().getInstance(Attributes.SCALE);
+					if (attributeInstance != null) {
+						attributeInstance.setBaseValue(scale);
 					}
 				}
 			}

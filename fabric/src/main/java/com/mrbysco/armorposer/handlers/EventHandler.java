@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer.handlers;
 
 import com.mrbysco.armorposer.ArmorPoser;
+import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
@@ -25,7 +26,7 @@ public class EventHandler {
 			if (config.general.enableConfigGui && player.isShiftKeyDown()) {
 				if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide()) {
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
-					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandScreenPayload(armorstand.getId()));
+					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
 				}
 				return InteractionResult.SUCCESS;
 			}
