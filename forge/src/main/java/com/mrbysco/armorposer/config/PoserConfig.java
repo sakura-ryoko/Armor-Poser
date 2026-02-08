@@ -112,7 +112,7 @@ public class PoserConfig {
 					.defineListAllowEmpty("resizeWhitelist", List.of(), String::new, o -> o instanceof String);
 
 			restrictWhitelist = builder
-					.comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"mrbysco\") or a specific restriction using the format \"username,feature\" (e.g. \"mrbysco,resize\").")
+					.comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"shynieke\") or a specific restriction using the format \"username,feature\" (e.g. \"shynieke,resize\").")
 					.translation("armorposer.config.restrictWhitelist")
 					.defineListAllowEmpty("restrictWhitelist", List.of(), String::new, o -> o instanceof String);
 

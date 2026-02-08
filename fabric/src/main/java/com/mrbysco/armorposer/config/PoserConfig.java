@@ -64,7 +64,7 @@ public class PoserConfig implements ConfigData {
 		@Comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
 		public List<String> resizeWhitelist = List.of();
 		@ConfigEntry.Gui.Tooltip
-		@Comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"mrbysco\") or a specific restriction using the format \"username,feature\" (e.g. \"mrbysco,resize\").")
+		@Comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"shynieke\") or a specific restriction using the format \"username,feature\" (e.g. \"shynieke,resize\").")
 		public List<String> restrictWhitelist = List.of();
 	}
 
