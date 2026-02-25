@@ -97,7 +97,8 @@ public class Reference {
 	}
 
 	public static List<String> getRestrictedFeatures(Player player) {
-		List<String> allFeatures = List.of("invisible", "base_plate", "gravity", "show_arms", "small", "name_visible", "rotation", "resize", "align");
+		List<String> allFeatures = List.of("invisible", "base_plate", "gravity", "show_arms", "small", "name_visible",
+				"rotation", "resize", "align", "position");
 
 		List<String> restricted = new ArrayList<>();
 

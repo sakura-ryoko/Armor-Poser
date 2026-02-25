@@ -75,6 +75,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 			case "rotation" -> PoserConfig.COMMON.restrictRotationToOP.get();
 			case "resize" -> PoserConfig.COMMON.restrictResizeToOP.get();
 			case "align" -> PoserConfig.COMMON.restrictAlignToOP.get();
+			case "position" -> PoserConfig.COMMON.restrictPositionToOp.get();
 			default -> false;
 		};
 	}

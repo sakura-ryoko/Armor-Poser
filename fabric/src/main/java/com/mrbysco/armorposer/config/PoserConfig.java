@@ -57,6 +57,9 @@ public class PoserConfig implements ConfigData {
 		@ConfigEntry.Gui.Tooltip
 		@Comment("Restrict the align options for Armor Stand to server operators")
 		public boolean restrictAlignToOP = false;
+		@ConfigEntry.Gui.Tooltip
+		@Comment("Restrict the ability to position the Armor Stand to server operators")
+		public boolean restrictPositionToOp = false;
 		@Comment("Restrict the ability to resize the Armor Stand to server operators")
 		public boolean restrictResizeToOP = false;
 		@Deprecated

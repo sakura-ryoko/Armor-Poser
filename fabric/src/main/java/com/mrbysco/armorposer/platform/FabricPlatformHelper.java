@@ -79,6 +79,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 			case "rotation" -> config.restrict.restrictRotationToOP;
 			case "resize" -> config.restrict.restrictResizeToOP;
 			case "align" -> config.restrict.restrictAlignToOP;
+			case "position" -> config.restrict.restrictPositionToOp;
 			default -> false;
 		};
 	}

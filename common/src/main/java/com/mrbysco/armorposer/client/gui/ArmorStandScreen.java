@@ -233,6 +233,12 @@ public class ArmorStandScreen extends Screen {
 				this.poseTextFields[i].setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip." + (lastRow ? "z_position" : "z_rotation"))));
 			}
 
+			if (lastRow && this.disabledFeatures.contains("position")) {
+				this.poseTextFields[i].setEditable(false);
+				this.poseTextFields[i].active = false;
+				this.poseTextFields[i].setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.position.disabled").withStyle(ChatFormatting.RED)));
+			}
+
 			this.addWidget(this.poseTextFields[i]);
 		}
 
@@ -716,17 +722,19 @@ public class ArmorStandScreen extends Screen {
 	public void tick() {
 		super.tick();
 
-		//Disable the Y position field when gravity is enabled (So you can't get it stuck in the ground)
-		boolean gravityEnabled = this.toggleButtons[2].getValue();
-		NumberFieldBox yPositionField = this.poseTextFields[19];
+		if (!this.disabledFeatures.contains("position")) {
+			//Disable the Y position field when gravity is enabled (So you can't get it stuck in the ground)
+			boolean gravityEnabled = this.toggleButtons[2].getValue();
+			NumberFieldBox yPositionField = this.poseTextFields[19];
 
-		yPositionField.setEditable(!gravityEnabled);
-		if (!gravityEnabled) {
-			yPositionField.setTooltip(yPositionTooltip);
-		} else {
-			yPositionField.setFocused(false);
-			//Adjust tooltip to show it's disabled
-			yPositionField.setTooltip(yPositionTooltipDisabled);
+			yPositionField.setEditable(!gravityEnabled);
+			if (!gravityEnabled) {
+				yPositionField.setTooltip(yPositionTooltip);
+			} else {
+				yPositionField.setFocused(false);
+				//Adjust tooltip to show it's disabled
+				yPositionField.setTooltip(yPositionTooltipDisabled);
+			}
 		}
 	}
 

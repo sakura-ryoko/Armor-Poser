@@ -38,7 +38,8 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 			"Small", "small",
 			"CustomNameVisible", "name_visible",
 			"Rotation", "rotation",
-			"Scale", "resize"
+			"Scale", "resize",
+			"Move", "position"
 	);
 
 	public void handleData(ArmorStand armorStand, Player player) {

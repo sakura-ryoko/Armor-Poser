@@ -26,6 +26,7 @@ public class PoserConfig {
 		public final BooleanValue restrictNameVisibleToOP;
 		public final BooleanValue restrictRotationToOP;
 		public final BooleanValue restrictAlignToOP;
+		public final BooleanValue restrictPositionToOp;
 		public final BooleanValue restrictResizeToOP;
 		@Deprecated
 		public final ModConfigSpec.ConfigValue<List<? extends String>> resizeWhitelist;
@@ -100,6 +101,11 @@ public class PoserConfig {
 					.comment("Restrict the align options for Armor Stand to server operators")
 					.translation("armorposer.config.restrictAlignToOP")
 					.define("restrictAlignToOP", false);
+
+			restrictPositionToOp = builder
+					.comment("Restrict the ability to position the Armor Stand to server operators")
+					.translation("armorposer.config.restrictPositionToOp")
+					.define("restrictPositionToOp", false);
 
 			restrictResizeToOP = builder
 					.comment("Restrict the ability to resize the Armor Stand to server operators")
