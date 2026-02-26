@@ -1,6 +1,6 @@
 {
   "armorposer.config.allowScrolling": "マウスホイールでの数値変更",
-  "armorposer.config.allowScrolling.tooltip": "ポーズ編集画面で、マウスホイールで角度の数値を増減できるようにします",
+  "armorposer.config.allowScrolling.tooltip": "ポーズ編集画面で、マウスホイールで数値を増減できるようにします",
   "armorposer.config.enableConfigGui": "GUIを有効化",
   "armorposer.config.enableConfigGui.tooltip": "Shift 右クリックした際に、防具立ての設定画面を表示します",
   "armorposer.config.enableNameTags": "名札を有効化",
