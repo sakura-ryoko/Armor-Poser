@@ -22,7 +22,7 @@ public class ServerPayloadHandler {
 					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
 						Entity entity = serverLevel.getEntity(swapData.data().entityUUID());
 						if (entity instanceof ArmorStand armorStandEntity) {
-							swapData.data().handleData(armorStandEntity);
+							swapData.data().handleData(armorStandEntity, context.player());
 						}
 					}
 				})

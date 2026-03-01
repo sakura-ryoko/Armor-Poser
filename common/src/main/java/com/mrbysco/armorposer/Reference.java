@@ -138,4 +138,8 @@ public class Reference {
 
 		return player.permissions().hasPermission(Permissions.COMMANDS_OWNER);
 	}
+
+	public static int getMaxDistance() {
+		return 64;
+	}
 }
