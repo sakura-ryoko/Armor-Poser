@@ -1,3 +1,2 @@
-* Add `restrictPositionToOp` config to restrict positioning to OPs
-* Add more special names (courtesy of [JustS-js](https://github.com/Mrbysco/Armor-Poser/pull/63)):
-  * "invincible", "invulnerable", "locked" - Locks the armor stand
+* Improve server-side validation for Armor Poser packets
+  * Added validation for rename and sync packets: UUID matching, dimension/distance checks, text filtering/length limits, and move/scale NaN/out-of-range protection.
