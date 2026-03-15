@@ -6,7 +6,7 @@ import com.mrbysco.armorposer.client.gui.widgets.PoseListWidget;
 import com.mrbysco.armorposer.poses.UserPoseHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -211,11 +211,11 @@ public class ArmorPosesScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("armorposer.gui.poses.search");
-		guiGraphics.drawCenteredString(getScreenFont(), text, this.width / 2 + PADDING,
+		guiGraphics.centeredText(getScreenFont(), text, this.width / 2 + PADDING,
 				search.getY() - getScreenFont().lineHeight - 2, -1);
 	}
 
@@ -235,7 +235,7 @@ public class ArmorPosesScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
 		//Nope
 	}
 

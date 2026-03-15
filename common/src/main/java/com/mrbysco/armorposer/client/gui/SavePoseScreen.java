@@ -1,7 +1,7 @@
 package com.mrbysco.armorposer.client.gui;
 
 import com.mrbysco.armorposer.Reference;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,16 +47,16 @@ public class SavePoseScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-		guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
+		guiGraphics.centeredText(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
 
-		this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.nameField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-		this.renderTransparentBackground(guiGraphics);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractTransparentBackground(graphics);
 	}
 }

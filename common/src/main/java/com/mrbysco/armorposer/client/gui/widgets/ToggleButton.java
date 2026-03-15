@@ -1,6 +1,6 @@
 package com.mrbysco.armorposer.client.gui.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -25,9 +25,9 @@ public class ToggleButton extends Button {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics guiGraphics, int p_457832_, int p_457537_, float p_457835_) {
-		this.renderDefaultSprite(guiGraphics);
-		this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+	protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+		this.extractDefaultSprite(guiGraphics);
+		this.extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
 	}
 
 	public static class Builder {

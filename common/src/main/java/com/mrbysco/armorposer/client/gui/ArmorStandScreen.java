@@ -11,7 +11,7 @@ import com.mrbysco.armorposer.util.ArmorStandData;
 import com.mrbysco.armorposer.util.ArmorUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
@@ -668,17 +668,17 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
 		// Draw textboxes
 		// Name
-		this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.nameField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-		this.rotationTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.rotationTextField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 		for (EditBox textField : this.poseTextFields)
-			textField.render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.sizeField.render(guiGraphics, mouseX, mouseY, partialTicks);
+			textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		this.sizeField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
 		int offsetY = 20;
 
@@ -687,34 +687,34 @@ public class ArmorStandScreen extends Screen {
 		for (int i = 0; i < this.buttonLabels.length; i++) {
 			int x = offsetX;
 			int y = offsetY + (i * 22) + (10 - (this.font.lineHeight / 2));
-			guiGraphics.drawString(this.font, I18n.get("armorposer.gui.label." + this.buttonLabels[i]), x, y, whiteColor, true);
+			guiGraphics.text(this.font, I18n.get("armorposer.gui.label." + this.buttonLabels[i]), x, y, whiteColor, true);
 		}
 
 		// right column labels
 		offsetX = this.width - 20 - 100;
 		// x, y, z
-		guiGraphics.drawString(this.font, "X", offsetX + 10, 7, whiteColor, true);
-		guiGraphics.drawString(this.font, "Y", offsetX + 45, 7, whiteColor, true);
-		guiGraphics.drawString(this.font, "Z", offsetX + 80, 7, whiteColor, true);
+		guiGraphics.text(this.font, "X", offsetX + 10, 7, whiteColor, true);
+		guiGraphics.text(this.font, "Y", offsetX + 45, 7, whiteColor, true);
+		guiGraphics.text(this.font, "Z", offsetX + 80, 7, whiteColor, true);
 		// pose textboxes
 		for (int i = 0; i < this.sliderLabels.length; i++) {
 			String translatedLabel = I18n.get("armorposer.gui.label." + this.sliderLabels[i]);
 			int x = offsetX - this.font.width(translatedLabel) - 10;
 			int y = offsetY + (i * 22) + (10 - (this.font.lineHeight / 2));
-			guiGraphics.drawString(this.font, translatedLabel, x, y, whiteColor, true);
+			guiGraphics.text(this.font, translatedLabel, x, y, whiteColor, true);
 		}
 
 		Matrix3x2fStack pose = guiGraphics.pose();
 		if (Services.PLATFORM.allowScrolling()) {
 			pose.pushMatrix();
 			pose.rotate(1.5708F);
-			guiGraphics.drawString(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);
+			guiGraphics.text(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);
 			pose.popMatrix();
 		}
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		//Nope
 	}
 

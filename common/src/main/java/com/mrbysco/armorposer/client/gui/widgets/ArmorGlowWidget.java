@@ -4,7 +4,7 @@ import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.ArmorGlowScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.network.chat.Component;
@@ -47,7 +47,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	}
 
 	@Override
-	protected void renderSelection(GuiGraphics guiGraphics, ArmorGlowWidget.ListEntry listEntry, int p_240142_) {
+	protected void extractSelection(GuiGraphicsExtractor guiGraphics, ListEntry listEntry, int outlineColor) {
 		int x1 = listEntry.getX();
 		int y1 = listEntry.getY();
 		int x2 = x1 + listEntry.getWidth();
@@ -56,10 +56,10 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
 		guiGraphics.fillGradient(getX(), 0, getX() + this.listWidth, parent.height, -1945104368, -1676668912);
-		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
+		super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, a);
+		guiGraphics.centeredText(this.parent.getScreenFont(), title, getX() + this.listWidth / 2, 2, ARGB.opaque(16777215));
 	}
 
 	@Override
@@ -106,13 +106,13 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 		}
 
 		@Override
-		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+		public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
 			int left = getContentX();
 			int top = getContentY();
 			Matrix3x2fStack pose = guiGraphics.pose();
 			pose.pushMatrix();
-			pose.translate(0, top - (height / 2));
-			renderScrollingStringOverContents(guiGraphics.textRenderer(), getPositionComponent(), 18);
+			pose.translate(0, top - ((float) height / 2));
+			extractScrollingStringOverContents(guiGraphics.textRenderer(), getPositionComponent(), 18);
 
 			if (isMouseOver(mouseX, mouseY)) {
 				Font font = this.parent.getScreenFont();
@@ -120,7 +120,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
 			}
 			if (isVisible() && getSelected() == this)
-				renderPose(guiGraphics, left + 16, top + 28, partialTick);
+				extractPose(guiGraphics, left + 16, top + 28, partialTick);
 			pose.popMatrix();
 		}
 
@@ -136,14 +136,14 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 			return !armorStandPreview.isInvisible;
 		}
 
-		public void renderPose(GuiGraphics guiGraphics, int xPos, int yPos, float partialTick) {
+		public void extractPose(GuiGraphicsExtractor guiGraphics, int xPos, int yPos, float partialTick) {
 			if (armorStandPreview != null) {
 				int startX = xPos - 40;
 				int startY = yPos - 60;
 				int endX = xPos + 40;
 				int endY = yPos + 60;
 
-				guiGraphics.submitEntityRenderState(this.armorStandPreview, 20.0F,
+				guiGraphics.entity(this.armorStandPreview, 20.0F,
 						Reference.ARMOR_STAND_TRANSLATION, Reference.ARMOR_STAND_ANGLE, null, startX, startY, endX, endY);
 			}
 		}

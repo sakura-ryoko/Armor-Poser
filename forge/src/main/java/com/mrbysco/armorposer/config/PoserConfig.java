@@ -28,8 +28,6 @@ public class PoserConfig {
 		public final BooleanValue restrictAlignToOP;
 		public final BooleanValue restrictPositionToOp;
 		public final BooleanValue restrictResizeToOP;
-		@Deprecated
-		public final ModConfigSpec.ConfigValue<List<? extends String>> resizeWhitelist;
 		public final ModConfigSpec.ConfigValue<List<? extends String>> restrictWhitelist;
 
 		Common(ModConfigSpec.Builder builder) {
@@ -111,11 +109,6 @@ public class PoserConfig {
 					.comment("Restrict the ability to resize the Armor Stand to server operators")
 					.translation("armorposer.config.restrictResizeToOP")
 					.define("restrictResizeToOP", false);
-
-			resizeWhitelist = builder
-					.comment("List of players that are allowed to resize the Armor Stand when restrictResizeToOP is enabled")
-					.translation("armorposer.config.resizeWhitelist")
-					.defineListAllowEmpty("resizeWhitelist", List.of(), String::new, o -> o instanceof String);
 
 			restrictWhitelist = builder
 					.comment("List of players allowed to bypass enabled restrictions. Entries can be either a username to bypass all restrictions (e.g. \"shynieke\") or a specific restriction using the format \"username,feature\" (e.g. \"shynieke,resize\").")

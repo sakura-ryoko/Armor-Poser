@@ -51,14 +51,6 @@ public interface IPlatformHelper {
 	boolean nameBasedFeatures();
 
 	/**
-	 * Gets a list of players that are allowed to resize the Armor Stand while restrictResizeToOP is enabled
-	 *
-	 * @return The resize whitelist
-	 */
-	@Deprecated
-	List<? extends String> getResizeWhitelist();
-
-	/**
 	 * Gets a list of players that are allowed to use restricted features while they are restricted to ops only
 	 *
 	 * @return The restrict whitelist

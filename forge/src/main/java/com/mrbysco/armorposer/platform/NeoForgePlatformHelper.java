@@ -81,11 +81,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public List<? extends String> getResizeWhitelist() {
-		return PoserConfig.COMMON.resizeWhitelist.get();
-	}
-
-	@Override
 	public List<? extends String> getRestrictWhitelist() {
 		return PoserConfig.COMMON.restrictWhitelist.get();
 	}

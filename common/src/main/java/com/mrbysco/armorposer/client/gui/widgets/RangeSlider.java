@@ -2,7 +2,7 @@ package com.mrbysco.armorposer.client.gui.widgets;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mrbysco.armorposer.mixin.AbstractSliderButtonAccessor;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -135,12 +135,12 @@ public class RangeSlider extends AbstractSliderButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
 		guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ((AbstractSliderButtonAccessor) this).armorposer$getSprite(), this.getX(), this.getY(), this.getWidth(), this.getHeight(), ARGB.white(this.alpha));
 		guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ((AbstractSliderButtonAccessor) this).armorposer$getHandleSprite(), this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, this.getHeight(), ARGB.white(this.alpha));
 		int i = this.active ? 16777215 : 10526880;
 		var message = getMessage().copy().withStyle(style -> style.withColor(i));
-		this.renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), message, 2);
+		this.extractScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE), message, 2);
 
 		if (this.isHovered())
 			guiGraphics.requestCursor(((AbstractSliderButtonAccessor) this).armorposer$isDragging() ? CursorTypes.RESIZE_EW : CursorTypes.POINTING_HAND);

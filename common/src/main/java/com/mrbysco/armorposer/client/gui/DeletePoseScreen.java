@@ -2,7 +2,7 @@ package com.mrbysco.armorposer.client.gui;
 
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.widgets.PoseListWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -37,17 +37,17 @@ public class DeletePoseScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-		this.getSelected().renderPose(guiGraphics, this.width / 2 - 5, this.height / 2 - 10, 30);
+		this.getSelected().extractPose(guiGraphics, this.width / 2 - 5, this.height / 2 - 10, 30);
 
-		guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
-		guiGraphics.drawCenteredString(this.font, this.warning, this.width / 2, 40, ARGB.opaque(11141120));
+		guiGraphics.centeredText(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
+		guiGraphics.centeredText(this.font, this.warning, this.width / 2, 40, ARGB.opaque(11141120));
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-		this.renderTransparentBackground(guiGraphics);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractTransparentBackground(graphics);
 	}
 }

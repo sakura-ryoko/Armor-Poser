@@ -31,9 +31,9 @@ public class ArmorPoser implements ModInitializer {
 
 		UseItemCallback.EVENT.register((player, world, hand) -> EventHandler.onPlayerRightClickItem(player, hand));
 
-		PayloadTypeRegistry.playS2C().register(ArmorStandScreenPayload.ID, ArmorStandScreenPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(ArmorStandLockedPayload.ID, ArmorStandLockedPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(ArmorStandSyncPayload.ID, ArmorStandSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ArmorStandScreenPayload.ID, ArmorStandScreenPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ArmorStandLockedPayload.ID, ArmorStandLockedPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ArmorStandSyncPayload.ID, ArmorStandSyncPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandSyncPayload.ID, (payload, context) -> {
 			final ServerLevel serverLevel = context.player().level();
 
@@ -46,7 +46,7 @@ public class ArmorPoser implements ModInitializer {
 			});
 		});
 
-		PayloadTypeRegistry.playC2S().register(ArmorStandSwapPayload.ID, ArmorStandSwapPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ArmorStandSwapPayload.ID, ArmorStandSwapPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandSwapPayload.ID, (payload, context) -> {
 			final ServerLevel serverLevel = context.player().level();
 
@@ -58,7 +58,7 @@ public class ArmorPoser implements ModInitializer {
 				}
 			});
 		});
-		PayloadTypeRegistry.playC2S().register(ArmorStandRenamePayload.ID, ArmorStandRenamePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ArmorStandRenamePayload.ID, ArmorStandRenamePayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandRenamePayload.ID, (payload, context) -> {
 			final ServerLevel serverLevel = context.player().level();
 
