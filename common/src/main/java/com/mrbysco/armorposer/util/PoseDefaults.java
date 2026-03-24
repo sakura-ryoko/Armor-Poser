@@ -1,8 +1,8 @@
 package com.mrbysco.armorposer.util;
 
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.mixin.ArmorStandAccessor;
-import com.mrbysco.armorposer.platform.Services;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -23,7 +23,7 @@ public class PoseDefaults {
 	 * @param armorStand the armor stand to adjust
 	 */
 	public static void adjustArmorStand(ItemStack stack, ArmorStand armorStand) {
-		if (Services.PLATFORM.nameBasedFeatures() && stack.getCustomName() != null) {
+		if (PoserConfig.COMMON.nameBasedFeatures.get() && stack.getCustomName() != null) {
 			final String name = stack.getCustomName().getString().toLowerCase(Locale.ROOT);
 			switch (name) {
 				case "armstrong", "arms":

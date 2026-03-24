@@ -1,7 +1,6 @@
 package com.mrbysco.armorposer.platform;
 
 import com.mrbysco.armorposer.Reference;
-import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.data.RenameData;
 import com.mrbysco.armorposer.data.SwapData;
 import com.mrbysco.armorposer.data.SyncData;
@@ -9,7 +8,6 @@ import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
 import com.mrbysco.armorposer.platform.services.IPlatformHelper;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +17,6 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.nio.file.Path;
-import java.util.List;
 
 public class FabricPlatformHelper implements IPlatformHelper {
 	@Override
@@ -56,66 +53,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public boolean allowScrolling() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.general.allowScrolling;
-	}
-
-	@Override
 	public Path getUserPresetFolder() {
 		return FabricLoader.getInstance().getConfigDir();
 	}
 
 	@Override
-	public boolean isRestrictedToOPS(String feature) {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return switch (feature) {
-			case "invisible" -> config.restrict.restrictInvisibleToOP;
-			case "base_plate" -> config.restrict.restrictBasePlateToOP;
-			case "gravity" -> config.restrict.restrictGravityToOP;
-			case "show_arms" -> config.restrict.restrictShowArmsToOP;
-			case "small" -> config.restrict.restrictSmallToOP;
-			case "name_visible" -> config.restrict.restrictNameVisibleToOP;
-			case "rotation" -> config.restrict.restrictRotationToOP;
-			case "resize" -> config.restrict.restrictResizeToOP;
-			case "align" -> config.restrict.restrictAlignToOP;
-			case "position" -> config.restrict.restrictPositionToOp;
-			default -> false;
-		};
-	}
-
-	@Override
-	public List<? extends String> getResizeWhitelist() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.restrict.resizeWhitelist;
-	}
-
-	@Override
-	public List<? extends String> getRestrictWhitelist() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.restrict.restrictWhitelist;
-	}
-
-	@Override
-	public boolean nameBasedFeatures() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.general.nameBasedFeatures;
-	}
-
-	@Override
 	public String getModVersion() {
 		return FabricLoader.getInstance().getModContainer(Reference.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
-	}
-
-	@Override
-	public boolean directNametagOnly() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.client.directNametagOnly;
-	}
-
-	@Override
-	public int nametagRenderDistance() {
-		PoserConfig config = AutoConfig.getConfigHolder(PoserConfig.class).getConfig();
-		return config.client.nametagRenderDistance;
 	}
 }

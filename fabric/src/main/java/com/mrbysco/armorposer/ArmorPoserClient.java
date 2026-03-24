@@ -1,18 +1,23 @@
 package com.mrbysco.armorposer;
 
 import com.mrbysco.armorposer.client.debug.DebugHandler;
+import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.neoforged.fml.config.ModConfig;
 
 public class ArmorPoserClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ConfigRegistry.INSTANCE.register("armorposer", ModConfig.Type.CLIENT, PoserConfig.clientSpec);
+
 		ClientPlayNetworking.registerGlobalReceiver(ArmorStandScreenPayload.ID, (payload, context) -> {
 			int entityID = payload.entityID();
 

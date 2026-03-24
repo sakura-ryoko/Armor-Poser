@@ -1,7 +1,7 @@
 package com.mrbysco.armorposer;
 
 import com.mojang.logging.LogUtils;
-import com.mrbysco.armorposer.platform.Services;
+import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.poses.UserPoseHandler;
 import com.mrbysco.armorposer.util.PoseData;
 import net.minecraft.nbt.CompoundTag;
@@ -92,7 +92,7 @@ public class Reference {
 		List<String> restricted = new ArrayList<>();
 
 		for (String feature : allFeatures) {
-			if (Services.PLATFORM.isRestrictedToOPS(feature) && !canUseFeature(player, feature)) {
+			if (isRestrictedToOPS(feature) && !canUseFeature(player, feature)) {
 				restricted.add(feature);
 			}
 		}
@@ -100,13 +100,13 @@ public class Reference {
 	}
 
 	public static boolean canUseFeature(@NotNull Player player, String feature) {
-		if (!Services.PLATFORM.isRestrictedToOPS(feature)) {
+		if (!isRestrictedToOPS(feature)) {
 			return true;
 		}
 
 		String username = player.getGameProfile().name();
 
-		for (String entry : Services.PLATFORM.getRestrictWhitelist()) {
+		for (String entry : PoserConfig.COMMON.restrictWhitelist.get()) {
 			if (entry == null || entry.isBlank()) continue;
 
 			String[] parts = entry.split(",");
@@ -122,6 +122,22 @@ public class Reference {
 		}
 
 		return player.permissions().hasPermission(Permissions.COMMANDS_OWNER);
+	}
+
+	public static boolean isRestrictedToOPS(String feature) {
+		return switch (feature) {
+			case "invisible" -> PoserConfig.COMMON.restrictInvisibleToOP.get();
+			case "base_plate" -> PoserConfig.COMMON.restrictBasePlateToOP.get();
+			case "gravity" -> PoserConfig.COMMON.restrictGravityToOP.get();
+			case "show_arms" -> PoserConfig.COMMON.restrictShowArmsToOP.get();
+			case "small" -> PoserConfig.COMMON.restrictSmallToOP.get();
+			case "name_visible" -> PoserConfig.COMMON.restrictNameVisibleToOP.get();
+			case "rotation" -> PoserConfig.COMMON.restrictRotationToOP.get();
+			case "resize" -> PoserConfig.COMMON.restrictResizeToOP.get();
+			case "align" -> PoserConfig.COMMON.restrictAlignToOP.get();
+			case "position" -> PoserConfig.COMMON.restrictPositionToOp.get();
+			default -> false;
+		};
 	}
 
 	public static int getMaxDistance() {

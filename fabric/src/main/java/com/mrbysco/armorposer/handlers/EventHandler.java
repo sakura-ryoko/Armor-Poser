@@ -1,6 +1,5 @@
 package com.mrbysco.armorposer.handlers;
 
-import com.mrbysco.armorposer.ArmorPoser;
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
@@ -22,8 +21,7 @@ public class EventHandler {
 
 	public static InteractionResult onPlayerEntityInteractSpecific(Player player, Entity target, InteractionHand hand) {
 		if (target instanceof ArmorStand armorstand) {
-			PoserConfig config = ArmorPoser.config.get();
-			if (config.general.enableConfigGui && player.isShiftKeyDown()) {
+			if (PoserConfig.COMMON.enableConfigGui.get() && player.isShiftKeyDown()) {
 				if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide()) {
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
@@ -31,7 +29,7 @@ public class EventHandler {
 				return InteractionResult.SUCCESS;
 			}
 
-			if (config.general.enableNameTags && !player.isShiftKeyDown()) {
+			if (PoserConfig.COMMON.enableNameTags.get() && !player.isShiftKeyDown()) {
 				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 				if (!stack.isEmpty() && stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME)) {
 					cancelRightClick = true;

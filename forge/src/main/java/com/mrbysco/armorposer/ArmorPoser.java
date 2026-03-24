@@ -2,6 +2,7 @@ package com.mrbysco.armorposer;
 
 import com.mrbysco.armorposer.client.debug.DebugHandler;
 import com.mrbysco.armorposer.config.PoserConfig;
+import com.mrbysco.armorposer.config.PoserConfigHandler;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
@@ -24,7 +25,7 @@ public class ArmorPoser {
 
 	public ArmorPoser(IEventBus eventBus, ModContainer container, Dist dist) {
 		container.registerConfig(Type.COMMON, PoserConfig.commonSpec);
-		eventBus.register(PoserConfig.class);
+		eventBus.register(PoserConfigHandler.class);
 
 		eventBus.addListener(this::setupPackets);
 

@@ -1,7 +1,6 @@
 package com.mrbysco.armorposer.platform;
 
 import com.mrbysco.armorposer.Reference;
-import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.data.RenameData;
 import com.mrbysco.armorposer.data.SwapData;
 import com.mrbysco.armorposer.data.SyncData;
@@ -19,7 +18,6 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.nio.file.Path;
-import java.util.List;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
 	@Override
@@ -54,54 +52,11 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public boolean allowScrolling() {
-		return PoserConfig.COMMON.allowScrolling.get();
-	}
-
-	@Override
 	public Path getUserPresetFolder() {
 		return FMLPaths.CONFIGDIR.get();
 	}
-
-	@Override
-	public boolean isRestrictedToOPS(String feature) {
-		return switch (feature) {
-			case "invisible" -> PoserConfig.COMMON.restrictInvisibleToOP.get();
-			case "base_plate" -> PoserConfig.COMMON.restrictBasePlateToOP.get();
-			case "gravity" -> PoserConfig.COMMON.restrictGravityToOP.get();
-			case "show_arms" -> PoserConfig.COMMON.restrictShowArmsToOP.get();
-			case "small" -> PoserConfig.COMMON.restrictSmallToOP.get();
-			case "name_visible" -> PoserConfig.COMMON.restrictNameVisibleToOP.get();
-			case "rotation" -> PoserConfig.COMMON.restrictRotationToOP.get();
-			case "resize" -> PoserConfig.COMMON.restrictResizeToOP.get();
-			case "align" -> PoserConfig.COMMON.restrictAlignToOP.get();
-			case "position" -> PoserConfig.COMMON.restrictPositionToOp.get();
-			default -> false;
-		};
-	}
-
-	@Override
-	public List<? extends String> getRestrictWhitelist() {
-		return PoserConfig.COMMON.restrictWhitelist.get();
-	}
-
-	@Override
-	public boolean nameBasedFeatures() {
-		return PoserConfig.COMMON.nameBasedFeatures.get();
-	}
-
 	@Override
 	public String getModVersion() {
 		return ModList.get().getModFileById(Reference.MOD_ID).versionString();
-	}
-
-	@Override
-	public boolean directNametagOnly() {
-		return PoserConfig.CLIENT.directNametagOnly.getAsBoolean();
-	}
-
-	@Override
-	public int nametagRenderDistance() {
-		return PoserConfig.CLIENT.nametagRenderDistance.getAsInt();
 	}
 }

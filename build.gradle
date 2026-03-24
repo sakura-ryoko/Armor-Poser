@@ -45,12 +45,8 @@ subprojects {
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
         maven {
-            name = "Maven for PR #2993" // https://github.com/neoforged/NeoForge/pull/2993
-            url = uri("https://prmaven.neoforged.net/NeoForge/pr3002")
-            content {
-                includeModule("net.neoforged", "neoforge")
-                includeModule("net.neoforged", "testframework")
-            }
+            name = "Fuzs Mod Resources"
+            url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
         }
     }
 

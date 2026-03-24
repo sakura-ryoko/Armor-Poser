@@ -5,6 +5,7 @@ import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
 import com.mrbysco.armorposer.client.gui.widgets.SizeField;
 import com.mrbysco.armorposer.client.gui.widgets.ToggleButton;
+import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.data.SwapData;
 import com.mrbysco.armorposer.platform.Services;
 import com.mrbysco.armorposer.util.ArmorStandData;
@@ -112,7 +113,7 @@ public class ArmorStandScreen extends Screen {
 			this.armorStandData.readFromNBT(tag);
 		}
 
-		this.allowScrolling = Services.PLATFORM.allowScrolling();
+		this.allowScrolling = PoserConfig.COMMON.allowScrolling.get();
 		this.version = Services.PLATFORM.getModVersion();
 		this.savePoseScreen = new SavePoseScreen(this);
 	}
@@ -705,7 +706,7 @@ public class ArmorStandScreen extends Screen {
 		}
 
 		Matrix3x2fStack pose = guiGraphics.pose();
-		if (Services.PLATFORM.allowScrolling()) {
+		if (PoserConfig.COMMON.allowScrolling.get()) {
 			pose.pushMatrix();
 			pose.rotate(1.5708F);
 			guiGraphics.text(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);

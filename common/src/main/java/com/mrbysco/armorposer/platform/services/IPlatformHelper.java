@@ -24,11 +24,6 @@ public interface IPlatformHelper {
 	void renameArmorStand(ArmorStand armorStand, String newName);
 
 	/**
-	 * Allow scrolling to increase/decrease the angle of text fields
-	 */
-	boolean allowScrolling();
-
-	/**
 	 * Get the user preset folder
 	 *
 	 * @return The user preset folder
@@ -36,45 +31,9 @@ public interface IPlatformHelper {
 	Path getUserPresetFolder();
 
 	/**
-	 * Check if a feature is restricted to ops only
-	 *
-	 * @param feature The feature to check
-	 * @return If the feature is restricted to ops only
-	 */
-	boolean isRestrictedToOPS(String feature);
-
-	/**
-	 * Check if name based features are enabled
-	 *
-	 * @return If name based features are enabled
-	 */
-	boolean nameBasedFeatures();
-
-	/**
-	 * Gets a list of players that are allowed to use restricted features while they are restricted to ops only
-	 *
-	 * @return The restrict whitelist
-	 */
-	List<? extends String> getRestrictWhitelist();
-
-	/**
 	 * Get the mod version
 	 *
 	 * @return The mod version
 	 */
 	String getModVersion();
-
-	/**
-	 * Check if nametag rendering is set to direct only
-	 *
-	 * @return If nametag rendering is direct only
-	 */
-	boolean directNametagOnly();
-
-	/**
-	 * Get the nametag render distance
-	 *
-	 * @return The nametag render distance
-	 */
-	int nametagRenderDistance();
 }
