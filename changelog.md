@@ -1,2 +1,2 @@
-* Improve server-side validation for Armor Poser packets
-  * Added validation for rename and sync packets: UUID matching, dimension/distance checks, text filtering/length limits, and move/scale NaN/out-of-range protection.
+* Initial update to 26.1
+* Swap `Cloth Config` with `Forge Config API Port` (Fabric)
