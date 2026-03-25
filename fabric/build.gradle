@@ -31,7 +31,6 @@ dependencies {
     implementation project(":common")
 
     api("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_version}")
-    localRuntime("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_version}")
     implementation "com.terraformersmc:modmenu:${mod_menu_version}"
 }
 
