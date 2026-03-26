@@ -26,6 +26,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -65,7 +66,9 @@ public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites TOOL_SPRITES = new WidgetSprites(
 			Reference.modLoc("widget/tool"), Reference.modLoc("widget/tool_disabled"), Reference.modLoc("widget/tool_highlighted")
 	);
+	private final ListTag recordedActions = new ListTag();
 	private final ArmorStand entityArmorStand;
+	private final Vec3 originalPosition;
 	private final ArmorStandData armorStandData;
 	private final SavePoseScreen savePoseScreen;
 	private final List<String> disabledFeatures;
@@ -97,6 +100,7 @@ public class ArmorStandScreen extends Screen {
 	public ArmorStandScreen(ArmorStand armorStand, List<String> disabledFeatures) {
 		super(Component.translatable("armorposer.gui.title"));
 		this.entityArmorStand = armorStand;
+		this.originalPosition = armorStand.position();
 		this.oldName = armorStand.hasCustomName() ? armorStand.getName().getString() : this.getTitle().getString();
 		this.disabledFeatures = disabledFeatures;
 
@@ -275,6 +279,7 @@ public class ArmorStandScreen extends Screen {
 			}
 		}).bounds(offsetX + 44, offsetY + 22, 42, 20).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.paste"))).build());
 		this.addRenderableWidget(Button.builder(Component.translatable("armorposer.gui.label.save"), (button) -> {
+			this.savePoseScreen.updateState();
 			this.minecraft.setScreen(this.savePoseScreen);
 		}).bounds(offsetX + 88, offsetY + 22, 42, 20).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.save"))).build());
 
@@ -359,7 +364,7 @@ public class ArmorStandScreen extends Screen {
 		ImageButton swapToHead = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, SWAP_TO_HEAD_SPRITES, (button) -> {
 			//Swap item in main hand with head
 			Services.PLATFORM.swapSlots(this.entityArmorStand, SwapData.Action.SWAP_WITH_HEAD);
-
+			recordSwapAction(SwapData.Action.SWAP_WITH_HEAD);
 		}));
 		swapToHead.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.swap_head")));
 
@@ -368,6 +373,7 @@ public class ArmorStandScreen extends Screen {
 		ImageButton swapHands = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, MIRROR_HANDS_SPRITES, (button) -> {
 			//Swap item in main and offhand
 			Services.PLATFORM.swapSlots(this.entityArmorStand, SwapData.Action.SWAP_HANDS);
+			recordSwapAction(SwapData.Action.SWAP_HANDS);
 		}));
 		swapHands.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.swap_hands")));
 		buttonsLeft--;
@@ -409,8 +415,9 @@ public class ArmorStandScreen extends Screen {
 					}
 				}
 
-				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedBlockPose);
-				this.readFieldsFromNBT(tag);
+				CompoundTag alignTag = TagParser.parseCompoundFully(Reference.alignedBlockPose);
+				this.readFieldsFromNBT(alignTag);
+				recordAlignAction(alignTag);
 				this.toggleButtons[0].setValue(true); //Set invisible
 				this.toggleButtons[2].setValue(true); //Set no gravity
 				this.toggleButtons[3].setValue(true); //Set show arms
@@ -465,8 +472,9 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedUprightItemPose);
-					this.readFieldsFromNBT(tag);
+					CompoundTag alignTag = TagParser.parseCompoundFully(Reference.alignedUprightItemPose);
+					this.readFieldsFromNBT(alignTag);
+					recordAlignAction(alignTag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
 					this.toggleButtons[3].setValue(true); //Set show arms
@@ -515,8 +523,9 @@ public class ArmorStandScreen extends Screen {
 						}
 					}
 
-					CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedFlatItemPose);
-					this.readFieldsFromNBT(tag);
+					CompoundTag alignTag = TagParser.parseCompoundFully(Reference.alignedFlatItemPose);
+					this.readFieldsFromNBT(alignTag);
+					recordAlignAction(alignTag);
 					this.toggleButtons[0].setValue(true); //Set invisible
 					this.toggleButtons[2].setValue(true); //Set no gravity
 					this.toggleButtons[3].setValue(true); //Set show arms
@@ -570,8 +579,9 @@ public class ArmorStandScreen extends Screen {
 					}
 				}
 
-				CompoundTag tag = TagParser.parseCompoundFully(Reference.alignedToolPose);
-				this.readFieldsFromNBT(tag);
+				CompoundTag alignTag = TagParser.parseCompoundFully(Reference.alignedToolPose);
+				this.readFieldsFromNBT(alignTag);
+				recordAlignAction(alignTag);
 				this.toggleButtons[0].setValue(true); //Set invisible
 				this.toggleButtons[2].setValue(true); //Set no gravity
 				this.toggleButtons[3].setValue(true); //Set show arms
@@ -991,4 +1001,40 @@ public class ArmorStandScreen extends Screen {
 	public List<String> getDisabledFeatures() {
 		return disabledFeatures;
 	}
+
+	private void recordSwapAction(SwapData.Action action) {
+		CompoundTag act = new CompoundTag();
+		act.putString("Type", "swap");
+		act.putString("Action", action.name());
+		this.recordedActions.add(act);
+	}
+
+	private void recordAlignAction(CompoundTag poseTag) {
+		CompoundTag act = new CompoundTag();
+		act.putString("Type", "align");
+		// store the actual pose tag to make the saved pose self-contained
+		act.put("PoseTag", poseTag.copy());
+		this.recordedActions.add(act);
+	}
+
+	protected ListTag getRecordedActions() {
+		return this.recordedActions;
+	}
+
+	protected Vec3 getOffset() {
+		return getArmorStandEntity().position().subtract(this.originalPosition);
+	}
+
+	protected ArmorStand getArmorStandEntity() {
+		return this.entityArmorStand;
+	}
+
+	protected void clearRecordedActions() {
+		this.recordedActions.clear();
+	}
+
+	protected void setLastSendOffset(Vec3 offset) {
+		this.lastSendOffset = new Vec3(offset.x, offset.y, offset.z);
+	}
+
 }

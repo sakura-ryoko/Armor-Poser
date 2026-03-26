@@ -3,6 +3,8 @@ package com.mrbysco.armorposer.client.gui;
 import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.client.gui.widgets.PoseEntry;
 import com.mrbysco.armorposer.client.gui.widgets.PoseListWidget;
+import com.mrbysco.armorposer.data.SwapData;
+import com.mrbysco.armorposer.platform.Services;
 import com.mrbysco.armorposer.poses.UserPoseHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -13,6 +15,8 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -101,11 +105,34 @@ public class ArmorPosesScreen extends Screen {
 						float randomRotation = (float) (Math.random() * 70 - 35);
 						this.parentScreen.poseTextFields[i].setValue(String.valueOf((int) randomRotation));
 					}
+					this.parentScreen.textFieldUpdated();
 				} else {
-					this.parentScreen.readFieldsFromNBT(selected.getTag());
+					net.minecraft.nbt.CompoundTag saved = selected.getTag();
+					if (saved != null) {
+						CompoundTag toApply = saved.copy();
+
+						if (toApply.contains("Actions")) {
+							ListTag actions = toApply.getListOrEmpty("Actions");
+							for (int i = 0; i < actions.size(); i++) {
+								CompoundTag action = actions.getCompoundOrEmpty(i);
+								String type = action.getStringOr("Type", "");
+								if ("swap".equals(type)) {
+									try {
+										SwapData.Action action1 = SwapData.Action.valueOf(action.getStringOr("Action", ""));
+										Services.PLATFORM.swapSlots(
+												this.parentScreen.getArmorStandEntity(), action1);
+									} catch (IllegalArgumentException ignored) {
+										// Invalid action. Ignore!
+									}
+								}
+							}
+						}
+
+						this.parentScreen.readFieldsFromNBT(toApply);
+						this.parentScreen.setLastSendOffset(this.parentScreen.getOffset());
+						this.parentScreen.updateEntity(toApply);
+					}
 				}
-				this.parentScreen.textFieldUpdated();
-				this.parentScreen.updateEntity(selected.getTag());
 			}
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
