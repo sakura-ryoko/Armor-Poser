@@ -13,9 +13,6 @@ base {
 
 repositories {
     maven {
-        url "https://maven.shedaniel.me/"
-    }
-    maven {
         url "https://maven.terraformersmc.com/"
         content {
             includeGroup "com.terraformersmc"
