@@ -15,10 +15,10 @@ base {
 neoForge {
     version = "${neo_version}"
 
-    parchment {
-        minecraftVersion = "${parchment_minecraft_version}"
-        mappingsVersion = "${parchment_mapping_version}"
-    }
+//    parchment {
+//        minecraftVersion = "${parchment_minecraft_version}"
+//        mappingsVersion = "${parchment_mapping_version}"
+//    }
 
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(":forge").file('src/main/resources/META-INF/accesstransformer.cfg')
