@@ -129,8 +129,8 @@ public class ArmorPosesScreen extends Screen {
 						}
 
 						this.parentScreen.readFieldsFromNBT(toApply);
-						this.parentScreen.setLastSendOffset(this.parentScreen.getOffset());
 						this.parentScreen.updateEntity(toApply);
+						this.parentScreen.setLastSendOffset(this.parentScreen.getOffset());
 					}
 				}
 			}
