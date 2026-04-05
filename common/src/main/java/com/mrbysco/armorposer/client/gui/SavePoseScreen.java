@@ -1,9 +1,9 @@
 package com.mrbysco.armorposer.client.gui;
 
 import com.mrbysco.armorposer.Reference;
-import net.minecraft.client.gui.GuiGraphics;
 import com.mrbysco.armorposer.client.gui.widgets.ToggleButton;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -32,12 +32,10 @@ public class SavePoseScreen extends Screen {
 
 	protected void updateState() {
 		Vec3 currentOffset = this.parentScreen.getOffset();
-		Reference.LOGGER.info("Offset {}", currentOffset);
 		this.hasOffset = currentOffset != null && (currentOffset.x() != 0.0 || currentOffset.y() != 0.0 || currentOffset.z() != 0.0);
 
 		ListTag actions = this.parentScreen.getRecordedActions();
 		this.hasActions = !(actions == null || actions.isEmpty());
-		Reference.LOGGER.info("Actions {}", hasActions);
 	}
 
 	@Override
