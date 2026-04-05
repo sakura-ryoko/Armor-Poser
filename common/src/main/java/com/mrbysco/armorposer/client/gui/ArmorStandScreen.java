@@ -32,6 +32,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec2;
@@ -934,7 +936,13 @@ public class ArmorStandScreen extends Screen {
 		this.lockButton.setLocked(compound.getBooleanOr("Invulnerable", false));
 
 		// Set size field
-		this.sizeField.setValue(String.valueOf(compound.getDoubleOr("Scale", 1.0F)));
+		double defaultScale = (this.entityArmorStand != null) ? this.entityArmorStand.getScale() : 1.0D;
+		double scale = compound.getDoubleOr("Scale", defaultScale);
+		this.sizeField.setValue(String.valueOf(scale));
+		AttributeInstance attributeInstance = this.entityArmorStand.getAttributes().getInstance(Attributes.SCALE);
+		if (attributeInstance != null) {
+			attributeInstance.setBaseValue(scale);
+		}
 
 		// Set rotation text field
 		Optional<Vec2> rotation = compound.read("Rotation", Vec2.CODEC);
