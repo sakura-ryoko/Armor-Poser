@@ -1,1 +1,1 @@
-* Fix scale not applying properly when applying a custom pose
+* Change the way buttons with custom icons are rendered to make it compatible with resource packs that change the base button texture
