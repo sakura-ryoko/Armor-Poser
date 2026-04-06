@@ -1,1 +1,1 @@
-* Update to 26.1.1
+* Change the way buttons with custom icons are rendered to make it compatible with resource packs that change the base button texture
