@@ -2,6 +2,7 @@ package com.mrbysco.armorposer.client.gui;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.client.gui.widgets.CustomSpriteButton;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
 import com.mrbysco.armorposer.client.gui.widgets.SizeField;
 import com.mrbysco.armorposer.client.gui.widgets.ToggleButton;
@@ -15,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.LockIconButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -288,7 +288,7 @@ public class ArmorStandScreen extends Screen {
 		offsetX = this.width - 20;
 		int buttonsLeft = 9;
 		int buttonOffset = -4;
-		ImageButton mirrorPose = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, MIRROR_POSE_SPRITES, (button) -> {
+		CustomSpriteButton mirrorPose = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 8, 13, MIRROR_POSE_SPRITES, (button) -> {
 			//Mirror head
 			float[] head = new float[]{poseTextFields[0].getFloat(), poseTextFields[1].getFloat(), poseTextFields[2].getFloat()};
 			poseTextFields[0].setValue(String.valueOf(head[0]));
@@ -329,7 +329,7 @@ public class ArmorStandScreen extends Screen {
 		mirrorPose.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.mirror")));
 		buttonsLeft--;
 
-		ImageButton mirrorLegs = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, MIRROR_LEGS_SPRITES, (button) -> {
+		CustomSpriteButton mirrorLegs = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 14, 14, MIRROR_LEGS_SPRITES, (button) -> {
 			//Mirror Legs
 			float[] leftLeg = new float[]{poseTextFields[6].getFloat(), poseTextFields[7].getFloat(), poseTextFields[8].getFloat()};
 			float[] rightLeg = new float[]{poseTextFields[9].getFloat(), poseTextFields[10].getFloat(), poseTextFields[11].getFloat()};
@@ -346,7 +346,7 @@ public class ArmorStandScreen extends Screen {
 		mirrorLegs.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.mirror_legs")));
 		buttonsLeft--;
 
-		ImageButton mirrorArms = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, MIRROR_ARMS_SPRITES, (button) -> {
+		CustomSpriteButton mirrorArms = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 15, 14, MIRROR_ARMS_SPRITES, (button) -> {
 			//Mirror Arms
 			float[] leftArm = new float[]{poseTextFields[12].getFloat(), poseTextFields[13].getFloat(), poseTextFields[14].getFloat()};
 			float[] rightArm = new float[]{poseTextFields[15].getFloat(), poseTextFields[16].getFloat(), poseTextFields[17].getFloat()};
@@ -363,7 +363,7 @@ public class ArmorStandScreen extends Screen {
 		mirrorArms.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.mirror_arms")));
 		buttonsLeft--;
 
-		ImageButton swapToHead = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, SWAP_TO_HEAD_SPRITES, (button) -> {
+		CustomSpriteButton swapToHead = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 15, 13, SWAP_TO_HEAD_SPRITES, (button) -> {
 			//Swap item in main hand with head
 			Services.PLATFORM.swapSlots(this.entityArmorStand, SwapData.Action.SWAP_WITH_HEAD);
 			recordSwapAction(SwapData.Action.SWAP_WITH_HEAD);
@@ -372,7 +372,7 @@ public class ArmorStandScreen extends Screen {
 
 		buttonsLeft--;
 
-		ImageButton swapHands = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, MIRROR_HANDS_SPRITES, (button) -> {
+		CustomSpriteButton swapHands = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 17, 14, MIRROR_HANDS_SPRITES, (button) -> {
 			//Swap item in main and offhand
 			Services.PLATFORM.swapSlots(this.entityArmorStand, SwapData.Action.SWAP_HANDS);
 			recordSwapAction(SwapData.Action.SWAP_HANDS);
@@ -380,7 +380,7 @@ public class ArmorStandScreen extends Screen {
 		swapHands.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.swap_hands")));
 		buttonsLeft--;
 
-		ImageButton blockButton = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, BLOCK_SPRITES, (button) -> {
+		CustomSpriteButton blockButton = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 13, 12, BLOCK_SPRITES, (button) -> {
 			try {
 				Vec3 pos = this.entityArmorStand.position();
 
@@ -436,7 +436,7 @@ public class ArmorStandScreen extends Screen {
 		blockButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.block")));
 		buttonsLeft--;
 
-		ImageButton itemButton = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, ITEM_SPRITES, (button) -> {
+		CustomSpriteButton itemButton = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 7, 9, ITEM_SPRITES, (button) -> {
 			if (minecraft.hasShiftDown()) { //If shift is held the item will be upright
 				try {
 					Vec3 pos = this.entityArmorStand.position();
@@ -544,7 +544,7 @@ public class ArmorStandScreen extends Screen {
 		itemButton.setTooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.item").append("\n").append(Component.translatable("armorposer.gui.tooltip.item2").withStyle(ChatFormatting.GRAY))));
 		buttonsLeft--;
 
-		ImageButton toolButton = this.addRenderableWidget(new ImageButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 20, 20, TOOL_SPRITES, (button) -> {
+		CustomSpriteButton toolButton = this.addRenderableWidget(new CustomSpriteButton(offsetX - (22 * buttonsLeft) - buttonOffset, offsetY, 10, 12, TOOL_SPRITES, (button) -> {
 			try {
 				Vec3 pos = this.entityArmorStand.position();
 
