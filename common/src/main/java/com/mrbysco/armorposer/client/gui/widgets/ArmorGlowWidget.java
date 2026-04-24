@@ -64,7 +64,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 	@Override
 	public void setSelected(@Nullable ArmorGlowWidget.ListEntry selected) {
-		this.parent.setSelected(getSelected(), selected, visible);
+		this.parent.setSelected(getSelected(), selected);
 		super.setSelected(selected);
 	}
 

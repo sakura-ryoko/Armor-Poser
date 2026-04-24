@@ -168,7 +168,7 @@ public class ArmorGlowScreen extends Screen {
 		//Nope
 	}
 
-	public void setSelected(ArmorGlowWidget.ListEntry previousEntry, ArmorGlowWidget.ListEntry entry, boolean visible) {
+	public void setSelected(ArmorGlowWidget.ListEntry previousEntry, ArmorGlowWidget.ListEntry entry) {
 		if (this.selected == previousEntry) {
 			this.selected = entry;
 		} else {
