@@ -98,16 +98,16 @@ public class SavePoseScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
-		guiGraphics.centeredText(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
-		guiGraphics.text(font, Component.translatable("armorposer.gui.save_pose.include_offset"), this.width / 2 - 60, this.height / 2 - 66,
+		graphics.centeredText(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
+		graphics.text(font, Component.translatable("armorposer.gui.save_pose.include_offset"), this.width / 2 - 60, this.height / 2 - 66,
 				hasOffset ? ARGB.opaque(16777215) : ARGB.opaque(ChatFormatting.GRAY.getColor()), false);
-		guiGraphics.text(font, Component.translatable("armorposer.gui.save_pose.include_actions"), this.width / 2 - 60, this.height / 2 - 46,
+		graphics.text(font, Component.translatable("armorposer.gui.save_pose.include_actions"), this.width / 2 - 60, this.height / 2 - 46,
 				hasActions ? ARGB.opaque(16777215) : ARGB.opaque(ChatFormatting.GRAY.getColor()), false);
 
-		this.nameField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		this.nameField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer.client.gui.widgets;
 
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.client.GroupHelper;
 import com.mrbysco.armorposer.client.gui.ArmorGlowScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -14,6 +15,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEntry> {
 	private final ArmorGlowScreen parent;
@@ -116,16 +123,33 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 			if (isMouseOver(mouseX, mouseY)) {
 				Font font = this.parent.getScreenFont();
-				Component component = Component.translatable("armorposer.gui.armor_list.stats", scale);
-				guiGraphics.setTooltipForNextFrame(font, component, mouseX, mouseY);
+				guiGraphics.setComponentTooltipForNextFrame(font, getTooltips(), mouseX, mouseY);
 			}
 			if (isVisible() && getSelected() == this)
 				extractPose(guiGraphics, left + 16, top + 28, partialTick);
 			pose.popMatrix();
 		}
 
+		private List<Component> getTooltips() {
+			List<Component> tooltips = new ArrayList<>();
+			tooltips.add(Component.translatable("armorposer.gui.armor_list.stats", scale));
+
+			// Show groups?
+			for (String groupName : GroupHelper.getGroupsForArmorStand(this.getUUID())) {
+				if (GroupHelper.isInGroup(groupName, getUUID())) {
+					tooltips.add(Component.literal(groupName).withStyle(GroupHelper.getFormatForGroup(groupName)));
+				}
+			}
+
+			return tooltips;
+		}
+
 		public ArmorStand getArmorStand() {
 			return armorstand;
+		}
+
+		public UUID getUUID() {
+			return armorstand.getUUID();
 		}
 
 		public boolean isLocked() {
@@ -154,6 +178,17 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 				component = component.withStyle(ChatFormatting.UNDERLINE);
 			if (this.isLocked())
 				component = component.append(" \uD83D\uDD12").withStyle(ChatFormatting.BOLD);
+			if (this.parent.isGroupMode()) {
+				for (Map.Entry<String, ChatFormatting> entry : GroupHelper.DEFAULT_GROUP_MAP.entrySet()) {
+					if (GroupHelper.isInGroup(entry.getKey().toLowerCase(Locale.ROOT), this.getArmorStand().getUUID())) {
+						component = component.append(" ").append(Component.literal("●").withStyle(entry.getValue()));
+					}
+				}
+				String group = parent.getGroup();
+				if (!group.isBlank() && GroupHelper.isInGroup(group, this.getArmorStand().getUUID())) {
+					component = component.append(" ").append(Component.literal("●").withStyle(ChatFormatting.WHITE));
+				}
+			}
 			return component;
 		}
 

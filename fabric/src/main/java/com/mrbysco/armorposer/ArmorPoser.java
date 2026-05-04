@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer;
 
 import com.mrbysco.armorposer.config.PoserConfig;
+import com.mrbysco.armorposer.data.GroupData;
 import com.mrbysco.armorposer.data.RenameData;
 import com.mrbysco.armorposer.data.SwapData;
 import com.mrbysco.armorposer.data.SyncData;
@@ -9,7 +10,9 @@ import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
+import com.mrbysco.armorposer.packets.ArmorStandSyncGroupsPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
+import com.mrbysco.armorposer.packets.ArmorStandUpdateGroupsPayload;
 import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -31,6 +34,7 @@ public class ArmorPoser implements ModInitializer {
 
 		PayloadTypeRegistry.clientboundPlay().register(ArmorStandScreenPayload.ID, ArmorStandScreenPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(ArmorStandLockedPayload.ID, ArmorStandLockedPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ArmorStandSyncGroupsPayload.ID, ArmorStandSyncGroupsPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(ArmorStandSyncPayload.ID, ArmorStandSyncPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ArmorStandSyncPayload.ID, (payload, context) -> {
 			final ServerLevel serverLevel = context.player().level();
@@ -65,6 +69,18 @@ public class ArmorPoser implements ModInitializer {
 				Entity entity = serverLevel.getEntity(renameData.entityUUID());
 				if (entity instanceof ArmorStand armorStandEntity) {
 					renameData.handleData(armorStandEntity, context.player());
+				}
+			});
+		});
+		PayloadTypeRegistry.serverboundPlay().register(ArmorStandUpdateGroupsPayload.ID, ArmorStandUpdateGroupsPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ArmorStandUpdateGroupsPayload.ID, (payload, context) -> {
+			final ServerLevel serverLevel = context.player().level();
+
+			GroupData groupData = payload.data();
+			serverLevel.getServer().execute(() -> {
+				Entity entity = serverLevel.getEntity(groupData.entityUUID());
+				if (entity instanceof ArmorStand armorStandEntity) {
+					groupData.handleData(armorStandEntity, context.player());
 				}
 			});
 		});

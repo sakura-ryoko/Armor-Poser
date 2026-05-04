@@ -1,27 +1,37 @@
 package com.mrbysco.armorposer;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.poses.UserPoseHandler;
 import com.mrbysco.armorposer.util.PoseData;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Reference {
 	public static final String MOD_ID = "armorposer";
 	public static final String MOD_NAME = "Armor Poser";
 	public static final Logger LOGGER = LogUtils.getLogger();
+
+	public static final Codec<List<String>> TAG_LIST_CODEC = Codec.STRING.sizeLimitedListOf(1024);
 
 	public static Identifier modLoc(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
@@ -32,6 +42,8 @@ public class Reference {
 	public static final Identifier RENAME_PACKET_ID = modLoc("rename_packet");
 	public static final Identifier SCREEN_PACKET_ID = modLoc("screen_packet");
 	public static final Identifier LOCKED_PACKET_ID = modLoc("locked_packet");
+	public static final Identifier UPDATE_GROUP_PACKET_ID = modLoc("update_group_packet");
+	public static final Identifier SYNC_GROUP_PACKET_ID = modLoc("sync_group_packet");
 
 	public static final Vector3f ARMOR_STAND_TRANSLATION = new Vector3f();
 	public static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0.0F, (float) Math.PI);
@@ -142,5 +154,24 @@ public class Reference {
 
 	public static int getMaxDistance() {
 		return 64;
+	}
+
+	public static Map<UUID, List<String>> getNearbyGroups(Player player) {
+		Level level = player.level();
+		List<ArmorStand> nearbyArmorStands = level.getEntitiesOfClass(
+				ArmorStand.class,
+				player.getBoundingBox().inflate(getMaxDistance()),
+				EntitySelector.LIVING_ENTITY_STILL_ALIVE);
+
+		Map<UUID, List<String>> groupData = new HashMap<>();
+		Codec<List<String>> codec = Codec.STRING.sizeLimitedListOf(1024);
+		for (ArmorStand armorStand : nearbyArmorStands) {
+			CustomData customData = armorStand.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+			List<String> groups = customData.copyTag().read("armor_poser_groups", codec).orElse(List.of());
+			if (!groups.isEmpty()) {
+				groupData.put(armorStand.getUUID(), groups);
+			}
+		}
+		return groupData;
 	}
 }

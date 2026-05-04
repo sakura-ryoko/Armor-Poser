@@ -52,7 +52,7 @@ public record RenameData(UUID entityUUID, String name) {
 		final int maxDistance = Reference.getMaxDistance();
 		final double maxDistanceSq = maxDistance * maxDistance;
 		if (player.distanceToSqr(armorStand) > maxDistanceSq) {
-			Reference.LOGGER.warn("Player {} attempted to sync armor stand {} from too far away (>{} blocks).",
+			Reference.LOGGER.warn("Player {} attempted to rename armor stand {} from too far away (>{} blocks).",
 					player.getName().getString(), entityUUID, maxDistance);
 			return;
 		}

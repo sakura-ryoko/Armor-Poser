@@ -1,12 +1,14 @@
 package com.mrbysco.armorposer.platform;
 
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.data.GroupData;
 import com.mrbysco.armorposer.data.RenameData;
 import com.mrbysco.armorposer.data.SwapData;
 import com.mrbysco.armorposer.data.SyncData;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
+import com.mrbysco.armorposer.packets.ArmorStandUpdateGroupsPayload;
 import com.mrbysco.armorposer.platform.services.IPlatformHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
@@ -18,6 +20,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
 	@Override
@@ -42,6 +45,19 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
+	public void updateEntityInGroup(List<ArmorStand> armorStands, CompoundTag compound) {
+		for (ArmorStand armorStand : armorStands) {
+			updateEntity(armorStand, compound);
+		}
+	}
+
+	@Override
+	public void updateEntityGroups(ArmorStand armorStand, List<String> groups) {
+		GroupData data = new GroupData(armorStand.getUUID(), groups);
+		ClientPacketDistributor.sendToServer(new ArmorStandUpdateGroupsPayload(data));
+	}
+
+	@Override
 	public void swapSlots(ArmorStand armorStand, SwapData.Action action) {
 		ClientPacketDistributor.sendToServer(new ArmorStandSwapPayload(new SwapData(armorStand.getUUID(), action)));
 	}
@@ -55,6 +71,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 	public Path getUserPresetFolder() {
 		return FMLPaths.CONFIGDIR.get();
 	}
+
 	@Override
 	public String getModVersion() {
 		return ModList.get().getModFileById(Reference.MOD_ID).versionString();

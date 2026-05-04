@@ -3,6 +3,7 @@ package com.mrbysco.armorposer.packets.handler;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
+import com.mrbysco.armorposer.packets.ArmorStandUpdateGroupsPayload;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,6 @@ public class ServerPayloadHandler {
 	}
 
 	public void handleSwapData(final ArmorStandSwapPayload swapData, final IPayloadContext context) {
-		// Do something with the pose, on the main thread
 		context.enqueueWork(() -> {
 					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
 						Entity entity = serverLevel.getEntity(swapData.data().entityUUID());
@@ -34,7 +34,6 @@ public class ServerPayloadHandler {
 	}
 
 	public void handleSyncData(final ArmorStandSyncPayload syncData, final IPayloadContext context) {
-		// Do something with the pose, on the main thread
 		context.enqueueWork(() -> {
 					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
 						Entity entity = serverLevel.getEntity(syncData.data().entityUUID());
@@ -51,7 +50,6 @@ public class ServerPayloadHandler {
 	}
 
 	public void handleRenameData(final ArmorStandRenamePayload renameData, final IPayloadContext context) {
-		// Do something with the pose, on the main thread
 		context.enqueueWork(() -> {
 					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
 						Entity entity = serverLevel.getEntity(renameData.data().entityUUID());
@@ -63,6 +61,22 @@ public class ServerPayloadHandler {
 				.exceptionally(e -> {
 					// Handle exception
 					context.disconnect(Component.translatable("armorposer.networking.rename.failed", e.getMessage()));
+					return null;
+				});
+	}
+
+	public void handleUpdateGroupData(final ArmorStandUpdateGroupsPayload updateGroupData, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+					if (context.player() != null && context.player().level() instanceof ServerLevel serverLevel) {
+						Entity entity = serverLevel.getEntity(updateGroupData.data().entityUUID());
+						if (entity instanceof ArmorStand armorStandEntity) {
+							updateGroupData.data().handleData(armorStandEntity, context.player());
+						}
+					}
+				})
+				.exceptionally(e -> {
+					// Handle exception
+					context.disconnect(Component.translatable("armorposer.networking.update_group.failed", e.getMessage()));
 					return null;
 				});
 	}

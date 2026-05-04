@@ -5,12 +5,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public interface IPlatformHelper {
 	/**
 	 * Update Armor Stand Entity
 	 */
 	void updateEntity(ArmorStand armorStand, CompoundTag compound);
+
+	/**
+	 * Update Armor Stand Entities
+	 */
+	void updateEntityInGroup(List<ArmorStand> armorStands, CompoundTag compound);
+
+	/**
+	 * Update groups of an Armor Stand
+	 */
+	void updateEntityGroups(ArmorStand armorStand, List<String> groups);
 
 	/**
 	 * Update Armor Stand Entity

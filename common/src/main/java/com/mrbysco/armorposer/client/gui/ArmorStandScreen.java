@@ -2,6 +2,7 @@ package com.mrbysco.armorposer.client.gui;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.client.GroupHelper;
 import com.mrbysco.armorposer.client.gui.widgets.CustomSpriteButton;
 import com.mrbysco.armorposer.client.gui.widgets.NumberFieldBox;
 import com.mrbysco.armorposer.client.gui.widgets.SizeField;
@@ -32,6 +33,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -40,8 +42,12 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3x2fStack;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites MIRROR_POSE_SPRITES = new WidgetSprites(
@@ -68,16 +74,19 @@ public class ArmorStandScreen extends Screen {
 	private static final WidgetSprites TOOL_SPRITES = new WidgetSprites(
 			Reference.modLoc("widget/tool"), Reference.modLoc("widget/tool_disabled"), Reference.modLoc("widget/tool_highlighted")
 	);
+	private Map<UUID, CompoundTag> groupMemberSnapshots = new HashMap<>();
 	private final ListTag recordedActions = new ListTag();
 	private final ArmorStand entityArmorStand;
 	private final Vec3 originalPosition;
-	private final ArmorStandData armorStandData;
+	private final ArmorStandData initialArmorStandData = new ArmorStandData();; // Used by pose editing mode to only modify actual changes
+	private final ArmorStandData armorStandData = new ArmorStandData();;
 	private final SavePoseScreen savePoseScreen;
 	private final List<String> disabledFeatures;
 
 	private final String[] buttonLabels = new String[]{"invisible", "base_plate", "gravity", "show_arms", "small", "name_visible", "rotation", "scale"};
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
 	private final String version;
+	private String group = "";
 
 	private EditBox nameField;
 	private String oldName;
@@ -106,7 +115,6 @@ public class ArmorStandScreen extends Screen {
 		this.oldName = armorStand.hasCustomName() ? armorStand.getName().getString() : this.getTitle().getString();
 		this.disabledFeatures = disabledFeatures;
 
-		this.armorStandData = new ArmorStandData();
 		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
 			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, armorStand.registryAccess());
 			armorStand.saveWithoutId(output);
@@ -118,6 +126,7 @@ public class ArmorStandScreen extends Screen {
 			}
 			this.armorStandData.readFromNBT(tag);
 		}
+		setInitialArmorStandData();
 
 		this.allowScrolling = PoserConfig.COMMON.allowScrolling.get();
 		this.version = Services.PLATFORM.getModVersion();
@@ -625,13 +634,26 @@ public class ArmorStandScreen extends Screen {
 			this.poseTextFields[18].setValue("0");
 			this.poseTextFields[19].setValue("0");
 			this.poseTextFields[20].setValue("0");
-			this.textFieldUpdated();
-			this.updateEntity(this.armorStandData.writeToNBT());
+			if (!this.group.isBlank()) {
+				Services.PLATFORM.updateEntity(this.entityArmorStand, this.armorStandData.writeToNBT());
+				this.revertGroupMembers();
+			} else {
+				this.textFieldUpdated();
+				this.updateEntity(this.armorStandData.writeToNBT());
+			}
+			this.clearRecordedActions();
 			this.minecraft.setScreen((Screen) null);
 		}).bounds(offsetX - 95, offsetY + 22, 97, 20).build());
 		this.addRenderableWidget(Button.builder(Component.literal("💡"), (button) -> {
-			this.minecraft.setScreen(new ArmorGlowScreen(this));
-		}).bounds(0, 0, 16, 16).build());
+			this.minecraft.setScreen(new ArmorGlowScreen(this, false));
+		}).bounds(0, 0, 16, 16).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.glow"))).build());
+		this.addRenderableWidget(Button.builder(Component.literal("G"), (button) -> {
+			this.minecraft.setScreen(new ArmorGlowScreen(this, true));
+		}).bounds(18, 0, 16, 16).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.group"))).build());
+
+		if (!this.group.isBlank()) {
+			snapshotGroupMembers();
+		}
 	}
 
 	@Override
@@ -681,17 +703,17 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
 		// Draw textboxes
 		// Name
-		this.nameField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		this.nameField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
-		this.rotationTextField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		this.rotationTextField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 		for (EditBox textField : this.poseTextFields)
-			textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-		this.sizeField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+			textField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+		this.sizeField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
 		int offsetY = 20;
 
@@ -700,29 +722,36 @@ public class ArmorStandScreen extends Screen {
 		for (int i = 0; i < this.buttonLabels.length; i++) {
 			int x = offsetX;
 			int y = offsetY + (i * 22) + (10 - (this.font.lineHeight / 2));
-			guiGraphics.text(this.font, I18n.get("armorposer.gui.label." + this.buttonLabels[i]), x, y, whiteColor, true);
+			graphics.text(this.font, I18n.get("armorposer.gui.label." + this.buttonLabels[i]), x, y, whiteColor, true);
 		}
 
 		// right column labels
 		offsetX = this.width - 20 - 100;
 		// x, y, z
-		guiGraphics.text(this.font, "X", offsetX + 10, 7, whiteColor, true);
-		guiGraphics.text(this.font, "Y", offsetX + 45, 7, whiteColor, true);
-		guiGraphics.text(this.font, "Z", offsetX + 80, 7, whiteColor, true);
+		graphics.text(this.font, "X", offsetX + 10, 7, whiteColor, true);
+		graphics.text(this.font, "Y", offsetX + 45, 7, whiteColor, true);
+		graphics.text(this.font, "Z", offsetX + 80, 7, whiteColor, true);
 		// pose textboxes
 		for (int i = 0; i < this.sliderLabels.length; i++) {
 			String translatedLabel = I18n.get("armorposer.gui.label." + this.sliderLabels[i]);
 			int x = offsetX - this.font.width(translatedLabel) - 10;
 			int y = offsetY + (i * 22) + (10 - (this.font.lineHeight / 2));
-			guiGraphics.text(this.font, translatedLabel, x, y, whiteColor, true);
+			graphics.text(this.font, translatedLabel, x, y, whiteColor, true);
 		}
 
-		Matrix3x2fStack pose = guiGraphics.pose();
+		Matrix3x2fStack pose = graphics.pose();
 		if (PoserConfig.COMMON.allowScrolling.get()) {
 			pose.pushMatrix();
 			pose.rotate(1.5708F);
-			guiGraphics.text(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);
+			graphics.text(this.font, Component.translatable("armorposer.gui.label.scroll", version), 21, -width + 10, ARGB.opaque(11184810), true);
 			pose.popMatrix();
+		}
+
+		// Show indicator with group your editing
+		if (!group.isBlank()) {
+			graphics.text(this.font, Component.translatable("armorposer.gui.label.editing_group",
+					Component.literal(group).withStyle(GroupHelper.getFormatForGroup(group))),
+					40, 4, whiteColor, true);
 		}
 	}
 
@@ -1003,7 +1032,55 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	public void updateEntity(CompoundTag compound) {
-		Services.PLATFORM.updateEntity(this.entityArmorStand, compound);
+		if (getGroup().isBlank()) {
+			Services.PLATFORM.updateEntity(this.entityArmorStand, compound);
+		} else {
+			this.armorStandData.readFromNBT(compound);
+			CompoundTag differenceTag = this.armorStandData.getDifference(this.initialArmorStandData);
+
+			compound.read("Move", Vec3.CODEC).ifPresent(move -> {
+				if (move.lengthSqr() > 1e-9) {
+					differenceTag.store("Move", Vec3.CODEC, move);
+				}
+			});
+
+			List<UUID> groupIds = GroupHelper.getGroup(this.group);
+			if (minecraft != null &&
+					minecraft.level != null && minecraft.player != null
+			) {
+				if (groupIds.isEmpty()) {
+					minecraft.player.sendOverlayMessage(
+							Component.translatable("armorposer.gui.group.empty", this.group)
+									.withStyle(ChatFormatting.RED));
+					setGroup("");
+					return;
+				}
+
+				Map<UUID, ArmorStand> loadedStands = new HashMap<>();
+				minecraft.level.getEntitiesOfClass(ArmorStand.class,
+						minecraft.player.getBoundingBox().inflate(128),
+						EntitySelector.LIVING_ENTITY_STILL_ALIVE
+				).forEach(stand -> loadedStands.put(stand.getUUID(), stand));
+
+				List<ArmorStand> groupStands = groupIds.stream()
+						.map(loadedStands::get)
+						.filter(Objects::nonNull)
+						.toList();
+
+				if (groupStands.isEmpty()) {
+					minecraft.player.sendOverlayMessage(
+							Component.translatable("armorposer.gui.group.none_loaded", this.group)
+									.withStyle(ChatFormatting.YELLOW));
+					return;
+				}
+
+				if (differenceTag.isEmpty()) return;
+
+				this.initialArmorStandData.readFromNBT(this.armorStandData.writeToNBT());
+
+				Services.PLATFORM.updateEntityInGroup(groupStands, differenceTag);
+			}
+		}
 	}
 
 	public List<String> getDisabledFeatures() {
@@ -1045,4 +1122,54 @@ public class ArmorStandScreen extends Screen {
 		this.lastSendOffset = new Vec3(offset.x, offset.y, offset.z);
 	}
 
+	protected void setGroup(String group) {
+		this.group = group;
+		setInitialArmorStandData();
+	}
+
+	protected String getGroup() {
+		return this.group;
+	}
+
+	protected void setInitialArmorStandData() {
+		this.initialArmorStandData.readFromNBT(this.armorStandData.writeToNBT());
+	}
+
+	private void snapshotGroupMembers() {
+		groupMemberSnapshots.clear();
+		List<UUID> groupIds = GroupHelper.getGroup(this.group);
+		if (minecraft == null || minecraft.level == null) return;
+
+		Map<UUID, ArmorStand> loadedStands = new HashMap<>();
+		minecraft.level.getEntitiesOfClass(ArmorStand.class,
+				minecraft.player.getBoundingBox().inflate(128),
+				EntitySelector.LIVING_ENTITY_STILL_ALIVE
+		).forEach(stand -> loadedStands.put(stand.getUUID(), stand));
+
+		for (UUID id : groupIds) {
+			ArmorStand stand = loadedStands.get(id);
+			if (stand == null) continue;
+			try (ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
+				TagValueOutput output = TagValueOutput.createWithContext(collector, stand.registryAccess());
+				stand.saveWithoutId(output);
+				groupMemberSnapshots.put(id, output.buildResult());
+			}
+		}
+	}
+
+	private void revertGroupMembers() {
+		if (minecraft == null || minecraft.level == null) return;
+		Map<UUID, ArmorStand> loadedStands = new HashMap<>();
+		minecraft.level.getEntitiesOfClass(ArmorStand.class,
+				minecraft.player.getBoundingBox().inflate(128),
+				EntitySelector.LIVING_ENTITY_STILL_ALIVE
+		).forEach(stand -> loadedStands.put(stand.getUUID(), stand));
+
+		groupMemberSnapshots.forEach((uuid, snapshot) -> {
+			ArmorStand stand = loadedStands.get(uuid);
+			if (stand != null) {
+				Services.PLATFORM.updateEntity(stand, snapshot);
+			}
+		});
+	}
 }

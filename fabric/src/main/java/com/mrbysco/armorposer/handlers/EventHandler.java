@@ -4,6 +4,7 @@ import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
+import com.mrbysco.armorposer.packets.ArmorStandSyncGroupsPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +26,7 @@ public class EventHandler {
 				if (hand == InteractionHand.MAIN_HAND && !player.level().isClientSide()) {
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
 					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
+					ServerPlayNetworking.send((ServerPlayer) player, new ArmorStandSyncGroupsPayload(Reference.getNearbyGroups(player)));
 				}
 				return InteractionResult.SUCCESS;
 			}

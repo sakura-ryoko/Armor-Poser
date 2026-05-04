@@ -125,4 +125,42 @@ public class ArmorStandData {
 		return compound;
 	}
 
+	public CompoundTag getDifference(ArmorStandData initial) {
+		CompoundTag tag = new CompoundTag();
+
+		if (this.invisible != initial.invisible)
+			tag.putBoolean("Invisible", this.invisible);
+		if (this.noBasePlate != initial.noBasePlate)
+			tag.putBoolean("NoBasePlate", this.noBasePlate);
+		if (this.noGravity != initial.noGravity)
+			tag.putBoolean("NoGravity", this.noGravity);
+		if (this.showArms != initial.showArms)
+			tag.putBoolean("ShowArms", this.showArms);
+		if (this.small != initial.small)
+			tag.putBoolean("Small", this.small);
+		if (this.nameVisible != initial.nameVisible)
+			tag.putBoolean("CustomNameVisible", this.nameVisible);
+		if (this.locked != initial.locked) {
+			tag.putBoolean("Invulnerable", this.locked);
+			tag.putInt("DisabledSlots", this.locked ? 4144959 : 0);
+		}
+		if (this.rotation != initial.rotation)
+			tag.store("Rotation", Vec2.CODEC, new Vec2(this.rotation, 0));
+
+		// Build pose tag — only include changed limbs
+		CompoundTag poseTag = new CompoundTag();
+		String[] keys = {"Head", "Body", "LeftLeg", "RightLeg", "LeftArm", "RightArm"};
+		for (int i = 0; i < keys.length; i++) {
+			int base = i * 3;
+			if (this.pose[base] != initial.pose[base]
+					|| this.pose[base + 1] != initial.pose[base + 1]
+					|| this.pose[base + 2] != initial.pose[base + 2]) {
+				poseTag.store(keys[i], Rotations.CODEC,
+						new Rotations(this.pose[base], this.pose[base + 1], this.pose[base + 2]));
+			}
+		}
+		if (!poseTag.isEmpty()) tag.put("Pose", poseTag);
+
+		return tag;
+	}
 }

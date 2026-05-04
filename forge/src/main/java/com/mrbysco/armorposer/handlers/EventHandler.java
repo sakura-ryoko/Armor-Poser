@@ -4,6 +4,7 @@ import com.mrbysco.armorposer.Reference;
 import com.mrbysco.armorposer.config.PoserConfig;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
+import com.mrbysco.armorposer.packets.ArmorStandSyncGroupsPayload;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +32,7 @@ public class EventHandler {
 				if (event.getHand() == InteractionHand.MAIN_HAND && player instanceof ServerPlayer serverPlayer) {
 					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
 					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
+					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandSyncGroupsPayload(Reference.getNearbyGroups(player)));
 				}
 				event.setCanceled(true);
 				return;

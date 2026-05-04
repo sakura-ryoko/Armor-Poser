@@ -1,7 +1,9 @@
 package com.mrbysco.armorposer.packets.handler;
 
+import com.mrbysco.armorposer.client.GroupHelper;
 import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
+import com.mrbysco.armorposer.packets.ArmorStandSyncGroupsPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -44,6 +46,12 @@ public class ClientPayloadHandler {
 			if (entity instanceof ArmorStand armorStandEntity) {
 				armorStandEntity.setInvulnerable(armorStandLockedPayload.isLocked());
 			}
+		});
+	}
+
+	public void handleSyncGroupData(ArmorStandSyncGroupsPayload armorStandSyncGroupsPayload, IPayloadContext context) {
+		context.enqueueWork(() -> {
+			GroupHelper.syncGroups(armorStandSyncGroupsPayload.groupData());
 		});
 	}
 }

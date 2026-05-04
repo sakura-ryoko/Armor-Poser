@@ -7,7 +7,9 @@ import com.mrbysco.armorposer.packets.ArmorStandLockedPayload;
 import com.mrbysco.armorposer.packets.ArmorStandRenamePayload;
 import com.mrbysco.armorposer.packets.ArmorStandScreenPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSwapPayload;
+import com.mrbysco.armorposer.packets.ArmorStandSyncGroupsPayload;
 import com.mrbysco.armorposer.packets.ArmorStandSyncPayload;
+import com.mrbysco.armorposer.packets.ArmorStandUpdateGroupsPayload;
 import com.mrbysco.armorposer.packets.handler.ClientPayloadHandler;
 import com.mrbysco.armorposer.packets.handler.ServerPayloadHandler;
 import net.neoforged.api.distmarker.Dist;
@@ -40,8 +42,10 @@ public class ArmorPoser {
 		final PayloadRegistrar registrar = event.registrar(Reference.MOD_ID).optional();
 		registrar.playToClient(ArmorStandScreenPayload.ID, ArmorStandScreenPayload.CODEC, ClientPayloadHandler.getInstance()::handleScreenData);
 		registrar.playToClient(ArmorStandLockedPayload.ID, ArmorStandLockedPayload.CODEC, ClientPayloadHandler.getInstance()::handleLockedData);
+		registrar.playToClient(ArmorStandSyncGroupsPayload.ID, ArmorStandSyncGroupsPayload.CODEC, ClientPayloadHandler.getInstance()::handleSyncGroupData);
 		registrar.playToServer(ArmorStandSwapPayload.ID, ArmorStandSwapPayload.CODEC, ServerPayloadHandler.getInstance()::handleSwapData);
 		registrar.playToServer(ArmorStandSyncPayload.ID, ArmorStandSyncPayload.CODEC, ServerPayloadHandler.getInstance()::handleSyncData);
 		registrar.playToServer(ArmorStandRenamePayload.ID, ArmorStandRenamePayload.CODEC, ServerPayloadHandler.getInstance()::handleRenameData);
+		registrar.playToServer(ArmorStandUpdateGroupsPayload.ID, ArmorStandUpdateGroupsPayload.CODEC, ServerPayloadHandler.getInstance()::handleUpdateGroupData);
 	}
 }
