@@ -28,11 +28,11 @@ public class DeletePoseScreen extends Screen {
 	protected void init() {
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_YES, (button) -> {
 			Reference.removePose(this.getSelected().rawName());
-			this.minecraft.setScreen(parentScreen);
+			this.minecraft.setScreenAndShow(parentScreen);
 		}).bounds(this.width / 2 - 66, this.height / 2 + 3, 60, 20).build());
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_NO, (button) -> {
-			this.minecraft.setScreen(parentScreen);
+			this.minecraft.setScreenAndShow(parentScreen);
 		}).bounds(this.width / 2 - 4, this.height / 2 + 3, 60, 20).build());
 	}
 

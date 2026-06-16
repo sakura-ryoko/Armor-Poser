@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -91,7 +91,7 @@ public class ArmorGlowWidget extends ObjectSelectionList<ArmorGlowWidget.ListEnt
 
 			this.armorstand = armorStand;
 
-			this.armorStandPreview.entityType = EntityType.ARMOR_STAND;
+			this.armorStandPreview.entityType = EntityTypes.ARMOR_STAND;
 			this.armorStandPreview.xRot = 25.0F;
 			this.armorStandPreview.bodyRot = 210.0F;
 			this.updateState(armorStand);

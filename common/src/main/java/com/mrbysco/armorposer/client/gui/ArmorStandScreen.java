@@ -262,7 +262,7 @@ public class ArmorStandScreen extends Screen {
 
 		// copy & paste buttons
 		offsetX = 20;
-		this.addRenderableWidget(Button.builder(Component.translatable("armorposer.gui.label.poses"), (button) -> this.minecraft.setScreen(new ArmorPosesScreen(this)))
+		this.addRenderableWidget(Button.builder(Component.translatable("armorposer.gui.label.poses"), (button) -> this.minecraft.setScreenAndShow(new ArmorPosesScreen(this)))
 				.bounds(offsetX, offsetY, 130, 20)
 				.tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.poses"))).build());
 		this.addRenderableWidget(Button.builder(Component.translatable("armorposer.gui.label.copy"), (button) -> {
@@ -291,7 +291,7 @@ public class ArmorStandScreen extends Screen {
 		}).bounds(offsetX + 44, offsetY + 22, 42, 20).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.paste"))).build());
 		this.addRenderableWidget(Button.builder(Component.translatable("armorposer.gui.label.save"), (button) -> {
 			this.savePoseScreen.updateState();
-			this.minecraft.setScreen(this.savePoseScreen);
+			this.minecraft.setScreenAndShow(this.savePoseScreen);
 		}).bounds(offsetX + 88, offsetY + 22, 42, 20).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.save"))).build());
 
 		offsetX = this.width - 20;
@@ -628,7 +628,7 @@ public class ArmorStandScreen extends Screen {
 		// done & cancel buttons
 		this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), (button) -> {
 			this.textFieldUpdated();
-			this.minecraft.setScreen((Screen) null);
+			this.minecraft.setScreenAndShow((Screen) null);
 		}).bounds(offsetX - ((2 * 96) + 2), offsetY + 22, 97, 20).build());
 		this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), (button) -> {
 			this.poseTextFields[18].setValue("0");
@@ -642,13 +642,13 @@ public class ArmorStandScreen extends Screen {
 				this.updateEntity(this.armorStandData.writeToNBT());
 			}
 			this.clearRecordedActions();
-			this.minecraft.setScreen((Screen) null);
+			this.minecraft.setScreenAndShow((Screen) null);
 		}).bounds(offsetX - 95, offsetY + 22, 97, 20).build());
 		this.addRenderableWidget(Button.builder(Component.literal("💡"), (button) -> {
-			this.minecraft.setScreen(new ArmorGlowScreen(this, false));
+			this.minecraft.setScreenAndShow(new ArmorGlowScreen(this, false));
 		}).bounds(0, 0, 16, 16).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.glow"))).build());
 		this.addRenderableWidget(Button.builder(Component.literal("G"), (button) -> {
-			this.minecraft.setScreen(new ArmorGlowScreen(this, true));
+			this.minecraft.setScreenAndShow(new ArmorGlowScreen(this, true));
 		}).bounds(18, 0, 16, 16).tooltip(Tooltip.create(Component.translatable("armorposer.gui.tooltip.group"))).build());
 
 		if (!this.group.isBlank()) {
@@ -1028,7 +1028,7 @@ public class ArmorStandScreen extends Screen {
 	}
 
 	public static void openScreen(ArmorStand armorStandEntity, List<String> disabledFeatures) {
-		Minecraft.getInstance().setScreen(new ArmorStandScreen(armorStandEntity, disabledFeatures));
+		Minecraft.getInstance().setScreenAndShow(new ArmorStandScreen(armorStandEntity, disabledFeatures));
 	}
 
 	public void updateEntity(CompoundTag compound) {

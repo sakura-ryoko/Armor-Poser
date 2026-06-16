@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,11 +77,11 @@ public class SavePoseScreen extends Screen {
 				}
 			}
 			Reference.savePose(this.nameField.getValue(), compound);
-			this.minecraft.setScreen(this.parentScreen);
+			this.minecraft.setScreenAndShow(this.parentScreen);
 		}).bounds(this.width / 2 - 66, this.height / 2 + 3, 60, 20).build());
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> {
-			this.minecraft.setScreen(this.parentScreen);
+			this.minecraft.setScreenAndShow(this.parentScreen);
 		}).bounds(this.width / 2 - 4, this.height / 2 + 3, 60, 20).build());
 
 		this.nameField = new EditBox(this.font, this.width / 2 - 90, this.height / 2 - 24, 180, 20, Component.literal("Name"));
@@ -103,9 +104,9 @@ public class SavePoseScreen extends Screen {
 
 		graphics.centeredText(this.font, this.title, this.width / 2, 20, ARGB.opaque(16777215));
 		graphics.text(font, Component.translatable("armorposer.gui.save_pose.include_offset"), this.width / 2 - 60, this.height / 2 - 66,
-				hasOffset ? ARGB.opaque(16777215) : ARGB.opaque(ChatFormatting.GRAY.getColor()), false);
+				hasOffset ? ARGB.opaque(16777215) : ARGB.opaque(TextColor.GRAY.getValue()), false);
 		graphics.text(font, Component.translatable("armorposer.gui.save_pose.include_actions"), this.width / 2 - 60, this.height / 2 - 46,
-				hasActions ? ARGB.opaque(16777215) : ARGB.opaque(ChatFormatting.GRAY.getColor()), false);
+				hasActions ? ARGB.opaque(16777215) : ARGB.opaque(TextColor.GRAY.getValue()), false);
 
 		this.nameField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 	}

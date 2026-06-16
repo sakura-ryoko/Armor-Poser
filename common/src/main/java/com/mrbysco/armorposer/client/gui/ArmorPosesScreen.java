@@ -250,7 +250,7 @@ public class ArmorPosesScreen extends Screen {
 	public boolean keyPressed(KeyEvent event) {
 		if (event.key() == GLFW.GLFW_KEY_DELETE) {
 			if (selected != null && selected.userAdded()) {
-				this.minecraft.setScreen(this.deletePoseScreen);
+				this.minecraft.setScreenAndShow(this.deletePoseScreen);
 			}
 		}
 		if (this.poseListWidget[0].keyPressed(event)) {
@@ -310,7 +310,7 @@ public class ArmorPosesScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(parentScreen);
+		this.minecraft.setScreenAndShow(parentScreen);
 	}
 
 	public Minecraft getScreenMinecraft() {

@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +80,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 			this.poseEntry = entry;
 			this.parent = parent;
 
-			this.armorStandPreview.entityType = EntityType.ARMOR_STAND;
+			this.armorStandPreview.entityType = EntityTypes.ARMOR_STAND;
 			this.armorStandPreview.xRot = 25.0F;
 			this.armorStandPreview.bodyRot = 210.0F;
 
@@ -98,7 +99,7 @@ public class PoseListWidget extends ObjectSelectionList<PoseListWidget.ListEntry
 					if (!tag.isEmpty()) {
 						nbt.merge(tag);
 					}
-					ArmorStand armorStand = (ArmorStand) EntityType.loadEntityRecursive(nbt, level, EntitySpawnReason.LOAD, entity -> {
+					ArmorStand armorStand = (ArmorStand) EntityType.loadEntityRecursive(EntityTypes.ARMOR_STAND, nbt, level, EntitySpawnReason.LOAD, entity -> {
 						if (entity instanceof ArmorStand stand) {
 							stand.setNoBasePlate(true);
 							stand.setShowArms(true);

@@ -126,14 +126,14 @@ public class ArmorGlowScreen extends Screen {
 			this.addRenderableWidget(this.modifyButton = Button.builder(Component.translatable("armorposer.gui.armor_list.pose_group"), b -> {
 				ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures());
 				modifyScreen.setGroup(getSelectedGroup());
-				minecraft.setScreen(modifyScreen);
+				minecraft.setScreenAndShow(modifyScreen);
 			}).bounds(centerWidth - buttonWidth + 5, y, buttonWidth, 20).build());
 
 			this.addRenderableWidget(this.modifyButton2 = Button.builder(Component.translatable("armorposer.gui.armor_list.pose_group_2"), b -> {
 				if (!getGroup().isBlank()) {
 					ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures());
 					modifyScreen.setGroup(getGroup());
-					minecraft.setScreen(modifyScreen);
+					minecraft.setScreenAndShow(modifyScreen);
 				}
 			}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING + buttonWidth + 2, y, buttonWidth, 20).build());
 
@@ -216,7 +216,7 @@ public class ArmorGlowScreen extends Screen {
 			this.addRenderableWidget(this.modifyButton = Button.builder(Component.translatable("armorposer.gui.armor_list.modify"), b -> {
 				if (selected != null && minecraft.player != null) {
 					ArmorStandScreen modifyScreen = new ArmorStandScreen(selected.getArmorStand(), parentScreen.getDisabledFeatures());
-					minecraft.setScreen(modifyScreen);
+					minecraft.setScreenAndShow(modifyScreen);
 				}
 			}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING + buttonWidth + 2, y, buttonWidth, 20).build());
 
@@ -368,7 +368,7 @@ public class ArmorGlowScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(parentScreen);
+		this.minecraft.setScreenAndShow(parentScreen);
 	}
 
 	public Minecraft getScreenMinecraft() {

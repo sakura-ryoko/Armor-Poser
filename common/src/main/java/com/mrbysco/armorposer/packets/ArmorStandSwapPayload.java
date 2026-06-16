@@ -6,20 +6,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-
 public record ArmorStandSwapPayload(SwapData data) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, ArmorStandSwapPayload> CODEC = CustomPacketPayload.codec(
-			ArmorStandSwapPayload::write,
-			ArmorStandSwapPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, ArmorStandSwapPayload> CODEC = StreamCodec.composite(
+			SwapData.STREAM_CODEC,
+			o -> o.data,
+			ArmorStandSwapPayload::new
+	);
 	public static final Type<ArmorStandSwapPayload> ID = new Type<>(Reference.SWAP_PACKET_ID);
-
-	public ArmorStandSwapPayload(final FriendlyByteBuf packetBuffer) {
-		this(SwapData.STREAM_CODEC.decode(packetBuffer));
-	}
-
-	public void write(FriendlyByteBuf buf) {
-		SwapData.STREAM_CODEC.encode(buf, data());
-	}
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
