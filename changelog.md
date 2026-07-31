@@ -1,1 +1,1 @@
-* Update to 26.2
+* Add `minScale` / `maxScale` config option for limiting the scale
