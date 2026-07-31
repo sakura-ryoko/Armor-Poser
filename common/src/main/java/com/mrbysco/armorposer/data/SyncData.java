@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer.data;
 
 import com.mrbysco.armorposer.Reference;
+import com.mrbysco.armorposer.config.PoserConfig;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -127,7 +128,9 @@ public record SyncData(UUID entityUUID, CompoundTag tag) {
 			}
 
 			if (tag.contains("Scale")) { // still present after possible removal
-				if (!Double.isFinite(scale) || scale < 0.0625 || scale > 16.0) {
+				double minScale = PoserConfig.COMMON.minScale.getAsDouble();
+				double maxScale = PoserConfig.COMMON.maxScale.getAsDouble();
+				if (!Double.isFinite(scale) || scale < minScale || scale > maxScale) {
 					Reference.LOGGER.warn("Ignoring invalid Scale {} from player {} for armor stand {}.", scale, player.getName().getString(), entityUUID);
 					tag.remove("Scale");
 				}

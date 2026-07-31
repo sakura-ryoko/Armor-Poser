@@ -11,11 +11,13 @@ import java.util.Locale;
 public class SizeField extends EditBox {
 
 	public final float scrollMultiplier = 0.1F;
-	public final float minValue = 0.01F;
-	public final float maxValue = 10.0F;
+	public final double minValue;
+	public final double maxValue;
 
-	public SizeField(Font font, int x, int y, int width, int height, Component defaultValue) {
+	public SizeField(Font font, int x, int y, int width, int height, Component defaultValue, double minValue, double maxValue) {
 		super(font, x, y, width, height, defaultValue);
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 	}
 
 	@Override

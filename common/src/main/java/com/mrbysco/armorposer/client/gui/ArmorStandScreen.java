@@ -82,6 +82,7 @@ public class ArmorStandScreen extends Screen {
 	private final ArmorStandData armorStandData = new ArmorStandData();;
 	private final SavePoseScreen savePoseScreen;
 	private final List<String> disabledFeatures;
+	private final double minScale, maxScale;
 
 	private final String[] buttonLabels = new String[]{"invisible", "base_plate", "gravity", "show_arms", "small", "name_visible", "rotation", "scale"};
 	private final String[] sliderLabels = new String[]{"head", "body", "left_leg", "right_leg", "left_arm", "right_arm", "position"};
@@ -108,12 +109,14 @@ public class ArmorStandScreen extends Screen {
 
 	private final int whiteColor = ARGB.opaque(16777215);
 
-	public ArmorStandScreen(ArmorStand armorStand, List<String> disabledFeatures) {
+	public ArmorStandScreen(ArmorStand armorStand, List<String> disabledFeatures, double minScale, double maxScale) {
 		super(Component.translatable("armorposer.gui.title"));
 		this.entityArmorStand = armorStand;
 		this.originalPosition = armorStand.position();
 		this.oldName = armorStand.hasCustomName() ? armorStand.getName().getString() : this.getTitle().getString();
 		this.disabledFeatures = disabledFeatures;
+		this.minScale = minScale;
+		this.maxScale = maxScale;
 
 		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(Reference.LOGGER)) {
 			TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, armorStand.registryAccess());
@@ -207,7 +210,12 @@ public class ArmorStandScreen extends Screen {
 		}
 
 		// Size slider
-		this.sizeField = new SizeField(this.font, 1 + offsetX, offsetY + ((this.toggleButtons.length + 1) * 22), 38, 17, Component.translatable("armorposer.gui.label.scale"));
+		this.sizeField = new SizeField(this.font,
+				1 + offsetX, offsetY + ((this.toggleButtons.length + 1) * 22),
+				38, 17,
+				Component.translatable("armorposer.gui.label.scale"),
+				minScale, maxScale
+		);
 		this.sizeField.setValue(String.valueOf((double) this.entityArmorStand.getScale()));
 		this.sizeField.setMaxLength(4);
 		this.addWidget(this.sizeField);
@@ -804,7 +812,7 @@ public class ArmorStandScreen extends Screen {
 			}
 			if (sizeField.canConsumeInput()) {
 				float nextValue = (float) (sizeField.getFloat() + (double) (multiplier * sizeField.scrollMultiplier));
-				nextValue = Math.clamp(nextValue, sizeField.minValue, sizeField.maxValue);
+				nextValue = (float) Math.clamp(nextValue, sizeField.minValue, sizeField.maxValue);
 				sizeField.setValue(String.valueOf(nextValue));
 				sizeField.setCursorPosition(0);
 				sizeField.setHighlightPos(0);
@@ -833,7 +841,7 @@ public class ArmorStandScreen extends Screen {
 			}
 			if (sizeField.canConsumeInput()) {
 				float previousValue = (float) (sizeField.getFloat() - (double) (multiplier * sizeField.scrollMultiplier));
-				previousValue = Math.clamp(previousValue, sizeField.minValue, sizeField.maxValue);
+				previousValue = (float) Math.clamp(previousValue, sizeField.minValue, sizeField.maxValue);
 				sizeField.setValue(String.valueOf(previousValue));
 				sizeField.setCursorPosition(0);
 				sizeField.setHighlightPos(0);
@@ -1027,8 +1035,8 @@ public class ArmorStandScreen extends Screen {
 		}
 	}
 
-	public static void openScreen(ArmorStand armorStandEntity, List<String> disabledFeatures) {
-		Minecraft.getInstance().setScreenAndShow(new ArmorStandScreen(armorStandEntity, disabledFeatures));
+	public static void openScreen(ArmorStand armorStandEntity, List<String> disabledFeatures, double minValue, double maxValue) {
+		Minecraft.getInstance().setScreenAndShow(new ArmorStandScreen(armorStandEntity, disabledFeatures, minValue, maxValue));
 	}
 
 	public void updateEntity(CompoundTag compound) {
@@ -1171,5 +1179,13 @@ public class ArmorStandScreen extends Screen {
 				Services.PLATFORM.updateEntity(stand, snapshot);
 			}
 		});
+	}
+
+	public double getMinScale() {
+		return minScale;
+	}
+
+	public double getMaxScale() {
+		return maxScale;
 	}
 }

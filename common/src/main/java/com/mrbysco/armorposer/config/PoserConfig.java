@@ -2,6 +2,7 @@ package com.mrbysco.armorposer.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public class PoserConfig {
 		public final BooleanValue enableNameTags;
 		public final BooleanValue allowScrolling;
 		public final BooleanValue nameBasedFeatures;
+		public final DoubleValue minScale;
+		public final DoubleValue maxScale;
 
 		public final BooleanValue restrictInvisibleToOP;
 		public final BooleanValue restrictBasePlateToOP;
@@ -51,6 +54,16 @@ public class PoserConfig {
 					.comment("Allow the spawned Armor Stand to have settings set based on its name")
 					.translation("armorposer.config.nameBasedFeatures")
 					.define("nameBasedFeatures", false);
+
+			minScale = builder
+					.comment("The minimum scale value allowed (Default: 0.0625)")
+					.translation("armorposer.config.minScale")
+					.defineInRange("minScale", 0.0625, 0.0625, 16);
+
+			maxScale = builder
+					.comment("The maximum scale value allowed (Default: 10.0)")
+					.translation("armorposer.config.maxScale")
+					.defineInRange("maxScale", 10, 0.0625, 16);
 
 			builder.pop();
 			builder.comment("Restrict settings")

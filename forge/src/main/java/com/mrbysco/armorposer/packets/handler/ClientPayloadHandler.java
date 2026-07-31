@@ -17,16 +17,18 @@ public class ClientPayloadHandler {
 		return INSTANCE;
 	}
 
-	public void handleScreenData(final ArmorStandScreenPayload screenMessage, final IPayloadContext context) {
+	public void handleScreenData(final ArmorStandScreenPayload payload, final IPayloadContext context) {
 		context.enqueueWork(() -> {
 					//Open Armor Poser Screen
 					Minecraft mc = Minecraft.getInstance();
 					Entity entity = null;
 					if (mc.level != null) {
-						entity = mc.level.getEntity(screenMessage.entityID());
+						entity = mc.level.getEntity(payload.entityID());
 					}
 					if (entity instanceof ArmorStand armorStandEntity) {
-						com.mrbysco.armorposer.client.gui.ArmorStandScreen.openScreen(armorStandEntity, screenMessage.disabledFeatures());
+						com.mrbysco.armorposer.client.gui.ArmorStandScreen.openScreen(armorStandEntity,
+								payload.disabledFeatures(), payload.minScale(), payload.maxScale()
+						);
 					}
 				})
 				.exceptionally(e -> {
@@ -36,15 +38,15 @@ public class ClientPayloadHandler {
 				});
 	}
 
-	public void handleLockedData(ArmorStandLockedPayload armorStandLockedPayload, IPayloadContext context) {
+	public void handleLockedData(ArmorStandLockedPayload payload, IPayloadContext context) {
 		context.enqueueWork(() -> {
 			Minecraft mc = Minecraft.getInstance();
 			Entity entity = null;
 			if (mc.level != null) {
-				entity = mc.level.getEntity(armorStandLockedPayload.entityID());
+				entity = mc.level.getEntity(payload.entityID());
 			}
 			if (entity instanceof ArmorStand armorStandEntity) {
-				armorStandEntity.setInvulnerable(armorStandLockedPayload.isLocked());
+				armorStandEntity.setInvulnerable(payload.isLocked());
 			}
 		});
 	}

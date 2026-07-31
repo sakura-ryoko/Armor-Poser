@@ -124,14 +124,14 @@ public class ArmorGlowScreen extends Screen {
 			}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y - (18 + PADDING), closeButtonWidth, 20).build());
 
 			this.addRenderableWidget(this.modifyButton = Button.builder(Component.translatable("armorposer.gui.armor_list.pose_group"), b -> {
-				ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures());
+				ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures(), parentScreen.getMinScale(), parentScreen.getMaxScale());
 				modifyScreen.setGroup(getSelectedGroup());
 				minecraft.setScreenAndShow(modifyScreen);
 			}).bounds(centerWidth - buttonWidth + 5, y, buttonWidth, 20).build());
 
 			this.addRenderableWidget(this.modifyButton2 = Button.builder(Component.translatable("armorposer.gui.armor_list.pose_group_2"), b -> {
 				if (!getGroup().isBlank()) {
-					ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures());
+					ArmorStandScreen modifyScreen = new ArmorStandScreen(parentScreen.getArmorStandEntity(), parentScreen.getDisabledFeatures(), parentScreen.getMinScale(), parentScreen.getMaxScale());
 					modifyScreen.setGroup(getGroup());
 					minecraft.setScreenAndShow(modifyScreen);
 				}
@@ -215,7 +215,7 @@ public class ArmorGlowScreen extends Screen {
 
 			this.addRenderableWidget(this.modifyButton = Button.builder(Component.translatable("armorposer.gui.armor_list.modify"), b -> {
 				if (selected != null && minecraft.player != null) {
-					ArmorStandScreen modifyScreen = new ArmorStandScreen(selected.getArmorStand(), parentScreen.getDisabledFeatures());
+					ArmorStandScreen modifyScreen = new ArmorStandScreen(selected.getArmorStand(), parentScreen.getDisabledFeatures(), parentScreen.getMinScale(), parentScreen.getMaxScale());
 					minecraft.setScreenAndShow(modifyScreen);
 				}
 			}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING + buttonWidth + 2, y, buttonWidth, 20).build());
