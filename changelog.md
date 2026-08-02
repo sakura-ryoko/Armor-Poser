@@ -1,1 +1,1 @@
-* Add `minScale` / `maxScale` config option for limiting the scale
+* Update NeoForge support (Now requires **26.2.0.43-beta** or above)
