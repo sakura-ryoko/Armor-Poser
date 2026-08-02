@@ -24,7 +24,7 @@ public class EventHandler {
 	private static boolean cancelRightClick = false;
 
 	@SubscribeEvent
-	public static void onPlayerEntityInteractSpecific(PlayerInteractEvent.EntityInteractSpecific event) {
+	public static void onPlayerEntityInteractSpecific(PlayerInteractEvent.EntityInteract event) {
 		if (event.getTarget() instanceof ArmorStand armorstand) {
 			final Player player = event.getEntity();
 			final Level level = event.getLevel();
