@@ -1,1 +1,1 @@
-* Update NeoForge support (Now requires **26.2.0.43-beta** or above)
+* Fix an issue where clients without the mod would crash connecting to servers with the mod server-side (NeoForge)
