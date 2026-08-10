@@ -30,9 +30,12 @@ public class EventHandler {
 			final Level level = event.getLevel();
 			if (PoserConfig.COMMON.enableConfigGui.get() && player.isShiftKeyDown()) {
 				if (event.getHand() == InteractionHand.MAIN_HAND && player instanceof ServerPlayer serverPlayer) {
-					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
-					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
-					PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandSyncGroupsPayload(Reference.getNearbyGroups(player)));
+					if (serverPlayer.connection.hasChannel(ArmorStandLockedPayload.ID))
+						PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorstand.getId(), armorstand.isInvulnerable()));
+					if (serverPlayer.connection.hasChannel(ArmorStandScreenPayload.ID))
+						PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandScreenPayload(armorstand.getId(), Reference.getRestrictedFeatures(player)));
+					if (serverPlayer.connection.hasChannel(ArmorStandSyncGroupsPayload.ID))
+						PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandSyncGroupsPayload(Reference.getNearbyGroups(player)));
 				}
 				event.setCanceled(true);
 				return;
@@ -63,7 +66,8 @@ public class EventHandler {
 	@SubscribeEvent
 	public static void playerTracking(PlayerEvent.StartTracking event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ArmorStand armorStand) {
-			PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorStand.getId(), armorStand.isInvulnerable()));
+			if (serverPlayer.connection.hasChannel(ArmorStandLockedPayload.ID))
+				PacketDistributor.sendToPlayer(serverPlayer, new ArmorStandLockedPayload(armorStand.getId(), armorStand.isInvulnerable()));
 		}
 	}
 }
